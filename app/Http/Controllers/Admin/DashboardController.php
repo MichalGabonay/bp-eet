@@ -22,7 +22,7 @@ class DashboardController extends AdminController
     {
         parent::__construct($request);
         $this->page_title = 'Dashboard';
-        $this->page_icon = 'icon-home4';
+        $this->page_icon = 'fa-home';
     }
 
     /**
@@ -38,7 +38,7 @@ class DashboardController extends AdminController
         }
         else
         {
-            return redirect(route('admin.auth.login'));
+            return view('welcome');
         }
     }
 

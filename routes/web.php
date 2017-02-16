@@ -12,7 +12,7 @@
 */
 
 if (App::environment() == 'development') {
-    Route::get('migrate',       ['as' => 'migrate',                     'uses' => 'AppController@migrate', 'desc' => 'Migrace']);
+    Route::get('migrate',   ['as' => 'migrate', 'uses' => 'AppController@migrate']);
 
     // Debug bar TODO: pozriet na to
 //    Route::get('/_debugbar/assets/stylesheets', ['as' => 'debugbar-css', 'uses' => '\Barryvdh\Debugbar\Controllers\AssetController@css']);
@@ -21,15 +21,16 @@ if (App::environment() == 'development') {
 }
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('migrate',       ['as' => 'migrate',                     'uses' => 'AppController@migrate', 'desc' => 'Migrace']);
+Route::get('/', ['as' => 'home', 'uses' => 'Controller@redirect' ]);
 
 
 Auth::routes();
 
+Route::get('home', ['as' => 'home', 'uses' => 'HomeController@index']);
 Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
+
+Route::group(['prefix' => 'users'], function () {
+    Route::get('', ['as' => 'admin.users.index', 'uses' => 'Admin\Users\UsersController@index']);
+});
 
 //Route::get('/dashboard', 'Admin\DashboardController@index');

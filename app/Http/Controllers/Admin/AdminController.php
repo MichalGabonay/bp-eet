@@ -12,11 +12,25 @@ use SlevomatEET\Client;
 use SlevomatEET\Receipt;
 use Auth;
 use Menu;
+use View;
 
 define('DIR_CERT', __DIR__ . "/../../../resources/assets/cert/");
 
 class AdminController extends Controller
 {
+
+    protected $page_title = '';
+
+    /**
+     * @var $page_description
+     */
+    protected $page_description = '';
+
+    /**
+     * @var $page_icon
+     */
+    protected $page_icon = 'fa-archive';
+
     /**
      * Create a new controller instance.
      *
@@ -32,10 +46,9 @@ class AdminController extends Controller
 //            if(!is_null(Auth::user())) {
 
 
-                $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'icon-home4']);
-            $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'icon-home4']);
-            $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'icon-home4']);
-            $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'icon-home4']);
+            $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'fa fa-home']);
+
+            $menu->add('Users', ['route' => 'admin.users.index', 'icon' => 'fa fa-user']);
 
 //                $menu->add('Společnosti', ['route' => 'admin.companies.index', 'icon' => 'icon-store']);
 //
@@ -49,6 +62,15 @@ class AdminController extends Controller
 
 //            }
 
+        });
+
+        // share page title and description with view
+        View::composer('*', function($view){
+            $view->page_title = $this->page_title;
+            $view->page_description = $this->page_description;
+            $view->page_icon = $this->page_icon;
+
+            $view->country = config('loreal.country');
         });
 
     }

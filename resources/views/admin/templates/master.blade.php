@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cz">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,15 +11,19 @@
     <title>{{ config('app.name', 'EET') }} {{ $page_title or '' }}</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
-    {!! HTML::style( asset("/assets/admin/css/app.css") ) !!}
-    {!! HTML::style( asset("/assets/admin/css/bootstrap.min.css") ) !!}
 
+    {!! HTML::style( asset("/assets/admin/css/bootstrap/bootstrap.min.css") ) !!}
+    {{--{!! HTML::style( asset("/assets/admin/css/font-awesome.min.css") ) !!}--}}
+    {!! HTML::style( asset("/assets/admin/css/app.css") ) !!}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     {!! HTML::style( asset("/assets/admin/css/style.css") ) !!}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css"/>
+
 
     @yield('head_css')
 
     <!-- Scripts -->
+    {!! HTML::script( asset("/assets/admin/js/jquery.min.js") ) !!}
     @yield('head_js')
     <script>
         window.Laravel = <?php echo json_encode([
@@ -30,18 +34,16 @@
     @yield('head_extra')
 </head>
 
-<body>
+<body class="gray-bg">
 <div id="app">
+
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
 
                 <!-- Collapsed Hamburger -->
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
                 </button>
 
                 <!-- Branding Image -->
@@ -89,13 +91,33 @@
         </div>
     </nav>
 
-    @yield('content')
+    <div class="container first-container">
+        <div class="page-header">
+            <h3><i class="fa {{ $page_icon or '' }} position-left"></i> <span class="text-semibold">{{ $page_title or '' }}</span> @if(!empty($page_description)) - @endif {{ $page_description or '' }}</h3>
+
+        </div>
+
+        {{--<div class="content-box">--}}
+            @yield('content')
+        {{--</div>--}}
+
+
+    </div>
+
 </div>
 
 <!-- Scripts -->
 
-{!! HTML::script( asset("/assets/admin/js/jquery-3.1.1.min.js") ) !!}
+{{--{!! HTML::script( asset("/assets/admin/js/jquery-3.1.1.min.js") ) !!}--}}
 {!! HTML::script( asset("/assets/admin/js/bootstrap.min.js") ) !!}
-{!! HTML::script( asset("/assets/admin/js/app.js") ) !!}
+{{--{!! HTML::script( asset("/assets/admin/js/app.js") ) !!}--}}
+
+<script>
+    jQuery(document).ready(function() {
+        {{--@include('flash::message')--}}
+        @yield('jquery_ready')
+    });
+</script>
+
 </body>
 </html>
