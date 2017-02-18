@@ -48,16 +48,20 @@ class AdminController extends Controller
 
             $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'fa fa-home']);
 
-            $menu->add('Users', ['route' => 'admin.users.index', 'icon' => 'fa fa-user']);
+            $menu->add('Užívatelia', ['route' => 'admin.users.index', 'icon' => 'fa fa-user']);
 
-//                $menu->add('Společnosti', ['route' => 'admin.companies.index', 'icon' => 'icon-store']);
+            $menu->add('Spoločnosti', ['route' => 'admin.companies.index', 'icon' => 'fa fa-building']);
+
+            $menu->add('Tržby', ['route' => 'admin.sales.index', 'icon' => 'fa fa-money']);
+
+            $menu->add('Poznámky', ['route' => 'admin.notes.index', 'icon' => 'fa fa-sticky-note']);
 //
 //
 //
-                $menu->add('Uživatelé', ['icon' => 'icon-user']);
-                $menu->item('uzivatele')->add('Technici', ['route' => ['admin.dashboard']]);
-                $menu->item('uzivatele')->add('Zákazníci', ['route' => ['admin.dashboard']]);
-                $menu->item('uzivatele')->add('Administrátoři', ['route' => ['admin.dashboard']]);
+//            $menu->add('Uživatelé', ['icon' => 'icon-user']);
+//            $menu->item('uzivatele')->add('Technici', ['route' => ['admin.dashboard']]);
+//            $menu->item('uzivatele')->add('Zákazníci', ['route' => ['admin.dashboard']]);
+//            $menu->item('uzivatele')->add('Administrátoři', ['route' => ['admin.dashboard']]);
 
 
 //            }

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Models\Companies\Companies;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Flash;

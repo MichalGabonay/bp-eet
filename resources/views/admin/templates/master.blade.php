@@ -37,7 +37,7 @@
 <body class="gray-bg">
 <div id="app">
 
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-static-top fixed">
         <div class="container">
             <div class="navbar-header">
 
@@ -114,6 +114,14 @@
 
 <script>
     jQuery(document).ready(function() {
+//        $(window).scroll(function(){
+//            var sticky = $('.sticky'),
+//                    scroll = $(window).scrollTop();
+//
+//            if (scroll >= 100) sticky.addClass('fixed');
+//            else sticky.removeClass('fixed');
+//        });
+
         {{--@include('flash::message')--}}
         @yield('jquery_ready')
     });

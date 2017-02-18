@@ -18,6 +18,7 @@ class CreateCertsTable extends Migration
             $table->string('name');
             $table->string('destination');
             $table->boolean('valid')->default(false);
+            $table->date('expiration_date');
 
             $table->softDeletes();
             $table->timestamps();
