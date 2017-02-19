@@ -96,7 +96,20 @@
             <h3><i class="fa {{ $page_icon or '' }} position-left"></i> <span class="text-semibold">{{ $page_title or '' }}</span> @if(!empty($page_description)) - @endif {{ $page_description or '' }}</h3>
 
         </div>
+        {{--<div class="breadcrumb-line">--}}
+            <ul class="breadcrumb">
+                <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home position-left"></i> Home</a></li>
+                <li class="active">{{ $page_title or "Page Title" }}</li>
+            </ul>
 
+            <ul class="breadcrumb-elements">
+                @yield('breadcrumb-elements')
+            </ul>
+        <br>
+            <hr class="margin-left-right">
+        {{--</div>--}}
+        @include('admin.partials._errors')
+        @include('flash::message')
         {{--<div class="content-box">--}}
             @yield('content')
         {{--</div>--}}
@@ -122,7 +135,7 @@
 //            else sticky.removeClass('fixed');
 //        });
 
-        {{--@include('flash::message')--}}
+
         @yield('jquery_ready')
     });
 </script>

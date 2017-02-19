@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Lavary\Menu\ServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class,
 
     ],
 
@@ -230,7 +231,6 @@ return [
         'Menu' => Lavary\Menu\Facade::class,
         'Form' => Collective\Html\FormFacade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
-
+        'Flash' => Laracasts\Flash\Flash::class,
     ],
-
 ];

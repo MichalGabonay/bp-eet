@@ -70,3 +70,32 @@
     position: fixed;
     top:0; left:0;
     width: 100%; }
+
+.page-header{
+    margin: 15px 15px 0 15px;
+    border-color: #d4d4d4;
+}
+
+.breadcrumb-line{
+    border-bottom: 1px solid #eee;
+}
+
+.breadcrumb{
+    margin-right: 0;
+    margin-bottom: 0;
+    float: left;
+}
+
+.breadcrumb-elements{
+    float: right;
+    margin: 0;
+    padding: 8px 15px;
+    list-style: none;
+    border-top: 0;
+}
+
+.margin-left-right{
+    margin-left: 15px;
+    margin-right: 15px;
+    border-color: #d4d4d4;
+}

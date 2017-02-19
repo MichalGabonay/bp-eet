@@ -16,7 +16,7 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->unsignedInteger('cert_id')->references('id')->on('certs');
+            $table->unsignedInteger('cert_id')->references('id')->on('certs')->default(null);
             $table->string('ico');
             $table->string('dic');
             $table->string('logo');

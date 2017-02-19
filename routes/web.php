@@ -43,12 +43,12 @@ Route::group(['prefix' => 'users'], function () {
 //Companies
 Route::group(['prefix' => 'companies'], function () {
     Route::get('', ['as' => 'admin.companies.index', 'uses' => 'Admin\CompaniesController@index']);
-//    Route::get('create', ['as' => 'admin.companies.create', 'uses' => 'Admin\CompaniesController@create']);
-//    Route::post('store', ['as' => 'admin.companies.store', 'uses' => 'Admin\CompaniesController@store']);
-//    Route::get('{id}/edit', ['as' => 'admin.companies.edit', 'uses' => 'Admin\CompaniesController@edit']);
-//    Route::patch('{id}/update', ['as' => 'admin.companies.update', 'uses' => 'Admin\CompaniesController@update']);
-//    Route::get('{id}/detail', ['as' => 'admin.companies.detail', 'uses' => 'Admin\CompaniesController@detail']);
-//    Route::get('{id}/delete', ['as' => 'admin.companies.delete', 'uses' => 'Admin\CompaniesController@delete']);
+    Route::get('create', ['as' => 'admin.companies.create', 'uses' => 'Admin\CompaniesController@create']);
+    Route::post('store', ['as' => 'admin.companies.store', 'uses' => 'Admin\CompaniesController@store']);
+    Route::get('{id}/edit', ['as' => 'admin.companies.edit', 'uses' => 'Admin\CompaniesController@edit']);
+    Route::patch('{id}/update', ['as' => 'admin.companies.update', 'uses' => 'Admin\CompaniesController@update']);
+    Route::get('{id}/detail', ['as' => 'admin.companies.detail', 'uses' => 'Admin\CompaniesController@detail']);
+    Route::get('{id}/delete', ['as' => 'admin.companies.delete', 'uses' => 'Admin\CompaniesController@delete']);
 });
 
 //Sales
