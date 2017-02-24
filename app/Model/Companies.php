@@ -44,7 +44,18 @@ class Companies extends Model
      */
     public function getAll()
     {
-        return $this->select($this->table . '.*')->orderBy($this->table . '.name', 'ASC');
+        return $this->select($this->table . '.*');
+    }
+
+    /**
+     * Get all companies
+     *
+     * @return Companies
+     */
+    public function getAllWithUserInfo()
+    {
+        return $this->select($this->table . '.*', 'user_company.user_id')
+            ->leftJoin('user_company', 'company_id', '=', $this->table . '.id');
     }
 
 

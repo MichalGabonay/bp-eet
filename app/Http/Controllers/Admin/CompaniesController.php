@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Model\Companies;
+use App\Model\Roles;
+use App\Model\UsersCompanyRole;
+use App\User;
+use App\Model\UsersCompany;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use Flash;
@@ -33,11 +37,14 @@ class CompaniesController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(UsersCompany $usersCompany)
     {
         $this->page_description = "prehlad";
 
         $companies = $this->companies->getAll()->get();
+        foreach($companies as $c){
+            $c->users = $usersCompany->getUsersFromCompany($c->id)->count();
+        }
         return view('admin.companies.index', compact('companies'));
     }
 
@@ -105,13 +112,33 @@ class CompaniesController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, UsersCompany $usersCompany, Roles $roles, User $all_users, UsersCompanyRole $usersCompanyRole)
     {
         $this->page_description = 'upraviť';
 
         $companies = $this->companies->findOrFail($id);
+        $users_in = $usersCompany->getUsersFromCompany($id);
+        $roles = $roles->getAll();
+        $all_users = $all_users->getAll();
 
-        return view('admin.companies.edit', compact('companies'));
+        $usersCompanyRole = $usersCompanyRole->getAll()->get();
+
+//        dd($usersCompanyRole);
+
+        foreach($users_in as $u){
+            foreach($roles as $r){
+                $users_role[$u->id][$r->id] = false;
+            }
+            foreach($usersCompanyRole as $ucr){
+                if($ucr->user_company_id == $u->id){
+                    $users_role[$u->id][$ucr->role_id] = true;
+                }
+            }
+        }
+
+//        $users_role[][];
+
+        return view('admin.companies.edit', compact('companies', 'users_in', 'roles', 'all_users', 'users_role'));
     }
 
     /**

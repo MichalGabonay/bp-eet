@@ -32,12 +32,13 @@ Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardCo
 //Users
 Route::group(['prefix' => 'users'], function () {
     Route::get('', ['as' => 'admin.users.index', 'uses' => 'Admin\Users\UsersController@index']);
-//    Route::get('create', ['as' => 'admin.user.create', 'uses' => 'Admin\Users\UsersController@create']);
-//    Route::post('store', ['as' => 'admin.user.store', 'uses' => 'Admin\Users\UsersController@store']);
-//    Route::get('{id}/edit', ['as' => 'admin.user.edit', 'uses' => 'Admin\Users\UsersController@edit']);
-//    Route::patch('{id}/update', ['as' => 'admin.user.update', 'uses' => 'Admin\Users\UsersController@update']);
-//    Route::get('{id}/detail', ['as' => 'admin.user.detail', 'uses' => 'Admin\Users\UsersController@detail']);
-//    Route::get('{id}/delete', ['as' => 'admin.user.delete', 'uses' => 'Admin\Users\UsersController@delete']);
+    Route::get('create', ['as' => 'admin.users.create', 'uses' => 'Admin\Users\UsersController@create']);
+    Route::post('store', ['as' => 'admin.users.store', 'uses' => 'Admin\Users\UsersController@store']);
+    Route::get('{id}/edit', ['as' => 'admin.users.edit', 'uses' => 'Admin\Users\UsersController@edit']);
+    Route::patch('{id}/update', ['as' => 'admin.users.update', 'uses' => 'Admin\Users\UsersController@update']);
+    Route::get('{id}/detail', ['as' => 'admin.users.detail', 'uses' => 'Admin\Users\UsersController@detail']);
+    Route::get('{id}/delete', ['as' => 'admin.users.delete', 'uses' => 'Admin\Users\UsersController@delete']);
+    Route::get('{user_id}/company/{company_id}', ['as' => 'admin.users.company_state', 'uses' => 'Admin\Users\UsersController@switchCompanyState']);
 });
 
 //Companies
@@ -87,12 +88,14 @@ Route::group(['prefix' => 'certs'], function () {
 //Roles
 Route::group(['prefix' => 'roles'], function () {
     Route::get('', ['as' => 'admin.roles.index', 'uses' => 'Admin\RolesController@index']);
-//    Route::get('create', ['as' => 'admin.roles.create', 'uses' => 'Admin\CompaniesController@create']);
-//    Route::post('store', ['as' => 'admin.roles.store', 'uses' => 'Admin\CompaniesController@store']);
-//    Route::get('{id}/edit', ['as' => 'admin.roles.edit', 'uses' => 'Admin\CompaniesController@edit']);
-//    Route::patch('{id}/update', ['as' => 'admin.roles.update', 'uses' => 'Admin\CompaniesController@update']);
-//    Route::get('{id}/detail', ['as' => 'admin.roles.detail', 'uses' => 'Admin\CompaniesController@detail']);
-//    Route::get('{id}/delete', ['as' => 'admin.roles.delete', 'uses' => 'Admin\CompaniesController@delete']);
+    Route::get('switch-role/{u_c_id}/{role_id}/{type}', ['as' => 'admin.roles.switch-role', 'uses' => 'Admin\RolesController@switchRoleUC']);
+
+    Route::get('create', ['as' => 'admin.roles.create', 'uses' => 'Admin\CompaniesController@create']);
+    Route::post('store', ['as' => 'admin.roles.store', 'uses' => 'Admin\CompaniesController@store']);
+    Route::get('{id}/edit', ['as' => 'admin.roles.edit', 'uses' => 'Admin\CompaniesController@edit']);
+    Route::patch('{id}/update', ['as' => 'admin.roles.update', 'uses' => 'Admin\CompaniesController@update']);
+    Route::get('{id}/detail', ['as' => 'admin.roles.detail', 'uses' => 'Admin\CompaniesController@detail']);
+    Route::get('{id}/delete', ['as' => 'admin.roles.delete', 'uses' => 'Admin\CompaniesController@delete']);
 });
 
 //

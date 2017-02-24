@@ -102,8 +102,8 @@
                 <li class="active">{{ $page_title or "Page Title" }}</li>
             </ul>
 
-            <ul class="breadcrumb-elements">
-                @yield('breadcrumb-elements')
+            <ul class="breadcrumb-right">
+                @yield('breadcrumb-right')
             </ul>
         <br>
             <hr class="margin-left-right">

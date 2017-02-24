@@ -9,6 +9,8 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,4 +28,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get all users
+     *
+     * @return User
+     */
+    public function getAll()
+    {
+        return $this->select($this->table . '.*')->orderBy($this->table . '.name', 'ASC');
+    }
+
+
 }

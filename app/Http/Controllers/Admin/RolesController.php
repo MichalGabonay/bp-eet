@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\UsersCompany;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use Flash;
 use Auth;
+use App\Model\Roles;
+use App\Model\UsersCompanyRole;
 
 class RolesController extends AdminController
 {
@@ -95,5 +98,31 @@ class RolesController extends AdminController
     public function delete($id)
     {
         //
+    }
+
+    public function switchRoleUC($u_c_id, $role_id, $type, UsersCompanyRole $usersCompanyRole, UsersCompany $usersCompany){
+
+        $usersCompany = $usersCompany->findOrFail($u_c_id);
+        $u_c_r = $usersCompanyRole->getUserCompanyRoleId($u_c_id, $role_id);
+
+        if($u_c_r->first() == null){
+            $store = $usersCompanyRole->create([
+                'user_company_id' => $u_c_id,
+                'role_id' => $role_id
+            ]);
+
+            Flash::success('Užívatelovi bola pridaná rola!');
+        }else{
+//            dd($u_c_r);
+            $usersCompanyRole = $usersCompanyRole->findOrFail($u_c_r->first()->id);
+            $usersCompanyRole->delete();
+
+            Flash::success('Užívatelovi bola odobraná rola!');
+        }
+
+        if($type == 'companies')
+            return redirect(route('admin.companies.edit', $usersCompany->company_id)); //TODO: edit - #users_tab
+        else
+            return redirect(route('admin.users.edit', $usersCompany->user_id)); //TODO: edit - #companies_tab
     }
 }

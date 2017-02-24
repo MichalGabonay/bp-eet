@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersRoleCompanyTable extends Migration
+class CreateUserCompanyRoleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateUsersRoleCompanyTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_role_company', function (Blueprint $table) {
+        Schema::create('user_company_role', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->references('id')->on('users');
-            $table->unsignedInteger('company_id')->references('id')->on('companies');
-
+            $table->unsignedInteger('user_company_id')->references('id')->on('user_company');
+            $table->unsignedInteger('role_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateUsersRoleCompanyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_role_company');
+        Schema::dropIfExists('user_company_role');
     }
 }
