@@ -107,6 +107,14 @@
             </ul>
         <br>
             <hr class="margin-left-right">
+
+        <div class="row">
+            <div class="col-md-12">
+                @yield('top-buttons')
+            </div>
+
+        </div>
+
         {{--</div>--}}
         @include('admin.partials._errors')
         @include('flash::message')

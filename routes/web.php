@@ -49,6 +49,7 @@ Route::group(['prefix' => 'companies'], function () {
     Route::get('{id}/edit', ['as' => 'admin.companies.edit', 'uses' => 'Admin\CompaniesController@edit']);
     Route::patch('{id}/update', ['as' => 'admin.companies.update', 'uses' => 'Admin\CompaniesController@update']);
     Route::get('{id}/detail', ['as' => 'admin.companies.detail', 'uses' => 'Admin\CompaniesController@detail']);
+    Route::post('{id}/add-cert', ['as' => 'admin.companies.add_cert', 'uses' => 'Admin\CompaniesController@addCert']);
     Route::get('{id}/delete', ['as' => 'admin.companies.delete', 'uses' => 'Admin\CompaniesController@delete']);
 });
 

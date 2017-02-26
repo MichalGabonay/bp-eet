@@ -11,17 +11,17 @@
                 <th>Meno</th>
                 <th>E-mail</th>
                 <th>Užívatelské meno</th>
-                <th>Priradených spoločností</th>
+                {{--<th>Priradených spoločností</th>--}}
                 <th width="120" class="text-center">Akcie</th>
             </tr>
             </thead>
             <tbody>
             @foreach($users as $u)
-                <tr >
+                <tr id="{{$u->id}}">
                     <td>{{$u->name or '-'}}</td>
                     <td>{{$u->email or '-'}}</td>
                     <td>{{$u->username or '-'}}</td>
-                    <td><a href="{{ route('admin.users.edit', $u->id) }}">{{$u->companies_count or '-'}}</a></td> {{--TODO: edit - #tab_companies--}}
+                    {{--<td><a href="{{ route('admin.users.edit', $u->id) }}">{{$u->companies_count or '-'}}</a></td> --}}{{--TODO: edit - #tab_companies--}}
                     <td class="text-center">
                         <a href="{{ route('admin.users.edit', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
                         <a class="sweet_delete" href="{{ route('admin.users.delete', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Smazat"><i class="fa fa-trash"></i></a>
@@ -46,6 +46,13 @@
 
         $('.datatable-sorting').DataTable({
             order: [0, "asc"]
+        });
+
+        $(document).ready(function(){
+            $(".datatable-sorting tbody").delegate("tr", "click", function(){
+                var id = $(this).attr('id');
+                window.location.href = '{{ url('') }}/users/' + id + '/detail';
+            });
         });
 
 

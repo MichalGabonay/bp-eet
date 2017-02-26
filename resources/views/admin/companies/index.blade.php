@@ -16,9 +16,9 @@
             </thead>
             <tbody>
             @foreach($companies as $c)
-            <tr >
+            <tr id="{{$c->id}}">
                 <td width="140">{{$c->name or '-'}}</td>
-                <td><a href="{{ route('admin.companies.edit', $c->id) }}">{{$c->users or '-'}}</a></td> {{--TODO: edit - #tab_users--}}
+                <td>{{$c->users or '-'}}</td>
 
                 <td>{{$c->cert or '-'}}</td>
                 <td class="text-center">
@@ -47,5 +47,11 @@
             order: [0, "asc"]
         });
 
+        $(document).ready(function(){
+            $(".datatable-sorting tbody").delegate("tr", "click", function(){
+                var id = $(this).attr('id');
+                window.location.href = '{{ url('') }}/companies/' + id + '/detail';
+            });
+        });
 
 @endsection

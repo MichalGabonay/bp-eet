@@ -99,3 +99,7 @@
     margin-right: 15px;
     border-color: #d4d4d4;
 }
+
+.table-hover-hand {
+    cursor: pointer;
+}

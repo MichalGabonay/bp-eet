@@ -103,22 +103,11 @@ class UsersController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function detail($id)
+    public function detail($id, Companies $companies, Roles $roles, UsersCompany $usersCompany, UsersCompanyRole $usersCompanyRole)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id, Companies $companies, Roles $roles, UsersCompany $usersCompany, UsersCompanyRole $usersCompanyRole)
-    {
-        $this->page_description = 'upraviť';
-
         $users = $this->users->findOrFail($id);
+
+        $this->page_description = 'detail';
 
         $companies = $companies->getAll()->get();
         $user_in_companies = $usersCompany->getCompaniesUserIn($id);
@@ -128,6 +117,8 @@ class UsersController extends AdminController
         $roles = $roles->getAll();
 
 //        dd($user_in_companies);
+
+        $users_role = null;
 
         foreach($companies as $c){
             $in_com = 0;
@@ -154,10 +145,22 @@ class UsersController extends AdminController
             }
         }
 
-//        dd($users_role);
+        return view('admin.users.detail', compact('users', 'companies', 'roles', 'users_role'));
+    }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $this->page_description = 'upraviť';
 
-        return view('admin.users.edit', compact('users', 'companies', 'roles', 'users_role'));
+        $users = $this->users->findOrFail($id);
+
+        return view('admin.users.edit', compact('users'));
     }
 
     /**
@@ -225,7 +228,7 @@ class UsersController extends AdminController
             ]);
         }
 
-        return redirect(route('admin.users.edit', $user_id));
+        return redirect(route('admin.users.detail', $user_id));
 
     }
 

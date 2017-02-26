@@ -39,24 +39,32 @@
         <table class="table datatable-sorting table-hover table-hover-hand">
             <thead>
             <tr>
-                <th width="140">Kód</th>
-                <th>Typ zařízení</th>
-                <th>Firma</th>
+                <th width="140">nieco 1</th>
+                <th>nieco 2</th>
+                <th>noeco 3</th>
                 {{--<th>Uvedeno do provozu / rok výroby</th>--}}
-                <th>Simpati</th>
+                <th>nieco 4</th>
                 <th width="120" class="text-center">Akce</th>
             </tr>
             </thead>
             <tbody>
             {{--@foreach($products as $p)--}}
                 <tr >
-                    <td width="140">Kód</td>
-                    <td>Typ zařízení</td>
-                    <td>Firma</td>
+                    <td width="140">dsagsg</td>
+                    <td>asdg</td>
+                    <td>sadg</td>
                     {{--<th>Uvedeno do provozu / rok výroby</th>--}}
-                    <td>Simpati</td>
-                    <td width="120" class="text-center">Akce</td>
+                    <td>sadgsdag</td>
+                    <td width="120" class="text-center">E/D</td>
                 </tr>
+            <tr >
+                <td width="140">dsagsg</td>
+                <td>asdg</td>
+                <td>sadg</td>
+                {{--<th>Uvedeno do provozu / rok výroby</th>--}}
+                <td>sadgsdag</td>
+                <td width="120" class="text-center">E/D</td>
+            </tr>
             {{--@endforeach--}}
             </tbody>
         </table>

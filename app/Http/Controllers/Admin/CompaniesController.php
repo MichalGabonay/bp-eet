@@ -90,9 +90,23 @@ class CompaniesController extends AdminController
 //            }
 //        }
 
+        $company = $this->companies->findOrFail($store->id);
+
         Flash::success('Společnost bola úspešne vytvorená!');
 
-        return redirect(route('admin.companies.index'));
+        return view('admin.companies.cert', compact('company'));
+    }
+
+    /**
+     *Add of certificate for company.
+     *
+     * @param  int  $company_id
+     * @return \Illuminate\Http\Response
+     */
+    public function addCert(Request $request, $company_id){
+
+//        Flash::success('Spoločnosť bola úspešne upravená!');
+        return redirect(route('admin.companies.detail', $company_id));
     }
 
     /**
@@ -101,9 +115,33 @@ class CompaniesController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function detail($id)
+    public function detail($id, Roles $roles, UsersCompany $usersCompany, User $all_users, UsersCompanyRole $usersCompanyRole)
     {
-        //
+        $company = $this->companies->findOrFail($id);
+        $this->page_description = 'detail - ' . $company->name;
+
+        $company->users = $usersCompany->getUsersFromCompany($company->id)->count();
+
+        $users_in = $usersCompany->getUsersFromCompany($id);
+        $roles = $roles->getAll();
+        $all_users = $all_users->getAll();
+
+        $usersCompanyRole = $usersCompanyRole->getAll()->get();
+
+//        dd($usersCompanyRole);
+
+        foreach($users_in as $u){
+            foreach($roles as $r){
+                $users_role[$u->id][$r->id] = false;
+            }
+            foreach($usersCompanyRole as $ucr){
+                if($ucr->user_company_id == $u->id){
+                    $users_role[$u->id][$ucr->role_id] = true;
+                }
+            }
+        }
+
+        return view('admin.companies.detail', compact('company', 'users_in', 'roles', 'all_users', 'users_role'));
     }
 
     /**
@@ -136,9 +174,11 @@ class CompaniesController extends AdminController
             }
         }
 
+        $company_id = $companies->id;
+
 //        $users_role[][];
 
-        return view('admin.companies.edit', compact('companies', 'users_in', 'roles', 'all_users', 'users_role'));
+        return view('admin.companies.edit', compact('companies', 'users_in', 'roles', 'all_users', 'users_role', 'company_id'));
     }
 
     /**

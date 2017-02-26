@@ -121,8 +121,8 @@ class RolesController extends AdminController
         }
 
         if($type == 'companies')
-            return redirect(route('admin.companies.edit', $usersCompany->company_id)); //TODO: edit - #users_tab
+            return redirect(route('admin.companies.detail', $usersCompany->company_id));
         else
-            return redirect(route('admin.users.edit', $usersCompany->user_id)); //TODO: edit - #companies_tab
+            return redirect(route('admin.users.detail', $usersCompany->user_id));
     }
 }
