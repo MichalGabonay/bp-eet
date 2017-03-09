@@ -14,7 +14,6 @@ class Controller extends BaseController
 
 
     public function redirect() {
-//        return redirect()->away('http://servis.holab.cz');
         if (Auth::check())
         {
             return redirect(route('admin.dashboard'));

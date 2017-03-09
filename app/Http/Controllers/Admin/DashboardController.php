@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Companies;
+use App\Model\UsersCompany;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Flash;
@@ -19,6 +21,12 @@ class DashboardController extends AdminController
     public function __construct(Request $request)
     {
         parent::__construct($request);
+
+        $this->middleware(function ($request, $next) {
+
+            return $next($request);
+        });
+
         $this->page_title = 'Dashboard';
         $this->page_icon = 'fa-home';
     }
@@ -40,9 +48,18 @@ class DashboardController extends AdminController
         }
     }
 
-    public function index() {
+    public function index(Companies $companies, UsersCompany $usersCompany) {
 
-        return view('admin.dashboard');
+//        dd(session()->all());
+//        dd(session('selectedCompany'));
+        if (session('selectedCompany') != null)
+            $selected_company = $companies->findOrFail(session('selectedCompany'));
+        else
+            $selected_company = null;
+
+        $usersCompany = $usersCompany->getCompaniesUserIn(Auth::user()->id);
+
+        return view('admin.dashboard', compact('selected_company', 'usersCompany'));
 
     }
 }

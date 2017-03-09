@@ -26,7 +26,7 @@ class UsersCompanyRole extends Model
     }
 
     /**
-     * Get all companies
+     * Get role id
      *
      * @return Companies
      */
@@ -37,4 +37,18 @@ class UsersCompanyRole extends Model
             ->where($this->table .'.role_id', $role_id)
             ->get();
     }
+
+    /**
+     * Get all user company roles
+     *
+     * @return Companies
+     */
+    public function getAllUserCompanyRoles($user_company_id)
+    {
+        return $this->select($this->table . '.*')
+            ->where($this->table .'.user_company_id', $user_company_id)
+            ->get();
+    }
+
+
 }

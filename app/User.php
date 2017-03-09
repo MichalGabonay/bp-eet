@@ -29,6 +29,14 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function getFirstCompany($userId){
+        return $this->select('user_company.id','user_company.company_id')
+            ->where($this->table . '.id', $userId)
+            ->leftJoin('user_company', 'user_company.user_id', '=', $this->table . '.id')
+            ->where('user_company.enabled', 1)
+            ->first();
+    }
+
     /**
      * Get all users
      *

@@ -37,9 +37,10 @@ class UsersCompany extends Model
 
     public function getCompaniesUserIn($user_id)
     {
-        return $this->select($this->table . '.*')
+        return $this->select($this->table . '.*', 'companies.name')
             ->where($this->table .'.user_id', $user_id)
             ->where($this->table .'.enabled', 1)
+            ->leftJoin('companies', 'companies.id', '=', $this->table . '.company_id')
             ->get();
     }
 }

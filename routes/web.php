@@ -28,6 +28,7 @@ Auth::routes();
 
 Route::get('home', ['as' => 'home', 'uses' => 'HomeController@index']);
 Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
+Route::get('select-company/{company_id?}', ['as' => 'admin.select_company', 'uses' => 'Admin\AdminController@changeSelectedCompany']);
 
 //Users
 Route::group(['prefix' => 'users'], function () {
