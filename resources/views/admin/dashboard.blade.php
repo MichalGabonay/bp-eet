@@ -24,11 +24,13 @@
                 <div class="panel-heading">
                     <h3><u>Vybraná firma</u></h3>
                     <h4>{{$selected_company->name}}</h4>
+                    @if(session('isAdmin'))
                     {{--TODO: len ak admin alebo manazer--}}
                     <div class="cert_stats">
                         <b>Platnosť certifikátu:</b> áno/nie <br>
                         <b>Vyprší dňa:</b> 01.01.2020
                     </div>
+                    @endif
 
                 </div>
                 <div class="panel-body">
@@ -36,6 +38,7 @@
                 </div>
             </div>
         </div>
+        @if(count($usersCompany) != 1)
         <div class="col-md-6">
             <div class="panel panel-flat">
                 <div class="panel-heading">
@@ -55,9 +58,11 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 
 
+    @if(session('isAdmin') || session('isManager'))
     <div class="panel panel-flat">
         <table class="table datatable-sorting table-hover table-hover-hand">
             <thead>
@@ -92,6 +97,7 @@
             </tbody>
         </table>
     </div>
+    @endif
 
     <div class="panel panel-flat">
         <div class="panel-heading">

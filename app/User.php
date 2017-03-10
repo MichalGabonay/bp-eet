@@ -47,5 +47,20 @@ class User extends Authenticatable
         return $this->select($this->table . '.*')->orderBy($this->table . '.name', 'ASC');
     }
 
+    /**
+     * Get all users from companies
+     *
+     * @return User
+     */
+    public function getAllFromCompanies($companies_ids)
+    {
+        return $this->select($this->table . '.*')
+            ->leftJoin('user_company', 'user_company.user_id', '=', $this->table . '.id')
+            ->where('enabled', 1)
+            ->wherein('company_id', $companies_ids)
+            ->distinct()
+            ->get();
+    }
+
 
 }

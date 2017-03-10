@@ -48,6 +48,21 @@ class Companies extends Model
     }
 
     /**
+     * Get all companies where is logged user admin
+     *
+     * @return Companies
+     */
+    public function getAllWhereAdmin($user_id)
+    {
+        return $this->select($this->table . '.*')
+            ->leftJoin('user_company', 'company_id', '=', $this->table . '.id')
+            ->where('user_company.user_id', $user_id)
+            ->leftJoin('user_company_role', 'user_company_id', '=', 'user_company.id')
+            ->where('role_id', 1)
+            ->get();
+    }
+
+    /**
      * Get all companies
      *
      * @return Companies

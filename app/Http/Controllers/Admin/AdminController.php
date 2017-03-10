@@ -41,43 +41,33 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-//            $this->setSelectedCompany();
-//
+            Menu::make('MyNavBar', function($menu) {
+                $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'fa fa-home']);
 
-//        dd($this->selectedCompany);
-//        dd($user->getFirstCompany(1)->company_id);
-//        $this->setSelectedCompany(1);
+                if(session('isAdmin'))
+                    $menu->add('Užívatelia', ['route' => 'admin.users.index', 'icon' => 'fa fa-user']);
 
+                if(session('isAdmin'))
+                    $menu->add('Spoločnosti', ['route' => 'admin.companies.index', 'icon' => 'fa fa-building']);
 
+                if(session('isAdmin') || session('isManager') || session('isCashier'))
+                    $menu->add('Tržby', ['route' => 'admin.sales.index', 'icon' => 'fa fa-money']);
 
-        Menu::make('MyNavBar', function($menu) {
+                if(session('isAdmin') || session('isManager'))
+                    $menu->add('Poznámky', ['route' => 'admin.notes.index', 'icon' => 'fa fa-sticky-note']);
 
-//            $user = new User();
-//            if(!is_null(Auth::user())) {
+                if(session('isAdmin') || session('isManager'))
+                    $menu->add('Import', ['route' => 'admin.import.index', 'icon' => 'fa fa-download']);
 
+                if(session('isAdmin') || session('haveExport'))
+                    $menu->add('Export', ['route' => 'admin.export.index', 'icon' => 'fa fa-upload']);
+    //
+    //            $menu->add('Uživatelé', ['icon' => 'fa fa-user']);
+    //            $menu->item('uzivatele')->add('1', ['route' => ['admin.dashboard']]);
+    //            $menu->item('uzivatele')->add('2', ['route' => ['admin.dashboard']]);
+    //            $menu->item('uzivatele')->add('3', ['route' => ['admin.dashboard']]);
 
-            $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'fa fa-home']);
-
-            if(session('isAdmin') == true)
-            $menu->add('Užívatelia', ['route' => 'admin.users.index', 'icon' => 'fa fa-user']);
-
-            $menu->add('Spoločnosti', ['route' => 'admin.companies.index', 'icon' => 'fa fa-building']);
-
-            $menu->add('Tržby', ['route' => 'admin.sales.index', 'icon' => 'fa fa-money']);
-
-            $menu->add('Poznámky', ['route' => 'admin.notes.index', 'icon' => 'fa fa-sticky-note']);
-//
-//
-//
-//            $menu->add('Uživatelé', ['icon' => 'icon-user']);
-//            $menu->item('uzivatele')->add('Technici', ['route' => ['admin.dashboard']]);
-//            $menu->item('uzivatele')->add('Zákazníci', ['route' => ['admin.dashboard']]);
-//            $menu->item('uzivatele')->add('Administrátoři', ['route' => ['admin.dashboard']]);
-
-
-//            }
-
-        });
+            });
 
             return $next($request);
         });
@@ -88,7 +78,6 @@ class AdminController extends Controller
             $view->page_description = $this->page_description;
             $view->page_icon = $this->page_icon;
         });
-
     }
 
     public function changeSelectedCompany(UsersCompanyRole $usersCompanyRole, UsersCompany $usersCompany, $company_id = null ){
@@ -103,7 +92,6 @@ class AdminController extends Controller
         ]);
 
         $user = new User();
-//        dd($company_id);
 
         if ($company_id == null){
             $user_company = $user->getFirstCompany(Auth::user()->id);
@@ -111,14 +99,12 @@ class AdminController extends Controller
             $user_company = $usersCompany->findUserCompany(Auth::user()->id, $company_id)->first();
         }
 
-
-
-//        dd($user_company);
         if ($user_company != null){
             session(['selectedCompany' => $user_company->company_id]);
             $roles_id = $usersCompanyRole->getAllUserCompanyRoles($user_company->id);
+
             foreach ($roles_id as $r){
-                switch ($r->id) {
+                switch ($r->role_id) {
                     case 1:
                         session(['isAdmin' => true]);
                         break;

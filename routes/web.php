@@ -57,34 +57,34 @@ Route::group(['prefix' => 'companies'], function () {
 //Sales
 Route::group(['prefix' => 'sales'], function () {
     Route::get('', ['as' => 'admin.sales.index', 'uses' => 'Admin\SalesController@index']);
-//    Route::get('create', ['as' => 'admin.sales.create', 'uses' => 'Admin\SalesController@create']);
-//    Route::post('store', ['as' => 'admin.sales.store', 'uses' => 'Admin\SalesController@store']);
-//    Route::get('{id}/edit', ['as' => 'admin.sales.edit', 'uses' => 'Admin\SalesController@edit']);
-//    Route::patch('{id}/update', ['as' => 'admin.sales.update', 'uses' => 'Admin\SalesController@update']);
-//    Route::get('{id}/detail', ['as' => 'admin.sales.detail', 'uses' => 'Admin\SalesController@detail']);
-//    Route::get('{id}/delete', ['as' => 'admin.sales.delete', 'uses' => 'Admin\SalesController@delete']);
+    Route::get('create', ['as' => 'admin.sales.create', 'uses' => 'Admin\SalesController@create']);
+    Route::post('store', ['as' => 'admin.sales.store', 'uses' => 'Admin\SalesController@store']);
+    Route::get('{id}/edit', ['as' => 'admin.sales.edit', 'uses' => 'Admin\SalesController@edit']);
+    Route::patch('{id}/update', ['as' => 'admin.sales.update', 'uses' => 'Admin\SalesController@update']);
+    Route::get('{id}/detail', ['as' => 'admin.sales.detail', 'uses' => 'Admin\SalesController@detail']);
+    Route::get('{id}/delete', ['as' => 'admin.sales.delete', 'uses' => 'Admin\SalesController@delete']);
 });
 
 //Notes
 Route::group(['prefix' => 'notes'], function () {
     Route::get('', ['as' => 'admin.notes.index', 'uses' => 'Admin\NotesController@index']);
-//    Route::get('create', ['as' => 'admin.notes.create', 'uses' => 'Admin\NotesController@create']);
-//    Route::post('store', ['as' => 'admin.notes.store', 'uses' => 'Admin\NotesController@store']);
-//    Route::get('{id}/edit', ['as' => 'admin.notes.edit', 'uses' => 'Admin\NotesController@edit']);
-//    Route::patch('{id}/update', ['as' => 'admin.notes.update', 'uses' => 'Admin\NotesController@update']);
-//    Route::get('{id}/detail', ['as' => 'admin.notes.detail', 'uses' => 'Admin\NotesController@detail']);
-//    Route::get('{id}/delete', ['as' => 'admin.notes.delete', 'uses' => 'Admin\NotesController@delete']);
+    Route::get('create', ['as' => 'admin.notes.create', 'uses' => 'Admin\NotesController@create']);
+    Route::post('store', ['as' => 'admin.notes.store', 'uses' => 'Admin\NotesController@store']);
+    Route::get('{id}/edit', ['as' => 'admin.notes.edit', 'uses' => 'Admin\NotesController@edit']);
+    Route::patch('{id}/update', ['as' => 'admin.notes.update', 'uses' => 'Admin\NotesController@update']);
+    Route::get('{id}/detail', ['as' => 'admin.notes.detail', 'uses' => 'Admin\NotesController@detail']);
+    Route::get('{id}/delete', ['as' => 'admin.notes.delete', 'uses' => 'Admin\NotesController@delete']);
 });
 
 //Certs
 Route::group(['prefix' => 'certs'], function () {
     Route::get('', ['as' => 'admin.certs.index', 'uses' => 'Admin\CertsController@index']);
-//    Route::get('create', ['as' => 'admin.certs.create', 'uses' => 'Admin\CertsController@create']);
-//    Route::post('store', ['as' => 'admin.certs.store', 'uses' => 'Admin\CertsController@store']);
-//    Route::get('{id}/edit', ['as' => 'admin.certs.edit', 'uses' => 'Admin\CertsController@edit']);
-//    Route::patch('{id}/update', ['as' => 'admin.certs.update', 'uses' => 'Admin\CertsController@update']);
-//    Route::get('{id}/detail', ['as' => 'admin.certs.detail', 'uses' => 'Admin\CertsController@detail']);
-//    Route::get('{id}/delete', ['as' => 'admin.certs.delete', 'uses' => 'Admin\CertsController@delete']);
+    Route::get('create', ['as' => 'admin.certs.create', 'uses' => 'Admin\CertsController@create']);
+    Route::post('store', ['as' => 'admin.certs.store', 'uses' => 'Admin\CertsController@store']);
+    Route::get('{id}/edit', ['as' => 'admin.certs.edit', 'uses' => 'Admin\CertsController@edit']);
+    Route::patch('{id}/update', ['as' => 'admin.certs.update', 'uses' => 'Admin\CertsController@update']);
+    Route::get('{id}/detail', ['as' => 'admin.certs.detail', 'uses' => 'Admin\CertsController@detail']);
+    Route::get('{id}/delete', ['as' => 'admin.certs.delete', 'uses' => 'Admin\CertsController@delete']);
 });
 
 //Roles
@@ -100,8 +100,17 @@ Route::group(['prefix' => 'roles'], function () {
     Route::get('{id}/delete', ['as' => 'admin.roles.delete', 'uses' => 'Admin\CompaniesController@delete']);
 });
 
-//
+//Import
+Route::group(['prefix' => 'import'], function () {
+    Route::get('', ['as' => 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
+    Route::post('submit', ['as' => 'admin.import.submit', 'uses' => 'Admin\ImportController@submit']);
+});
 
+//Export
+Route::group(['prefix' => 'export'], function () {
+    Route::get('', ['as' => 'admin.export.index', 'uses' => 'Admin\ExportController@index']);
+    Route::post('submit', ['as' => 'admin.export.submit', 'uses' => 'Admin\ExportController@submit']);
+});
 
 //
 

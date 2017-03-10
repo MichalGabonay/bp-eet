@@ -59,6 +59,8 @@ class DashboardController extends AdminController
 
         $usersCompany = $usersCompany->getCompaniesUserIn(Auth::user()->id);
 
+//        dd(count($usersCompany));
+
         return view('admin.dashboard', compact('selected_company', 'usersCompany'));
 
     }

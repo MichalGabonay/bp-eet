@@ -17,6 +17,16 @@ class SalesController extends AdminController
     public function __construct(Request $request)
     {
         parent::__construct($request);
+
+        $this->middleware(function ($request, $next) {
+
+            if (session('isAdmin') == false && session('isCashier') == false && session('isManager') == false){
+                return redirect(route('admin.dashboard'));
+            }
+
+            return $next($request);
+        });
+
         $this->page_title = 'Tržby';
         $this->page_icon = 'fa fa-money';
     }

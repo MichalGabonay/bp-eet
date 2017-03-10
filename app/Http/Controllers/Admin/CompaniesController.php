@@ -41,7 +41,8 @@ class CompaniesController extends AdminController
     {
         $this->page_description = "prehlad";
 
-        $companies = $this->companies->getAll()->get();
+        $companies = $this->companies->getAllWhereAdmin(Auth::user()->id);
+        
         foreach($companies as $c){
             $c->users = $usersCompany->getUsersFromCompany($c->id)->count();
         }
@@ -66,7 +67,7 @@ class CompaniesController extends AdminController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, UsersCompany $usersCompany, UsersCompanyRole $usersCompanyRole)
     {
         $this->validate($request,
             [
@@ -92,9 +93,23 @@ class CompaniesController extends AdminController
 
         $company = $this->companies->findOrFail($store->id);
 
+
+
+        $uc_store = $usersCompany->create([
+            'user_id' => Auth::user()->id,
+            'company_id' => $company->id,
+            'enabled' => 1
+        ]);
+
+        $usersCompanyRole->create([
+            'user_company_id' => $uc_store->id,
+            'role_id' => 1
+        ]);
+
         Flash::success('Společnost bola úspešne vytvorená!');
 
-        return view('admin.companies.cert', compact('company'));
+        return redirect(route('admin.companies.detail', $company->id));
+//        return view('admin.companies.cert', compact('company'));
     }
 
     /**

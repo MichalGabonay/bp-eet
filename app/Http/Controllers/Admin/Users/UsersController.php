@@ -24,6 +24,16 @@ class UsersController extends AdminController
     public function __construct(Request $request, User $user)
     {
         parent::__construct($request);
+
+        $this->middleware(function ($request, $next) {
+
+            if (session('isAdmin') == false){
+                return redirect(route('admin.dashboard'));
+            }
+
+            return $next($request);
+        });
+
         $this->users = $user;
         $this->page_title = 'Užívatelia';
         $this->page_icon = 'fa-user';
@@ -34,16 +44,18 @@ class UsersController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(UsersCompany $usersCompany)
+    public function index(UsersCompany $usersCompany, Companies $companies)
     {
         $this->page_description = "prehlad";
 
-        $users = $this->users->getAll()->get();
-        foreach($users as $u){
-            $company_count = $usersCompany->getCompaniesUserIn($u->id)->count();
-            $u->companies_count = $company_count;
+        $companies_ids = [];
+        $companies = $companies->getAllWhereAdmin(Auth::user()->id);
+        foreach ($companies as $c){
+            $companies_ids[] = $c->id;
         }
-//        dd($users);
+
+        $users = $this->users->getAllFromCompanies($companies_ids);
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -52,14 +64,11 @@ class UsersController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Companies $companies, Roles $roles)
+    public function create()
     {
         $this->page_description = 'vytvoriť';
 
-        $companies = $companies->getAllWithUserInfo()->get();
-        $roles = $roles->getAll();
-
-        return view('admin.users.create', compact('companies', 'roles'));
+        return view('admin.users.create');
     }
 
     /**
@@ -109,7 +118,7 @@ class UsersController extends AdminController
 
         $this->page_description = 'detail';
 
-        $companies = $companies->getAll()->get();
+        $companies = $companies->getAllWhereAdmin(Auth::user()->id);
         $user_in_companies = $usersCompany->getCompaniesUserIn($id);
 
         $usersCompanyRole = $usersCompanyRole->getAll()->get();
