@@ -13,6 +13,7 @@
     <!-- Styles -->
 
     {!! HTML::style( asset("/assets/admin/css/bootstrap/bootstrap.min.css") ) !!}
+    {!! HTML::style( asset("/assets/admin/css/select2.min.css") ) !!}
     {{--{!! HTML::style( asset("/assets/admin/css/font-awesome.min.css") ) !!}--}}
     {!! HTML::style( asset("/assets/admin/css/app.css") ) !!}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -24,6 +25,7 @@
 
     <!-- Scripts -->
     {!! HTML::script( asset("/assets/admin/js/jquery.min.js") ) !!}
+    {!! HTML::script( asset("/assets/admin/js/select2/select2.js") ) !!}
     @yield('head_js')
     <script>
         window.Laravel = <?php echo json_encode([
@@ -45,10 +47,15 @@
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
                     <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
                 </button>
-
+                @if($company_logo != '')
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+
+                    <img src="/uploads/logos/{{$company_logo}}" height="50">
+                    {{--@else--}}
+                        {{--{{ config('app.name', 'Laravel') }}--}}
+                @endif
+
                 </a>
             </div>
 

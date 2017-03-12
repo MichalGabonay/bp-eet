@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Certs;
 use App\Model\Companies;
 use App\Model\Roles;
 use App\Model\UsersCompanyRole;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use Flash;
 use Auth;
+use Image;
 
 class CompaniesController extends AdminController
 {
@@ -113,12 +115,66 @@ class CompaniesController extends AdminController
     }
 
     /**
-     *Add of certificate for company.
+     * Add certificate for company
      *
      * @param  int  $company_id
      * @return \Illuminate\Http\Response
      */
-    public function addCert(Request $request, $company_id){
+    public function addCert(Request $request, $company_id, Certs $certs){
+
+        $company = $this->companies->findOrFail($company_id);
+
+        $this->validate($request,
+            [
+                'cert' => 'required',
+                'password' => 'required',
+            ]);
+
+        $file = $request->file('cert');
+        $cert_name = $file->getClientOriginalName();
+        $file->move('uploads/certs/' . $company_id . '/', $cert_name);
+        $expiration_date = null;
+
+        if (!$cert_store = file_get_contents('uploads/certs/' . $company_id . '/'.$cert_name)) {
+            echo "Error: Unable to read the cert file\n";
+            exit;
+        }
+
+        if (openssl_pkcs12_read($cert_store, $certificate, $request['password'])) {
+            if (isset($certificate['pkey'])) {
+                file_put_contents('uploads/certs/' . $company_id . '/private.key', $certificate['pkey']);
+            }
+
+            if (isset($certificate['cert'])) {
+                $cert = null;
+                openssl_x509_export($certificate['cert'], $cert);
+                file_put_contents('uploads/certs/' . $company_id . '/public.pub', $cert);
+                $p12data = openssl_x509_parse($certificate['cert']);
+                $expiration_date = date('Y-m-d', $p12data['validTo_time_t']);
+            }
+
+        } else {
+            echo "Error: Unable to read the cert store.\n";
+            exit;
+        }
+
+        if($company->cert_id != null){
+            $cert = $certs->findOrFail($company->cert_id);
+            $store = $certs->update([
+                'pks12' => $cert_name,
+                'password' => $request['password'],
+                'expiration_date' => $expiration_date
+            ]);
+        }else{
+            $store = $certs->create([
+                'pks12' => $cert_name,
+                'password' => $request['password'],
+                'expiration_date' => $expiration_date
+            ]);
+            $company->cert_id = $store->id;
+            $company->update();
+        }
+
 
 //        Flash::success('Spoločnosť bola úspešne upravená!');
         return redirect(route('admin.companies.detail', $company_id));
@@ -130,16 +186,36 @@ class CompaniesController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function detail($id, Roles $roles, UsersCompany $usersCompany, User $all_users, UsersCompanyRole $usersCompanyRole)
+    public function detail($id, Roles $roles, UsersCompany $usersCompany, User $users, UsersCompanyRole $usersCompanyRole, Certs $certs)
     {
         $company = $this->companies->findOrFail($id);
+        if ($company->cert_id != null){
+            $cert = $certs->findOrFail($company->cert_id);
+        }
         $this->page_description = 'detail - ' . $company->name;
 
         $company->users = $usersCompany->getUsersFromCompany($company->id)->count();
 
         $users_in = $usersCompany->getUsersFromCompany($id);
+
+//        dd($users_in);
         $roles = $roles->getAll();
-        $all_users = $all_users->getAll();
+        $all_users = $users->getAll()->get();
+
+        foreach ($all_users as $u){
+            $is_in = false;
+            foreach ($users_in as $ui){
+                if ($u->id == $ui->user_id){
+                    $is_in = true;
+                    break;
+                }
+            }
+            if ($is_in == true){
+                $all_users = $all_users->except($u->id);
+            }
+
+        }
+
 
         $usersCompanyRole = $usersCompanyRole->getAll()->get();
 
@@ -156,7 +232,9 @@ class CompaniesController extends AdminController
             }
         }
 
-        return view('admin.companies.detail', compact('company', 'users_in', 'roles', 'all_users', 'users_role'));
+
+
+        return view('admin.companies.detail', compact('company', 'users_in', 'roles', 'all_users', 'users_role', 'cert'));
     }
 
     /**
@@ -233,5 +311,45 @@ class CompaniesController extends AdminController
         Flash::success('Spoločnost bola zmazaná!');
 
         return redirect(route('admin.companies.index'));
+    }
+
+    /**
+     * Remove logo of company
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteLogo($id)
+    {
+        $companies = $this->companies->findOrFail($id);
+        $companies->logo = '';
+        $companies->update();
+
+        Flash::success('Logo bolo odstránené!');
+
+        return redirect(route('admin.companies.detail', $id));
+    }
+
+    /**
+     * Change logo of company
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function changeLogo(Request $request, $id)
+    {
+        $companies = $this->companies->findOrFail($id);
+
+        $file = $request->file('logo');
+        $image_name = $id ."-".$file->getClientOriginalName();
+        $file->move('uploads/logos', $image_name);
+        $image = Image::make(sprintf('uploads/logos/%s', $image_name))->save();
+
+        $companies->logo = $image_name;
+        $companies->update();
+
+        Flash::success('Nové logo bolo vložené!');
+
+        return redirect(route('admin.companies.detail', $id));
     }
 }

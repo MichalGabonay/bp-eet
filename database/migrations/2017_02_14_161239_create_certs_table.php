@@ -15,12 +15,12 @@ class CreateCertsTable extends Migration
     {
         Schema::create('certs', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('destination');
+            $table->string('pks12');
+            $table->string('password');
+//            $table->string('destination');
             $table->boolean('valid')->default(false);
             $table->date('expiration_date');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -40,6 +40,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('{id}/detail', ['as' => 'admin.users.detail', 'uses' => 'Admin\Users\UsersController@detail']);
     Route::get('{id}/delete', ['as' => 'admin.users.delete', 'uses' => 'Admin\Users\UsersController@delete']);
     Route::get('{user_id}/company/{company_id}', ['as' => 'admin.users.company_state', 'uses' => 'Admin\Users\UsersController@switchCompanyState']);
+    Route::post('{company_id}/add_to_company', ['as' => 'admin.users.add_to_company', 'uses' => 'Admin\Users\UsersController@addUserToCompany']);
 });
 
 //Companies
@@ -52,6 +53,8 @@ Route::group(['prefix' => 'companies'], function () {
     Route::get('{id}/detail', ['as' => 'admin.companies.detail', 'uses' => 'Admin\CompaniesController@detail']);
     Route::post('{id}/add-cert', ['as' => 'admin.companies.add_cert', 'uses' => 'Admin\CompaniesController@addCert']);
     Route::get('{id}/delete', ['as' => 'admin.companies.delete', 'uses' => 'Admin\CompaniesController@delete']);
+    Route::post('{id}/change-logo', ['as' => 'admin.companies.change_logo', 'uses' => 'Admin\CompaniesController@changeLogo']);
+    Route::get('{id}/delete-logo', ['as' => 'admin.companies.delete_logo', 'uses' => 'Admin\CompaniesController@deleteLogo']);
 });
 
 //Sales

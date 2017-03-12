@@ -103,3 +103,11 @@
 .table-hover-hand {
     cursor: pointer;
 }
+
+.navbar-brand{
+    padding: 0;
+}
+
+/*.navbar{*/
+    /*min-height: 70px;*/
+/*}*/

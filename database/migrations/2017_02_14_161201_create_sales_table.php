@@ -23,6 +23,8 @@ class CreateSalesTable extends Migration
             $table->string('bkp');
             $table->string('cash_register');
 
+            $table->boolean('storno')->default(false);
+
             $table->softDeletes();
             $table->timestamps();
         });

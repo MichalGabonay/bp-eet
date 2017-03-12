@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller as Controller;
+use App\Model\Companies;
 use App\Model\UsersCompany;
 use App\Model\UsersCompanyRole;
 use Illuminate\Http\Request;
@@ -27,6 +28,8 @@ class AdminController extends Controller
      * @var $page_icon
      */
     protected $page_icon = 'fa-archive';
+
+    protected $company_logo = '';
 
     protected $selectedCompany;
 
@@ -69,14 +72,22 @@ class AdminController extends Controller
 
             });
 
-            return $next($request);
-        });
+            if(session('selectedCompany') != null){
+                $companies = new Companies();
+                $company = $companies->findOrFail(session('selectedCompany'));
+                $this->company_logo = $company->logo;
+            }
 
-        // share page title and description with view
-        View::composer('*', function($view){
-            $view->page_title = $this->page_title;
-            $view->page_description = $this->page_description;
-            $view->page_icon = $this->page_icon;
+
+            // share page title and description with view
+            View::composer('*', function($view){
+                $view->page_title = $this->page_title;
+                $view->page_description = $this->page_description;
+                $view->page_icon = $this->page_icon;
+                $view->company_logo = $this->company_logo;
+            });
+
+            return $next($request);
         });
     }
 

@@ -237,7 +237,32 @@ class UsersController extends AdminController
             ]);
         }
 
-        return redirect(route('admin.users.detail', $user_id));
+//        return redirect(route('admin.users.detail', $user_id));
+        return redirect()->back();
+
+    }
+
+    public function addUserToCompany(Request $request, $company_id, UsersCompany $usersCompany){
+
+        $user_id = $request->user;
+
+        if ($user_id != ""){
+            $userInCompany = $usersCompany->findUserCompany($user_id, $company_id)->first();
+
+            if($userInCompany != null){
+                $userInCompany->enabled = 1;
+                $userInCompany->update();
+            }else{
+                $store = $usersCompany->create([
+                    'user_id' => $user_id,
+                    'company_id' => $company_id,
+                    'enabled' => 1
+                ]);
+            }
+        }
+
+
+        return redirect(route('admin.companies.detail', $company_id));
 
     }
 
