@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Certs;
 use App\Model\Companies;
 use App\Model\UsersCompany;
 use Illuminate\Http\Request;
@@ -48,20 +49,31 @@ class DashboardController extends AdminController
         }
     }
 
-    public function index(Companies $companies, UsersCompany $usersCompany) {
+    public function index(Companies $companies, UsersCompany $usersCompany, Certs $certs) {
 
 //        dd(session()->all());
 //        dd(session('selectedCompany'));
-        if (session('selectedCompany') != null)
+        $cert = null;
+        if (session('selectedCompany') != null){
             $selected_company = $companies->findOrFail(session('selectedCompany'));
-        else
+            $company = $companies->findOrFail($selected_company->id);
+
+            if ($company->cert_id != null){
+                $cert = $certs->findOrFail($company->cert_id);
+            }
+
+        }
+        else{
             $selected_company = null;
+        }
 
         $usersCompany = $usersCompany->getCompaniesUserIn(Auth::user()->id);
 
+//        dd($selected_company);
+
 //        dd(count($usersCompany));
 
-        return view('admin.dashboard', compact('selected_company', 'usersCompany'));
+        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert'));
 
     }
 }

@@ -27,8 +27,12 @@
                     @if(session('isAdmin'))
                     {{--TODO: len ak admin alebo manazer--}}
                     <div class="cert_stats">
-                        <b>Platnosť certifikátu:</b> áno/nie <br>
-                        <b>Vyprší dňa:</b> 01.01.2020
+                        @if($cert != null)
+                            <b>Platnosť certifikátu:</b> {{($cert->valid == 1 ? 'certifikát je platný': 'neplatný')}} <br>
+                            <b>Vyprší dňa:</b> {{date('d.m.Y', strtotime($cert->expiration_date))}}
+                        @else
+                            Prosím vložte validný certifikát k <a href="{{route('admin.companies.detail', $selected_company)}}">spoločnosti</a> .
+                        @endif
                     </div>
                     @endif
 
@@ -50,7 +54,7 @@
                         @if($c->company_id == $selected_company->id)
                             vybraná
                         @else
-                            <a href="{{route('admin.select_company', $c->id)}}">vybrať</a>
+                            <a href="{{route('admin.select_company', $c->company_id)}}">vybrať</a>
                         @endif
                         <br>
                     @endforeach

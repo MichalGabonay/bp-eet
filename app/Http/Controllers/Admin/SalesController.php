@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Sales;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use Flash;
@@ -36,8 +37,11 @@ class SalesController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Sales $sales)
     {
+
+
+
         return view('admin.sales.index');
     }
 

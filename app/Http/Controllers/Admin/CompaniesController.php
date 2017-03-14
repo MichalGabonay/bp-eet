@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use SlevomatEET\Cryptography\CryptographyService;
+use SlevomatEET\Driver\GuzzleSoapClientDriver;
+use SlevomatEET\Configuration;
+use SlevomatEET\EvidenceEnvironment;
+use SlevomatEET\Client;
+use SlevomatEET\Receipt;
 use App\Model\Certs;
 use App\Model\Companies;
 use App\Model\Roles;
@@ -160,16 +166,21 @@ class CompaniesController extends AdminController
 
         if($company->cert_id != null){
             $cert = $certs->findOrFail($company->cert_id);
-            $store = $certs->update([
+            $valid = $this->testOfCert($company_id);
+            $cert->update([
                 'pks12' => $cert_name,
                 'password' => $request['password'],
-                'expiration_date' => $expiration_date
+                'expiration_date' => $expiration_date,
+                'valid' => $valid
             ]);
+            $valid = $this->testOfCert($company_id);
         }else{
+            $valid = $this->testOfCert($company_id);
             $store = $certs->create([
                 'pks12' => $cert_name,
                 'password' => $request['password'],
-                'expiration_date' => $expiration_date
+                'expiration_date' => $expiration_date,
+                'valid' => $valid
             ]);
             $company->cert_id = $store->id;
             $company->update();
@@ -351,5 +362,35 @@ class CompaniesController extends AdminController
         Flash::success('Nové logo bolo vložené!');
 
         return redirect(route('admin.companies.detail', $id));
+    }
+
+    private function testOfCert($company_id){
+        $cert_dir = public_path() . '/uploads/certs/' . $company_id;
+        $crypto = new CryptographyService($cert_dir . '/private.key', $cert_dir . '/public.pub');
+        $configuration = new Configuration('CZ00000019', '273', '/5546/RO24', new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND), true);
+        $client = new Client($crypto, $configuration, new GuzzleSoapClientDriver(new \GuzzleHttp\Client()));
+
+        $receipt = new Receipt(
+            true,
+            'CZ683555118',
+            '0/6460/ZQ42',
+            new \DateTimeImmutable('2016-12-05 00:30:12'),
+            3411300
+        );
+
+        try {
+        $response = $client->send($receipt);
+        echo $response->getFik();
+//        die();
+        } catch (\SlevomatEET\FailedRequestException $e) {
+            echo $e->getRequest()->getPkpCode(); // if request fails you need to print the PKP and BKP codes to receipt
+        } catch (\SlevomatEET\InvalidResponseReceivedException $e) {
+//            echo $e->getResponse()->getRequest()->getPkpCode(); // on invalid response you need to print the PKP and BKP too
+            if ($e->getResponse()->getRawData()->Chyba->kod == '0'){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
     }
 }

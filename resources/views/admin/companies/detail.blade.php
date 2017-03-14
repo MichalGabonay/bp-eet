@@ -19,20 +19,20 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td><strong>Název:</strong></td>
-                                <td>{{ $company->name or '-' }}</td>
+                                <td><strong>Název: </strong></td>
+                                <td> {{ $company->name or '-' }}</td>
                             </tr>
                             <tr>
-                                <td><strong>IČO:</strong></td>
-                                <td>{{ $company->ico or '-' }}</td>
+                                <td><strong>IČO: </strong></td>
+                                <td> {{ $company->ico or '-' }}</td>
                             </tr>
                             <tr>
-                                <td><strong>DIČ:</strong></td>
-                                <td>{{ $company->dic or '-' }}</td>
+                                <td><strong>DIČ: </strong></td>
+                                <td> {{ $company->dic or '-' }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Užívatelia:</strong></td>
-                                <td>{{ $company->users or '-'  }}</td>
+                                <td><strong>Užívatelia: </strong> </td>
+                                <td> {{ $company->users or '-'  }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -67,21 +67,17 @@
                     <h4>Certifikát</h4>
 
                     @if(isset($cert))
-                        <div class="col-md-12">
-                            <div class="panel panel-flat">
 
-                                <h6 class="panel-title mb-5">Certifikát</h6>
+                        <strong>Stav:</strong> {{($cert->valid == 1 ? 'certifikát je platný': 'neplatný')}}<br>
+                        <strong>Datum Expirácie:</strong> {{date('d.m.Y', strtotime($cert->expiration_date))}}<br><br>
 
-                            </div>
-                        </div>
                         <a class="btn change-cert-btn">Zmeniť</a>
                         <div class="change-cert-form" style="display: none">
                     @else
                         {{--TODO: varovna hlaska o pridani certifikatu--}}
                         <div class="change-cert-form">
                     @endif
-                        <div class="col-md-12">
-                            <p></p>
+
                             {!! Form::open( ['route' => ['admin.companies.add_cert', $company->id ], 'id' => 'form_add_cert', 'files' => true] ) !!}
                             {{--<p class="mb-15">Uploadujte své soubory. Povolené formáty jsou <kbd>JPEG</kbd>, <kbd>PNG</kbd> a <kbd>GIF</kbd>.</p>--}}
                             {{--<div class="form-level">--}}
@@ -101,7 +97,7 @@
                                 {{--<a href="{!! route('admin.companies.index') !!}" title="Zrušit" class='btn btn-default'>Zrušit</a>--}}
                             {{--</div>--}}
                             {!! Form::close() !!}
-                        </div>
+
                         </div>
                 </div>
             </div>

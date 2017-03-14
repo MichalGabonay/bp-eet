@@ -35,7 +35,7 @@ class ExportController extends AdminController
      */
     public function index()
     {
-        $this->page_description = "Export do CSV";
+        $this->page_description = "Export tržieb do CSV";
 
         return view('admin.export.index');
     }

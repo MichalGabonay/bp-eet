@@ -43,18 +43,20 @@ class ImportController extends AdminController
     /**
      * Import of sales.
      *
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function submit()
     {
-        $filename = "stores_" . date('Y-m-d_H-i-s') . ".csv";
-        $storage_path_dir = date('Y-m');
-        $f = null;
-
-
-
-        return view('admin.export.index');
+        $this->importSales();
     }
+
+    private function importSales()
+    {
+        echo 'done';
+    }
+
+
+
 
 
 

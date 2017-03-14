@@ -32,7 +32,7 @@ class HomeController extends Controller
     public function index()
     {
 //        return view('admin.home');
-        $crypto = new CryptographyService(DIR_CERT . 'private.key', DIR_CERT . 'public.pub');
+        $crypto = new CryptographyService(DIR_CERT . 'private.key', DIR_CERT . 'invalid_cert.pub');
         $configuration = new Configuration('CZ00000019', '273', '/5546/RO24', new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND), false);
         $client = new Client($crypto, $configuration, new GuzzleSoapClientDriver(new \GuzzleHttp\Client()));
 

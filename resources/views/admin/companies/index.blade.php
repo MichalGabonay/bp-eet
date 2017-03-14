@@ -19,8 +19,11 @@
             <tr id="{{$c->id}}">
                 <td width="140">{{$c->name or '-'}}</td>
                 <td>{{$c->users or '-'}}</td>
-
-                <td>{{$c->cert or '-'}}</td>
+                @if($c->cert_id != null)
+                <td>{{($c->cert_valid == 1 ? 'platný': 'neplatný')}} ({{$c->expiration_date}})</td>
+                @else
+                    <td>nevložený</td>
+                @endif
                 <td class="text-center">
                     <a href="{{ route('admin.companies.edit', $c->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
                     <a class="sweet_delete" href="{{ route('admin.companies.delete', $c->id) }}" data-toggle="tooltip" data-placement="top" title="Smazat"><i class="fa fa-trash"></i></a>

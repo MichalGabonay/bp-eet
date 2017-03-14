@@ -102,6 +102,8 @@ class AdminController extends Controller
             'isCashier' => false,
         ]);
 
+
+
         $user = new User();
 
         if ($company_id == null){
@@ -109,6 +111,7 @@ class AdminController extends Controller
         }else{
             $user_company = $usersCompany->findUserCompany(Auth::user()->id, $company_id)->first();
         }
+//        dd($user_company);
 
         if ($user_company != null){
             session(['selectedCompany' => $user_company->company_id]);
@@ -134,6 +137,7 @@ class AdminController extends Controller
                 }
             }
         }
+
 
         return redirect(route('admin.dashboard'));
     }
