@@ -2,7 +2,7 @@
 
 
 @section('content')
-
+    @include('admin.sales._form')
 @endsection
 
 
