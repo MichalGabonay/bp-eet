@@ -365,17 +365,19 @@ class CompaniesController extends AdminController
     }
 
     private function testOfCert($company_id){
+
+        $company = $this->companies->findOrFail($company_id);
         $cert_dir = public_path() . '/uploads/certs/' . $company_id;
         $crypto = new CryptographyService($cert_dir . '/private.key', $cert_dir . '/public.pub');
-        $configuration = new Configuration('CZ00000019', '273', '/5546/RO24', new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND), true);
+        $configuration = new Configuration($company->dic, '1', '420', new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND), true);
         $client = new Client($crypto, $configuration, new GuzzleSoapClientDriver(new \GuzzleHttp\Client()));
 
         $receipt = new Receipt(
             true,
-            'CZ683555118',
-            '0/6460/ZQ42',
-            new \DateTimeImmutable('2016-12-05 00:30:12'),
-            3411300
+            null,
+            '4/20/2420',
+            new \DateTimeImmutable('now'),
+            100
         );
 
         try {

@@ -100,10 +100,23 @@ class RolesController extends AdminController
         //
     }
 
-    public function switchRoleUC($u_c_id, $role_id, $type, UsersCompanyRole $usersCompanyRole, UsersCompany $usersCompany){
+    public function switchRoleUC($u_c_id, $role_id, $type, UsersCompanyRole $usersCompanyRole, UsersCompany $usersCompanies){
 
-        $usersCompany = $usersCompany->findOrFail($u_c_id);
+        $usersCompany = $usersCompanies->findOrFail($u_c_id);
         $u_c_r = $usersCompanyRole->getUserCompanyRoleId($u_c_id, $role_id);
+
+        //zmena stavu administratora, osetrenie, ze musi ostat vzdy aspon jeden admin
+        if ($role_id == 1 && $u_c_r->first() != null){
+            $admins = $usersCompanies->getAllAdminsFromCopmany($usersCompany->company_id);
+            if (count($admins) == 1){
+//                Flash::danger('Spoločnosť musí mať vždy aspoň jednoho administrátora!');
+                flash('Spoločnosť musí mať vždy aspoň jednoho administrátora!', 'danger');
+                if($type == 'companies')
+                    return redirect(route('admin.companies.detail', $usersCompany->company_id));
+                else
+                    return redirect(route('admin.users.detail', $usersCompany->user_id));
+            }
+        }
 
         if($u_c_r->first() == null){
             $store = $usersCompanyRole->create([

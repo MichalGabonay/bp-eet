@@ -60,12 +60,11 @@ Route::group(['prefix' => 'companies'], function () {
 //Sales
 Route::group(['prefix' => 'sales'], function () {
     Route::get('', ['as' => 'admin.sales.index', 'uses' => 'Admin\SalesController@index']);
-    Route::get('create', ['as' => 'admin.sales.create', 'uses' => 'Admin\SalesController@create']);
+    Route::get('#create-new', ['as' => 'admin.sales.create_new', 'uses' => 'Admin\SalesController@index']);
     Route::post('store', ['as' => 'admin.sales.store', 'uses' => 'Admin\SalesController@store']);
-    Route::get('{id}/edit', ['as' => 'admin.sales.edit', 'uses' => 'Admin\SalesController@edit']);
-    Route::patch('{id}/update', ['as' => 'admin.sales.update', 'uses' => 'Admin\SalesController@update']);
     Route::get('{id}/detail', ['as' => 'admin.sales.detail', 'uses' => 'Admin\SalesController@detail']);
-    Route::get('{id}/delete', ['as' => 'admin.sales.delete', 'uses' => 'Admin\SalesController@delete']);
+    Route::get('{id}/storno', ['as' => 'admin.sales.storno', 'uses' => 'Admin\SalesController@storno']);
+    Route::get('{id}/generate-receipt', ['as' => 'admin.sales.generate_receipt', 'uses' => 'Admin\SalesController@generateReceipt']);
 });
 
 //Notes

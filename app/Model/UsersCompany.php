@@ -43,4 +43,13 @@ class UsersCompany extends Model
             ->leftJoin('companies', 'companies.id', '=', $this->table . '.company_id')
             ->get();
     }
+
+    public function getAllAdminsFromCopmany($company_id){
+        return $this->select($this->table . '.*')
+            ->where($this->table .'.company_id', $company_id)
+            ->where($this->table .'.enabled', 1)
+            ->leftJoin('user_company_role', 'user_company_role.user_company_id', '=', $this->table . '.id')
+            ->where('user_company_role.role_id', 1)
+            ->get();
+    }
 }

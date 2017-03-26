@@ -177,3 +177,8 @@ input:checked + .slider:before {
     margin-left: 60px;
     display: block;
 }
+
+#create-new{
+    padding-top: 50px;
+    padding-bottom: 50px;
+}

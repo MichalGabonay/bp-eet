@@ -1,5 +1,5 @@
 <div class='row'>
-    {!! Form::open( ['route' => 'admin.companies.store', 'id' => 'form_add_category', 'files' => true] ) !!}
+    {!! Form::open( ['route' => 'admin.sales.store', 'id' => 'form_add_sales', 'files' => true] ) !!}
     {{ Form::hidden('products', null, ['id' => 'products_id']) }}
     {{ Form::hidden('total_price', null, ['id' => 'total_price_id']) }}
     <div class='col-md-5'>
@@ -7,11 +7,11 @@
             <div class="tab-pane has-padding active" id="tab_details">
                 <div class="form-group">
                     {!! Form::label('product', 'Produkt') !!}
-                    {!! Form::text('product', null, ['class' => 'form-control maxlength', 'id' => 'product_name_id', 'maxlength' => '100', 'required']) !!}
+                    {!! Form::text('product', null, ['class' => 'form-control', 'id' => 'product_name_id']) !!}
                 </div>
                 <div class="form-group">
                     {!! Form::label('price', 'Cena') !!}
-                    {!! Form::text('price', null, ['class' => 'form-control maxlength', 'id' => 'price_id', 'maxlength' => '15']) !!}
+                    {!! Form::text('price', null, ['class' => 'form-control', 'id' => 'price_id']) !!}
                 </div>
             </div><!-- /.tab-pane -->
 
@@ -25,7 +25,7 @@
     </div><!-- /.col -->
     <div class='col-md-5'>
         <table class="table">
-            <thead>
+            <thead id="products-list">
                 <tr>
                     <td width="350"><strong>Produkt</strong></td>
                     <td><strong>Cena</strong></td>
@@ -51,13 +51,19 @@
 
 
 @section('head_js')
-
+    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
+    {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
+    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
 @endsection
 
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm
 
         $(document).ready(function() {
+
+            jQuery('#products_id').val('');
+            jQuery('#total_price_id').val('');
+
             $("#btn-add-product").click(function() {
                 var product = jQuery('#product_name_id').val();
                 var price = jQuery('#price_id').val();
@@ -81,14 +87,14 @@
                         $( ".submit-btn" ).append( "<button class='btn' type='submit'>Potvrdiť</button>" );
                         $('#total_price_id').val(price)
                     }else {
-                        $('#products_id').val(products+';'+product+','+price);
+                        $('#products_id').val(products+';'+product+'||'+price);
                         $('#total_price_id').val(new_total_price)
 
 
                     }
                     //                products = jQuery('#products_id').val();
 
-                    $( "thead" ).append( "<tr><td>"+product+"</td><td>"+price+"</td></tr>" );
+                    $( "#products-list" ).append( "<tr><td>"+product+"</td><td>"+price+"</td></tr>" );
 
                     total_price = $('#total_price_id').val();
                     $('#total_price_label').text(total_price+' Kč');
@@ -99,4 +105,9 @@
 //                alert(products);
             });
         });
+
+        $('.datatable-sorting').DataTable({
+            order: [0, "asc"]
+        });
+
 @endsection

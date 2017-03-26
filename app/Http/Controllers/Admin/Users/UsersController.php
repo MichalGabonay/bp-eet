@@ -221,6 +221,8 @@ class UsersController extends AdminController
 
         $userInCompany = $usersCompany->findUserCompany($user_id, $company_id)->first();
 
+
+
         if($userInCompany != null){
             if($userInCompany->enabled == 1){
                 $userInCompany->enabled = 0;

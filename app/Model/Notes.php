@@ -31,4 +31,14 @@ class Notes extends Model
     {
         return $this->select($this->table . '.*');
     }
+
+    /**
+     * Get all notes
+     *
+     * @return Companies
+     */
+    public function getFivFromUser($user_id)
+    {
+        return $this->select($this->table . '.*');
+    }
 }
