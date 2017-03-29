@@ -16,7 +16,7 @@ class Controller extends BaseController
     public function redirect() {
         if (Auth::check())
         {
-            return redirect(route('admin.dashboard'));
+            return redirect(route('admin.select_company'));
         }
         else
         {

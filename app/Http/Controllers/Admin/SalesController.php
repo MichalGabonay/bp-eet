@@ -73,6 +73,22 @@ class SalesController extends AdminController
     }
 
     /**
+     * Storno the eet
+     *
+     * @param $id
+     */
+    public function storno($id){
+        $sale = $this->sales->findOrFail($id);
+
+        $sale->storno = 1;
+        $sale->save();
+
+        //TODO: storno tržby(odoslanie so zapornou hodnotou), buď ukladať stornované tržby, alebo len pridávať príznak
+
+        return redirect(route('admin.sales.index'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -141,7 +157,7 @@ class SalesController extends AdminController
      * Send eet to finances server
      *
      * @param  string  $price, $receiptNumber, $premiseId, $cashregister
-     * @return void
+     * @return array
      */
     private function eetSend($price, $receiptNumber, $premiseId, $cashregister){
         $companies = new Companies();
