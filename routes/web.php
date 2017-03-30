@@ -65,6 +65,8 @@ Route::group(['prefix' => 'sales'], function () {
     Route::get('{id}/detail', ['as' => 'admin.sales.detail', 'uses' => 'Admin\SalesController@detail']);
     Route::get('{id}/storno', ['as' => 'admin.sales.storno', 'uses' => 'Admin\SalesController@storno']);
     Route::get('{id}/generate-receipt', ['as' => 'admin.sales.generate_receipt', 'uses' => 'Admin\SalesController@generateReceipt']);
+    Route::get('{id}/delete', ['as' => 'admin.sales.delete', 'uses' => 'Admin\SalesController@delete']);
+
 });
 
 //Notes

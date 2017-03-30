@@ -182,3 +182,7 @@ input:checked + .slider:before {
     padding-top: 50px;
     padding-bottom: 50px;
 }
+
+.icons-list{
+    list-style: none;
+}

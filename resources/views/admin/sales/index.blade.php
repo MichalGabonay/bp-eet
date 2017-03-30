@@ -24,7 +24,7 @@
                             <tbody>
                             @foreach($sales as $s)
                                 <tr >
-                                    <td>{{$s->receiptNumber or '-'}}</td>
+                                    <td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>
                                     {{--<td>{{$s->products or '-'}}</td>--}}
                                     <td>{{$s->total_price or '-'}}Kč</td>
                                     @if(session('isAdmin'))
@@ -33,16 +33,28 @@
                                         <td>{{$s->user_name or '-'}}</td>
                                     @endif
                                         <td>{{date('d.m.Y H:i', strtotime($s->created_at))}}</td>
-                                    @if($s->storno == 0)
-                                        <td width="80" class="text-center">
-                                            <a href="{{ route('admin.sales.detail', $s->id) }}">Detail</a>
-                                            <a href="{{ route('admin.sales.storno', $s->id) }}">Storno</a>
-                                        </td>
-                                    @else
-                                        <td width="80" class="text-center">
-                                            Stornované
-                                        </td>
-                                    @endif
+
+                                    <td class="text-center">
+                                        <ul class="icons-list">
+                                            <li class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                </a>
+
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                    <li><a href="{{ route('admin.sales.detail', $s->id) }}"><i class="fa fa-th-large" aria-hidden="true"></i>&nbsp;&nbsp; Detail</a></li>
+                                                    @if($s->storno == 0)
+                                                    <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
+                                                    @endif
+                                                    <li><a href="{{ route('admin.sales.detail', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Generovať účtenku</a></li>
+
+                                                    @if(session('isAdmin'))
+                                                        <li><a class="sweet_delete" href="{{ route('admin.sales.delete', $s->id) }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;&nbsp; Smazat</a></li>
+                                                    @endif
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>

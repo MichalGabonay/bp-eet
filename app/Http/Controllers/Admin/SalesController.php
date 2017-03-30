@@ -80,10 +80,17 @@ class SalesController extends AdminController
     public function storno($id){
         $sale = $this->sales->findOrFail($id);
 
+
+        $total_price = $sale->total_price*(-100);
+        $userid = Auth::user()->id;
+
+        $receiptNumber = $sale->receiptNumber . '-storno';
+        $premiseId = '1';
+        $cashregister = 'pokl-user-'. $userid;
+        $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
+
         $sale->storno = 1;
         $sale->save();
-
-        //TODO: storno tržby(odoslanie so zapornou hodnotou), buď ukladať stornované tržby, alebo len pridávať príznak
 
         return redirect(route('admin.sales.index'));
     }
@@ -103,7 +110,7 @@ class SalesController extends AdminController
 
         $receiptNumber = session('selectedCompany').'C/'.$userid.'U/'.($lastid+1).'/'. date('dmy');
         $premiseId = '1';
-        $cashregister = 'pokl-user-'. Auth::user()->id;
+        $cashregister = 'pokl-user-'. $userid;
 
         $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
 
@@ -140,13 +147,15 @@ class SalesController extends AdminController
 
         $products = [];
 
-        $product = explode(";", $sales->products);
+        if ($sales->products != ''){
+            $product = explode(";", $sales->products);
 
-        foreach ($product as $key => $p){
-            $temp = explode("||", $p);
+            foreach ($product as $key => $p){
+                $temp = explode("||", $p);
 
-            $products[$key]['name'] = $temp[0];
-            $products[$key]['price'] = $temp[1];
+                $products[$key]['name'] = $temp[0];
+                $products[$key]['price'] = $temp[1];
+            }
         }
 
         return view('admin.sales.detail', compact('sales', 'user', 'products'));

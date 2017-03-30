@@ -44,6 +44,15 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
+            if (session('selectedCompany') == null){
+                $this->changeSelectedCompany();
+            }
+            if(session('selectedCompany') != null){
+                $companies = new Companies();
+                $company = $companies->findOrFail(session('selectedCompany'));
+                $this->company_logo = $company->logo;
+            }
+
             Menu::make('MyNavBar', function($menu) {
                 $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'fa fa-home']);
 
@@ -72,11 +81,6 @@ class AdminController extends Controller
 
             });
 
-            if(session('selectedCompany') != null){
-                $companies = new Companies();
-                $company = $companies->findOrFail(session('selectedCompany'));
-                $this->company_logo = $company->logo;
-            }
 
 
             // share page title and description with view
@@ -91,8 +95,10 @@ class AdminController extends Controller
         });
     }
 
-    public function changeSelectedCompany(UsersCompanyRole $usersCompanyRole, UsersCompany $usersCompany, $company_id = null ){
+    public function changeSelectedCompany($company_id = null ){
 
+        $usersCompanyRole = new UsersCompanyRole();
+        $usersCompany = new UsersCompany();
         session([
             'selectedCompany' => null,
             'isAdmin' => false,

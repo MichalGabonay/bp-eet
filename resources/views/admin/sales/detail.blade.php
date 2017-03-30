@@ -5,7 +5,9 @@
 
 @section('top-buttons')
     <a href="{{ route('admin.sales.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Spät </a>
+    @if($sales->storno == 0)
     <a href="{{ route('admin.sales.storno', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Storno </a>
+    @endif
     <a href="{{ route('admin.sales.generate_receipt', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Generovať účtenku </a>
 @endsection
 
@@ -38,12 +40,17 @@
                                 <td><strong>BKP: </strong> </td>
                                 <td> {{ $sales->bkp or '-'  }}</td>
                             </tr>
+                            <tr>
+                                <td><strong>Celková cena: </strong> </td>
+                                <td> {{ $sales->total_price or '-'  }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
+        @if(!empty($products))
         <div class='col-md-5'>
             <table class="table">
                 <thead id="products-list">
@@ -73,6 +80,7 @@
                 {{--{!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}--}}
             </div>
         </div><!-- /.col -->
+        @endif
     </div>
 @endsection
 
@@ -87,7 +95,7 @@
     //<script> onlyForSyntaxPHPstorm
 
         $('.datatable-sorting').DataTable({
-            order: [0, "asc"]
+            order: [3, "asc"]
         });
 
         $(".js-example-placeholder-single").select2({
