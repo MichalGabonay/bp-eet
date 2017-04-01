@@ -22,6 +22,14 @@
                 {!! Form::label('dic', 'DIČ') !!}
                 {!! Form::text('dic', null, ['class' => 'form-control maxlength', 'maxlength' => '15']) !!}
             </div>
+            <div class="form-group">
+                {!! Form::label('address', 'Adresa') !!}
+                {!! Form::text('address', null, ['class' => 'form-control maxlength', 'maxlength' => '15']) !!}
+            </div>
+            <div class="form-group">
+                {!! Form::label('phone', 'Telefónne číslo') !!}
+                {!! Form::text('phone', null, ['class' => 'form-control maxlength', 'maxlength' => '15']) !!}
+            </div>
         </div><!-- /.tab-pane -->
 
         {{--@if(isset($users_in))--}}

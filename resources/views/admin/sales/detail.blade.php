@@ -8,7 +8,7 @@
     @if($sales->storno == 0)
     <a href="{{ route('admin.sales.storno', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Storno </a>
     @endif
-    <a href="{{ route('admin.sales.generate_receipt', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Generovať účtenku </a>
+    <a href="{{ route('admin.sales.generate_receipt', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin" target="_blank"><b><i class="icon-arrow-left16"></i></b> Generovať účtenku </a>
 @endsection
 
 @section('content')

@@ -12,7 +12,7 @@
 @section('content')
     <div class="row">
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Základné informácie</h4>
@@ -29,6 +29,14 @@
                             <tr>
                                 <td><strong>DIČ: </strong></td>
                                 <td> {{ $company->dic or '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Adresa: </strong></td>
+                                <td> {{ $company->address or '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Telefón: </strong></td>
+                                <td> {{ $company->phone or '-' }}</td>
                             </tr>
                             <tr>
                                 <td><strong>Užívatelia: </strong> </td>
@@ -61,14 +69,17 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Certifikát</h4>
 
                     @if(isset($cert))
-
-                        <strong>Stav:</strong> {{($cert->valid == 1 ? 'certifikát je platný': 'neplatný')}}<br>
+                        @if($cert->valid == 1)
+                            <strong>Stav:</strong> certifikát je platný <a href="#" data-toggle="tooltip" data-placement="top" title="je možné zadávať nové tržby"><i class="fa fa-info-circle" aria-hidden="true"></i></a><br>
+                        @else
+                            <strong>Stav:</strong> neplatný <a href="#" data-toggle="tooltip" data-placement="top" title="Nie je možné zadávať nové tržby, skúste vložiť ešte raz súbor ktorý ste dostali od finančného úradu so správnym heslo, ak heslo nemáte, nechajte prázdne pole."><i class="fa fa-info-circle" aria-hidden="true"></i></a><br>
+                        @endif
                         <strong>Datum Expirácie:</strong> {{date('d.m.Y', strtotime($cert->expiration_date))}}<br><br>
 
                         <a class="btn change-cert-btn">Zmeniť</a>
@@ -135,9 +146,9 @@
                             <th>E-mail</th>
                             <th>Užívatelské meno</th>
                             @foreach($roles as $r)
-                                <th width="80" class="text-center">{{$r->name}}</th>
+                                <th class="text-center">{{$r->name}} <a href="#" data-toggle="tooltip" data-placement="top" title="{{$r->description}}"><i class="fa fa-info-circle" aria-hidden="true"></i></a></th>
                             @endforeach
-                            <th width="80" class="text-center">Akcie</th>
+                            <th width="30" class="text-center">Akcie</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -147,7 +158,7 @@
                                 <td>{{$u->email or '-'}}</td>
                                 <td>{{$u->username or '-'}}</td>
                                 @foreach($roles as $r)
-                                    <td width="80" class="text-center">
+                                    <td class="text-center">
                                         @if ( $users_role[$u->id][$r->id] )
                                             <a href="{!! route('admin.roles.switch-role', [$u->id, $r->id, 'companies']) !!}" title="deaktivuj"><i class="fa fa-check enabled" style="color: green"></i></a>
                                         @else
@@ -155,7 +166,7 @@
                                         @endif
                                     </td>
                                 @endforeach
-                                <td width="80" class="text-center">
+                                <td width="30" class="text-center">
                                     <a href="{{ route('admin.users.company_state', [$u->user_id, $company->id]) }}">Odobrať</a>
                                 </td>
                             </tr>
@@ -195,6 +206,10 @@
         $(".change-cert-btn").click(function(){
             $(".change-cert-btn").hide(1000);
             $(".change-cert-form").show(1000);
+        });
+
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
 @endsection

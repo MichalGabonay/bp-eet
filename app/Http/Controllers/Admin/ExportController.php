@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Sales;
 use Illuminate\Http\Request;
+use Response;
+use Storage;
+
 
 class ExportController extends AdminController
 {
@@ -45,15 +49,43 @@ class ExportController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function submit()
+    public function submit(Request $request)
     {
-        $filename = "stores_" . date('Y-m-d_H-i-s') . ".csv";
+        $filename = "export_" . date('Y-m-d_H-i-s') . ".csv";
         $storage_path_dir = date('Y-m');
         $f = null;
 
+        $sales = new Sales();
+        $sales = $sales->getAllForExport(session('selectedCompany'));
+
+        if ($request->input('total_price'))         $f .= "\"Celkoá cena\";";
+        if ($request->input('fik'))                 $f .= "\"FIK\";";
+        if ($request->input('bkp'))                 $f .= "\"BKP\";";
+        if ($request->input('receipt_number'))      $f .= "\"Číslo účtenky\";";
+        if ($request->input('receipt_time'))        $f .= "\"Datum uskutečnění tržby\";";
+        if ($request->input('premise_id'))          $f .= "\"ID provozovny\";";
+        if ($request->input('cash_register'))       $f .= "\"ID pokladny\";";
+        if ($request->input('products'))            $f .= "\"Produkty\";";
+
+        $f .= "\n";
+
+        foreach( $sales as $s){
+
+            if($request->input('total_price'))       $f .= "\"" . $s->total_price . "\";";
+            if($request->input('fik'))               $f .= "\"" . $s->fik . "\";";
+            if($request->input('bkp'))               $f .= "\"" . $s->bkp . "\";";
+            if($request->input('receipt_number'))    $f .= "\"" . $s->receiptNumber . "\";";
+            if($request->input('receipt_time'))      $f .= "\"" . $s->receipt_time . "\";";
+            if($request->input('premise_id'))        $f .= "\"" . $s->premiseId . "\";";
+            if($request->input('cash_register'))     $f .= "\"" . $s->cash_register . "\";";
+            if($request->input('products'))          $f .= "\"" . $s->products . "\";";
 
 
-        return view('admin.export.index');
+            $f .= "\n";
+        }//foreach
+
+        Storage::put('export/' . $storage_path_dir . '/' . $filename, "\xEF\xBB\xBF" . $f);
+        $storage_path = Storage::disk()->getDriver()->getAdapter()->getPathPrefix();
+        return Response::download($storage_path . 'export/' . $storage_path_dir . '/' . $filename, $filename, ['Content-Type' => 'text/csv']);
     }
-
 }

@@ -21,7 +21,7 @@ class Companies extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'cert_id', 'ico', 'dic', 'logo'];
+    protected $fillable = ['name', 'cert_id', 'ico', 'dic', 'logo', 'address', 'phone'];
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -58,16 +58,15 @@ class SalesController extends AdminController
     {
         if (session('isAdmin') || session('isManager')){
 //            $sales = $this->sales->getAll()->get();
-            $sales = $this->sales->getAll()->get();
+            $sales = $this->sales->getAll(session('selectedCompany'))->get();
         }elseif (session('isCashier') && session('haveStorno')){
-            $sales = $this->sales->getAll()->take(10)->get();
+            $sales = $this->sales->getAll(session('selectedCompany'))->take(10)->get();
         }else{
-            $sales = $this->sales->getAll()->where('user_id', Auth::user()->id)->take(5);
+            $sales = $this->sales->getAll(session('selectedCompany'))->where('user_id', Auth::user()->id)->take(5)->get();
         }
 
         $companies = $companies->findOrFail(session('selectedCompany'));
-        $cert = $certs->findOrFail($companies->cert_id);
-
+        $cert = $certs->find($companies->cert_id);
 
         return view('admin.sales.index', compact('sales', 'cert'));
     }
@@ -87,12 +86,39 @@ class SalesController extends AdminController
         $receiptNumber = $sale->receiptNumber . '-storno';
         $premiseId = '1';
         $cashregister = 'pokl-user-'. $userid;
-        $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
+        $response = $this->eetSend($total_price, $receiptNumber, $premiseId, $cashregister);
 
         $sale->storno = 1;
         $sale->save();
 
         return redirect(route('admin.sales.index'));
+    }
+
+    /**
+     * generate receipt
+     *
+     * @param $id
+     */
+    public function generateReceipt($id, Companies $companies){
+        $sale = $this->sales->findOrFail($id);
+
+        $company = $companies->findOrFail($sale->company_id);
+
+        if ($sale->products != ''){
+            $product = explode(";", $sale->products);
+
+            foreach ($product as $key => $p){
+                $temp = explode("||", $p);
+
+                $products[$key]['name'] = $temp[0];
+                $products[$key]['price'] = $temp[1];
+            }
+        }else{
+            $products[0]['name'] = 'Produkty';
+            $products[0]['price'] = $sale->total_price;
+        }
+
+        return view('admin.sales.receipt', compact('sale', 'company', 'products'));
     }
 
     /**
@@ -110,7 +136,7 @@ class SalesController extends AdminController
 
         $receiptNumber = session('selectedCompany').'C/'.$userid.'U/'.($lastid+1).'/'. date('dmy');
         $premiseId = '1';
-        $cashregister = 'pokl-user-'. $userid;
+        $cashregister = 'pokl-'. $userid;
 
         $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
 
@@ -124,7 +150,7 @@ class SalesController extends AdminController
             'receiptNumber' => $receiptNumber,
             'premiseId' => $premiseId,
             'cash_register' => $cashregister,
-
+            'receipt_time' => date("Y-m-d H:i:s"),
         ]);
 
 //        dd($response->getFik());
@@ -203,5 +229,19 @@ class SalesController extends AdminController
         } catch (\SlevomatEET\InvalidResponseReceivedException $e) {
             echo $e->getResponse()->getRequest()->getPkpCode(); // on invalid response you need to print the PKP and BKP too
         }
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function delete($id)
+    {
+        $products = $this->sales->findOrFail($id);
+        $products->delete();
+
+        Flash::success('Tržba bola odstránená z databázy!');
+
+        return redirect()->back();
     }
 }

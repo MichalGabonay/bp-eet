@@ -10,23 +10,25 @@
         <table class="table datatable-basic table-bordered">
             <thead>
             <tr>
-                <th>ID</th>
+                <th>Celkoá cena</th>
                 <th>FIK</th>
                 <th>BKP</th>
-                <th>Celková cena</th>
-                <th>Pridal užívatel</th>
-                <th>Dátum vytvorenia</th>
-                <th>Storno</th>
+                <th>Číslo účtenky</th>
+                <th>Datum uskutečnění tržby</th>
+                <th>ID provozovny</th>
+                <th>ID pokladny</th>
+                <th>Produkty</th>
             </tr>
 
             <tr>
-                <th> {!! Form::checkbox('id', 1,                true, ['class' => 'switchery']) !!}</th>
+                <th> {!! Form::checkbox('total_price', 1,              true, ['class' => 'switchery']) !!}</th>
                 <th> {!! Form::checkbox('fik', 1,            true, ['class' => 'switchery']) !!}</th>
                 <th> {!! Form::checkbox('bkp', 1,            true, ['class' => 'switchery']) !!}</th>
-                <th> {!! Form::checkbox('total_price', 1,              true, ['class' => 'switchery']) !!}</th>
-                <th> {!! Form::checkbox('user', 1,      true, ['class' => 'switchery']) !!}</th>
-                <th> {!! Form::checkbox('date', 1,         true, ['class' => 'switchery']) !!}</th>
-                <th> {!! Form::checkbox('storno', 1,   true, ['class' => 'switchery']) !!}</th>
+                <th> {!! Form::checkbox('receipt_number', 1,      true, ['class' => 'switchery']) !!}</th>
+                <th> {!! Form::checkbox('receipt_time', 1,         true, ['class' => 'switchery']) !!}</th>
+                <th> {!! Form::checkbox('premise_id', 1,         true, ['class' => 'switchery']) !!}</th>
+                <th> {!! Form::checkbox('cash_register', 1,         true, ['class' => 'switchery']) !!}</th>
+                <th> {!! Form::checkbox('products', 1,         true, ['class' => 'switchery']) !!}</th>
             </tr>
             </thead>
 

@@ -19,7 +19,7 @@ class Sales extends Model
      * @var array
      */
     protected $fillable = ['user_id', 'company_id', 'products', 'total_price', 'fik', 'bkp',
-                            'receiptNumber', 'premiseId', 'cash_register', 'storno'];
+                            'receiptNumber', 'premiseId', 'cash_register', 'storno', 'receipt_time'];
 
 
     /**
@@ -27,10 +27,28 @@ class Sales extends Model
      *
      * @return Companies
      */
-    public function getAll()
+    public function getAll($company_id)
     {
         return $this->select($this->table . '.*', 'users.name as user_name')
+            ->where($this->table . '.company_id', $company_id)
+            ->where($this->table . '.deleted_at', NULL)
             ->leftJoin('users', 'users.id', $this->table . '.user_id')
             ->orderBy('id', 'desc');
+    }
+
+    /**
+     * Get all for export
+     *
+     * @return Companies
+     */
+    public function getAllForExport($company_id)
+    {
+        return $this->select($this->table . '.*', 'users.name as user_name')
+            ->where($this->table . '.deleted_at', NULL)
+            ->where($this->table . '.storno', 0)
+            ->where($this->table . '.company_id', $company_id)
+            ->leftJoin('users', 'users.id', $this->table . '.user_id')
+            ->orderBy('id', 'desc')
+            ->get();
     }
 }

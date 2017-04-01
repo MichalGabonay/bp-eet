@@ -54,6 +54,7 @@
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
+    {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
 @endsection
 
 @section('jquery_ready')
@@ -106,8 +107,11 @@
             });
         });
 
-        $('.datatable-sorting').DataTable({
-            order: [0, "asc"]
+        var table = $('.datatable-sorting').DataTable({
+            //"bSort": false
+            order: [3, "desc"],
+            columnDefs: [
+                { "type": "de_date", targets: 3 }]
         });
 
 @endsection

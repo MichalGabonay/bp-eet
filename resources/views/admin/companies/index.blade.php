@@ -9,6 +9,8 @@
             <thead>
             <tr>
                 <th>Názov</th>
+                <th>Adresa</th>
+                <th>Telefón</th>
                 <th>Užívatelia</th>
                 <th>Certifikát</th>
                 <th width="120" class="text-center">Akcie</th>
@@ -18,6 +20,8 @@
             @foreach($companies as $c)
             <tr id="{{$c->id}}">
                 <td width="140">{{$c->name or '-'}}</td>
+                <td>{{$c->address or '-'}}</td>
+                <td>{{$c->phone or '-'}}</td>
                 <td>{{$c->users or '-'}}</td>
                 @if($c->cert_id != null)
                 <td>{{($c->cert_valid == 1 ? 'platný': 'neplatný')}} ({{$c->expiration_date}})</td>
