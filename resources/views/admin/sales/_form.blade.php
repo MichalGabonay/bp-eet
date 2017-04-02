@@ -84,7 +84,7 @@
 
                 if (product != '' && price != '' && !(isNaN(new_total_price)) ){
                     if (products == ''){
-                        $('#products_id').val(product+','+price);
+                        $('#products_id').val(product+'||'+price);
                         $( ".submit-btn" ).append( "<button class='btn' type='submit'>Potvrdiť</button>" );
                         $('#total_price_id').val(price)
                     }else {

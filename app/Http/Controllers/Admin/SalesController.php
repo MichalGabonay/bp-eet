@@ -132,7 +132,7 @@ class SalesController extends AdminController
         $total_price = $request['total_price'];
         $userid = Auth::user()->id;
 
-        $lastid = $this->sales->getAll()->first()->id;
+        $lastid = $this->sales->getAll(session('selectedCompany'))->first()->id;
 
         $receiptNumber = session('selectedCompany').'C/'.$userid.'U/'.($lastid+1).'/'. date('dmy');
         $premiseId = '1';
@@ -243,5 +243,14 @@ class SalesController extends AdminController
         Flash::success('Tržba bola odstránená z databázy!');
 
         return redirect()->back();
+    }
+
+    public function test(){
+
+        $sales = $this->sales->getAllForChart(session('selectedCompany'))->get();
+        $sales_all = $this->sales->getAll(session('selectedCompany'))->get();
+
+        return view('admin.sales.test', compact('sales', 'sales_all'));
+
     }
 }

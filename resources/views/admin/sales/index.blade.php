@@ -3,6 +3,9 @@
 
 @section('content')
 
+    <a href="{{ route('admin.sales.test')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> test </a>
+
+
     @if((session('isAdmin') || session('isManager')))
 
         <div class="row">

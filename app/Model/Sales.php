@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Sales extends Model
 {
@@ -34,6 +35,23 @@ class Sales extends Model
             ->where($this->table . '.deleted_at', NULL)
             ->leftJoin('users', 'users.id', $this->table . '.user_id')
             ->orderBy('id', 'desc');
+    }
+
+    /**
+     * Get all sales for charts
+     *
+     * @return Companies
+     */
+    public function getAllForChart($company_id)
+    {
+        return $this->select(
+            DB::raw("DATE(receipt_time) as date"),
+            DB::raw("SUM(total_price) as total_price"))
+            ->where($this->table . '.company_id', $company_id)
+            ->where($this->table . '.deleted_at', NULL)
+            ->where($this->table . '.storno', 0)
+            ->orderBy("receipt_time")
+            ->groupBy('date');
     }
 
     /**

@@ -199,3 +199,12 @@ input:checked + .slider:before {
     -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
     filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
 }
+
+.google-visualization-table-td{
+    overflow: visible !important;
+
+}
+
+.google-visualization-table>div:first-child{
+    overflow: inherit !important;
+}
