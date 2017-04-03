@@ -3,14 +3,36 @@
 
 @section('content')
     <div class="row">
-        <div id="dashboard_div" class="col-md-10">
+        <div id="dashboard_div" class="col-md-9">
             <div id="daily_container_count_lineChart" style="width: 100%; height: 300px"></div>
             <div id="control_div" style="width: 100%; height: 50px"></div>
+            <br>
+
+            <div id="table_div" style="width: 100%"></div>
+        </div>
+        <div class="col-md-3">
+            <div>
+                <input type="button" id="ChangeRangeThisWeek" value="Tento týždeň" />
+                <input type="button" id="ChangeRangeThisMonth" value="Tento Mesiac" /><br><br>
+                <div class="row" >
+                    <div class="col-md-6">
+                        <strong>Obdobie od:</strong><br>
+                        <span id='rangeStart'></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Obdobie do:</strong><br>
+                        <span id='rangeEnd'></span>
+                    </div>
+                </div>
+
+                <a href="{{ route('admin.sales.generate_receipt', 1)}}" class="btn bg-teal-400 btn-labeled labeled-margin" target="_blank"><b><i class="icon-arrow-left16"></i></b> Pridať poznámku k obdobiu </a>
+
+            </div>
+
         </div>
 
     </div>
-    <br>
-    <div id="table_div" style="width: 100%"></div>
+
 
 @endsection
 
@@ -34,14 +56,18 @@
         function drawChart() {
 
             var data = google.visualization.arrayToDataTable([
-                [{label: 'Datum', id: 'date', type: 'date'},{label: 'Sales', id: 'Sales', type: 'number'}],
+                [
+                    {label: 'Datum', id: 'date', type: 'datetime'},
+                    {label: 'Celková cena', id: 'Sales', type: 'number'},
+                    {label: 'Počet platieb', id: 'Count', type: 'number', role: 'anotation'}
+                ],
                     @foreach($sales as $s)
-                [new Date('{{$s->date}}'), {{$s->total_price}}],
+                [new Date('{{$s->date}}'), {{$s->total_price}}, {{$s->count}}],
                 @endforeach
             ]);
 
             var dataOther = google.visualization.arrayToDataTable([
-                [{label: 'Dátum pridania', type: 'date'},{label: 'Tržba', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
+                [{label: 'Dátum pridania', type: 'datetime'},{label: 'ID Tržby', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
                 @foreach($sales_all as $s)
                     [new Date('{{$s->receipt_time}}'),
                     {{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}},
@@ -77,13 +103,15 @@
             ]);
 
             var chart = new google.visualization.ChartWrapper({
-                chartType: 'ColumnChart',
+                chartType: 'Bar',
                 containerId: 'daily_container_count_lineChart',
                 options: {
+                    bars: 'vertical',
                     title: 'Predaje',
                     hAxis: {
                         format: 'dd.MM.yyyy'
-                    }
+                    },
+                    legend: { position: "none" }
                 }
             });
 
@@ -107,19 +135,156 @@
                 }
             });
 
+            //write filter range at beggining
+            google.visualization.events.addListener(control, 'ready', function () {
+                var rangeStart;
+                var rangeEnd;
+                var state = control.getState();
+                rangeStart = state.range.start;
+                rangeStart = rangeStart.toLocaleDateString('sk-SK');
+                rangeEnd = state.range.end;
+                rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+
+                document.getElementById('rangeStart').innerHTML = rangeStart;
+                document.getElementById('rangeEnd').innerHTML = rangeEnd;
+            });
+
 
             google.visualization.events.addListener(control, 'statechange', function () {
+                var rangeStart;
+                var rangeEnd;
                 var state = control.getState();
+                console.log(state);
                 var view = new google.visualization.DataView(dataOther);
                 view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                rangeStart = state.range.start;
+                rangeStart = rangeStart.toLocaleDateString('sk-SK');
+                rangeEnd = state.range.end;
+                rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+
+                document.getElementById('rangeStart').innerHTML = rangeStart;
+                document.getElementById('rangeEnd').innerHTML = rangeEnd;
                 table.setDataTable(view);
                 table.draw();
             });
+
+
+
+
 
             var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard_div'));
             dashboard.bind(control, chart);
             dashboard.draw(data);
             table.draw();
+
+            //event for btn this week
+            google.visualization.events.addListener(dashboard, 'ready', function () {
+                document.getElementById('ChangeRangeThisWeek').onclick = function () {
+                    var rangeStart;
+                    var rangeEnd;
+                    var today = Date.now();
+                    today = new Date(today);
+                    var weekBefore = new Date(today.getTime() - 7*24*60*60*1000);
+                    control.setState({
+                        range: {
+                            start: weekBefore,
+                            end: new Date(today)
+                        }
+                    });
+                    control.draw();
+                    var state = control.getState();
+                    var view = new google.visualization.DataView(dataOther);
+                    view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                    rangeStart = state.range.start;
+                    rangeStart = rangeStart.toLocaleDateString('sk-SK');
+                    rangeEnd = state.range.end;
+                    rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+
+                    document.getElementById('rangeStart').innerHTML = rangeStart;
+                    document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                    table.setDataTable(view);
+                    table.draw();
+                }
+            });
+
+            //event for btn this month
+            google.visualization.events.addListener(dashboard, 'ready', function () {
+                document.getElementById('ChangeRangeThisMonth').onclick = function () {
+                    var rangeStart;
+                    var rangeEnd;
+                    var today = Date.now();
+                    today = new Date(today);
+                    var weekBefore = new Date(today.getTime() - 31*24*60*60*1000);
+                    control.setState({
+                        range: {
+                            start: weekBefore,
+                            end: new Date(today)
+                        }
+                    });
+                    control.draw();
+                    var state = control.getState();
+                    var view = new google.visualization.DataView(dataOther);
+                    view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                    rangeStart = state.range.start;
+                    rangeStart = rangeStart.toLocaleDateString('sk-SK');
+                    rangeEnd = state.range.end;
+                    rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+
+                    document.getElementById('rangeStart').innerHTML = rangeStart;
+                    document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                    table.setDataTable(view);
+                    table.draw();
+                }
+            });
+
+            dashboard.draw(data);
+
+//            // When the table is selected, update the orgchart.
+//            google.visualization.events.addListener(table, 'select', function() {
+//                chart.setSelection(table.getSelection());
+//            });
+//
+            // When the orgchart is selected, update the table chart.
+            google.visualization.events.addListener(chart, 'select', function() {
+                var state = control.getState();
+                var view = new google.visualization.DataView(data);
+                view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                var selection = chart.getChart().getSelection();
+                if (selection.length) {
+                    var date = view.getValue(selection[0].row, 0);
+                    date = new Date(date);
+                    startDate = date.setHours(0, 0, 0);
+                    endDate = date.setHours(23, 59, 59);
+                    view = new google.visualization.DataView(dataOther);
+                    view.setRows(view.getFilteredRows([{column: 0, minValue: startDate, maxValue: endDate}]));
+                    table.setDataTable(view);
+                    table.draw();
+                }else {
+                    var rangeStart;
+                    var rangeEnd;
+                    state = control.getState();
+                    view = new google.visualization.DataView(dataOther);
+                    view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                    rangeStart = state.range.start;
+                    rangeStart = rangeStart.toLocaleDateString('sk-SK');
+                    rangeEnd = state.range.end;
+                    rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+
+                    document.getElementById('rangeStart').innerHTML = rangeStart;
+                    document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                    table.setDataTable(view);
+                    table.draw();
+                }
+
+
+//                var state = control.getState();
+//                alert(chart);
+//                var view = new google.visualization.DataView(dataOther);
+//                view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+//                table.setDataTable(view);
+//                table.draw();
+            });
+
         }
     </script>
 @endsection

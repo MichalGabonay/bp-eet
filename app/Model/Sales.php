@@ -46,13 +46,25 @@ class Sales extends Model
     {
         return $this->select(
             DB::raw("DATE(receipt_time) as date"),
-            DB::raw("SUM(total_price) as total_price"))
+            DB::raw("SUM(total_price) as total_price"),
+            DB::raw("COUNT(total_price) as count"))
             ->where($this->table . '.company_id', $company_id)
             ->where($this->table . '.deleted_at', NULL)
             ->where($this->table . '.storno', 0)
             ->orderBy("receipt_time")
             ->groupBy('date');
     }
+//    public function getAllForChart($company_id)
+//    {
+//        return $this->select('receipt_time as date', 'total_price')
+//            ->where($this->table . '.company_id', $company_id)
+//            ->where($this->table . '.deleted_at', NULL)
+//            ->where($this->table . '.storno', 0)
+//            ->orderBy("receipt_time")
+////            ->groupBy('date')
+//            ;
+//
+//    }
 
     /**
      * Get all for export
