@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Notes;
+use App\Model\Sales;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use Flash;
@@ -10,11 +12,16 @@ use Auth;
 class NotesController extends AdminController
 {
     /**
+     * @var notes
+     */
+    protected $notes;
+
+    /**
      * Create a new dashboard controller instance.
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, Notes $notes)
     {
         parent::__construct($request);
 
@@ -27,6 +34,7 @@ class NotesController extends AdminController
             return $next($request);
         });
 
+        $this->notes = $notes;
         $this->page_title = 'Poznámky';
         $this->page_icon = 'fa fa-sticky-note';
     }
@@ -36,9 +44,12 @@ class NotesController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Notes $notes)
     {
-        return view('admin.notes.index');
+        $period_notes = $notes->getAllPeriod(session('selectedCompany'))->get();
+        $sales_notes = $notes->getAllSale(session('selectedCompany'))->get();
+
+        return view('admin.notes.index', compact('period_notes', 'sales_notes'));
     }
 
     /**
@@ -48,7 +59,11 @@ class NotesController extends AdminController
      */
     public function create()
     {
-        //
+        $this->page_description = 'vytvoriť';
+
+        $type = 1;
+
+        return view('admin.notes.create', compact('type'));
     }
 
     /**
@@ -57,9 +72,37 @@ class NotesController extends AdminController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id=null)
     {
-        //
+//        dd($request->all());
+
+        if (isset($request['from']) && isset($request['to']) && $id==null){
+            $from = $request['from'];
+            $to = $request['to'];
+            $type = 1;
+        }else{
+            $from = null;
+            $to = null;
+            $type = 0;
+        }
+
+        $store = $this->notes->create([
+            'sale_id' => $id,
+            'company_id' => session('selectedCompany'),
+            'note' => $request['note'],
+            'from' => $from,
+            'to' => $to,
+            'type' => $type
+        ]);
+
+        Flash::success('Poznámka bola úspešne zapísaná!');
+
+        if ($id == null){
+            return redirect(route('admin.notes.index'));
+        }else{
+            return redirect(route('admin.sales.detail', $id));
+        }
+
     }
 
     /**
@@ -81,7 +124,11 @@ class NotesController extends AdminController
      */
     public function edit($id)
     {
-        //
+        $this->page_description = 'upraviť';
+
+        $note = $this->notes->findOrFail($id);
+
+        return view('admin.notes.edit', compact('note'));
     }
 
     /**
@@ -104,6 +151,11 @@ class NotesController extends AdminController
      */
     public function delete($id)
     {
-        //
+        $products = $this->notes->findOrFail($id);
+        $products->delete();
+
+        Flash::success('Poznámka bola úspešne odstránená!');
+
+        return redirect()->back();
     }
 }

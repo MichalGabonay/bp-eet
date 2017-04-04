@@ -50,13 +50,6 @@
 </div><!-- /.row -->
 
 
-@section('head_js')
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-@endsection
-
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm
 
@@ -107,11 +100,18 @@
             });
         });
 
+        @if(!session('isAdmin') && !session('isManager') && count($sales) > 0)
         var table = $('.datatable-sorting').DataTable({
             //"bSort": false
             order: [3, "desc"],
             columnDefs: [
                 { "type": "de_date", targets: 3 }]
         });
+    @endif
+
+    $(".add_period_note_btn").click(function(){
+        $(".add_period_note_btn").hide(800);
+        $(".add_period_note_form").show(800);
+    });
 
 @endsection

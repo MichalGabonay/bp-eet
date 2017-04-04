@@ -208,3 +208,17 @@ input:checked + .slider:before {
 .google-visualization-table>div:first-child{
     overflow: inherit !important;
 }
+
+.date-picker{
+    width: 90%;
+}
+
+.new-note-input{
+    width: 80% !important;
+}
+
+.note-for-period{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    max-height: 100px;
+}

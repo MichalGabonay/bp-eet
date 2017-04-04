@@ -74,7 +74,7 @@ Route::group(['prefix' => 'sales'], function () {
 Route::group(['prefix' => 'notes'], function () {
     Route::get('', ['as' => 'admin.notes.index', 'uses' => 'Admin\NotesController@index']);
     Route::get('create', ['as' => 'admin.notes.create', 'uses' => 'Admin\NotesController@create']);
-    Route::post('store', ['as' => 'admin.notes.store', 'uses' => 'Admin\NotesController@store']);
+    Route::post('store/{sale_id?}', ['as' => 'admin.notes.store', 'uses' => 'Admin\NotesController@store']);
     Route::get('{id}/edit', ['as' => 'admin.notes.edit', 'uses' => 'Admin\NotesController@edit']);
     Route::patch('{id}/update', ['as' => 'admin.notes.update', 'uses' => 'Admin\NotesController@update']);
     Route::get('{id}/detail', ['as' => 'admin.notes.detail', 'uses' => 'Admin\NotesController@detail']);

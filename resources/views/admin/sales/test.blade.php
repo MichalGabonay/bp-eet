@@ -3,13 +3,18 @@
 
 @section('content')
     <div class="row">
-        <div id="dashboard_div" class="col-md-9">
-            <div id="daily_container_count_lineChart" style="width: 100%; height: 300px"></div>
-            <div id="control_div" style="width: 100%; height: 50px"></div>
+        <div class="col-md-9">
+            <div id="dashboard1_div">
+                <div id="daily_container_count_lineChart" style="width: 100%; height: 300px"></div>
+                <div id="control_div" style="width: 100%; height: 50px"></div>
+            </div>
             <br>
-
-            <div id="table_div" style="width: 100%"></div>
+            <div id="dashboard2_div">
+                <div id="control1"></div>
+                <div id="table_div" style="width: 100%"></div>
+            </div>
         </div>
+
         <div class="col-md-3">
             <div>
                 <input type="button" id="ChangeRangeThisWeek" value="Tento týždeň" />
@@ -17,11 +22,13 @@
                 <div class="row" >
                     <div class="col-md-6">
                         <strong>Obdobie od:</strong><br>
-                        <span id='rangeStart'></span>
+                        {{--<input type="text" class="date-picker" id="rangeStart">--}}
+                        <span id="rangeStart"></span>
                     </div>
                     <div class="col-md-6">
                         <strong>Obdobie do:</strong><br>
-                        <span id='rangeEnd'></span>
+                        {{--<input type="text" class="date-picker" id="rangeEnd">--}}
+                        <span id="rangeEnd"></span>
                     </div>
                 </div>
 
@@ -41,6 +48,9 @@
 
 
 @section('head_js')
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -57,8 +67,8 @@
 
             var data = google.visualization.arrayToDataTable([
                 [
-                    {label: 'Datum', id: 'date', type: 'datetime'},
-                    {label: 'Celková cena', id: 'Sales', type: 'number'},
+                    {label: 'Datum', id: 'date', type: 'date'},
+                    {label: 'Celková tržba dňa', id: 'Sales', type: 'number'},
                     {label: 'Počet platieb', id: 'Count', type: 'number', role: 'anotation'}
                 ],
                     @foreach($sales as $s)
@@ -67,7 +77,7 @@
             ]);
 
             var dataOther = google.visualization.arrayToDataTable([
-                [{label: 'Dátum pridania', type: 'datetime'},{label: 'ID Tržby', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
+                [{label: 'Dátum pridania', type: 'datetime'},{label: 'ID Tržby', id: 'sales', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
                 @foreach($sales_all as $s)
                     [new Date('{{$s->receipt_time}}'),
                     {{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}},
@@ -91,9 +101,9 @@
                     @endif
                         "<li><a href='{{ route('admin.sales.generate_receipt', $s->id) }}' target='_blank'><i class='fa fa-list-alt' aria-hidden='true'></i> Generovať účtenku</a></li>" +
                     @if($s->note_id == NULL)
-                        "<li><a href='{{ route('admin.notes.create', $s->id) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i> Pridať poznámku</a></li>" +
+                        "<li><a href='{{ route('admin.notes.create', ['sale', $s->id]) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i> Pridať poznámku</a></li>" +
                     @else
-                        "<li><a href='{{ route('admin.notes.edit', $s->id) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i> Upraviť poznámku</a></li>" +
+                        "<li><a href='{{ route('admin.notes.edit', $s->note_id) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i> Upraviť poznámku</a></li>" +
                     @endif
                             @if(session('isAdmin'))
                         "<li><a class='sweet_delete' href='{{ route('admin.sales.delete', $s->id) }}'><i class='fa fa-trash-o' aria-hidden='true'></i> Smazat</a></li>" +
@@ -135,18 +145,49 @@
                 }
             });
 
+            // Define a StringFilter control for the 'Name' column
+            var stringFilter = new google.visualization.ControlWrapper({
+                'controlType': 'StringFilter',
+                'containerId': 'control1',
+                dataTable: dataOther,
+                'options': {
+                    'filterColumnIndex': 1
+                }
+            });
+
             //write filter range at beggining
             google.visualization.events.addListener(control, 'ready', function () {
                 var rangeStart;
                 var rangeEnd;
                 var state = control.getState();
-                rangeStart = state.range.start;
-                rangeStart = rangeStart.toLocaleDateString('sk-SK');
-                rangeEnd = state.range.end;
-                rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+                rangeStart = new Date(state.range.start);
+                rangeEnd = new Date(state.range.end);
 
-                document.getElementById('rangeStart').innerHTML = rangeStart;
-                document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                var dd = rangeStart.getDate();
+                var mm = rangeStart.getMonth()+1;
+                var yyyy = rangeStart.getFullYear();
+                if(dd<10){
+                    dd='0'+dd;
+                }
+                if(mm<10){
+                    mm='0'+mm;
+                }
+                var dateStart = dd+'.'+mm+'.'+yyyy;
+//                document.getElementById('rangeStart').value = dateStart;
+                document.getElementById('rangeStart').innerHTML = dateStart;
+
+                dd = rangeEnd.getDate();
+                mm = rangeEnd.getMonth()+1;
+                yyyy = rangeEnd.getFullYear();
+                if(dd<10){
+                    dd='0'+dd;
+                }
+                if(mm<10){
+                    mm='0'+mm;
+                }
+                var dateEnd = dd+'.'+mm+'.'+yyyy;
+//                document.getElementById('rangeEnd').value = dateEnd;
+                document.getElementById('rangeEnd').innerHTML = dateEnd;
             });
 
 
@@ -154,27 +195,49 @@
                 var rangeStart;
                 var rangeEnd;
                 var state = control.getState();
-                console.log(state);
                 var view = new google.visualization.DataView(dataOther);
                 view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
-                rangeStart = state.range.start;
-                rangeStart = rangeStart.toLocaleDateString('sk-SK');
-                rangeEnd = state.range.end;
-                rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+                rangeStart = new Date(state.range.start);
+                rangeEnd = new Date(state.range.end);
 
-                document.getElementById('rangeStart').innerHTML = rangeStart;
-                document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                var dd = rangeStart.getDate();
+                var mm = rangeStart.getMonth()+1;
+                var yyyy = rangeStart.getFullYear();
+                if(dd<10){
+                    dd='0'+dd;
+                }
+                if(mm<10){
+                    mm='0'+mm;
+                }
+                var dateStart = dd+'.'+mm+'.'+yyyy;
+//                document.getElementById('rangeStart').value = dateStart;
+                document.getElementById('rangeStart').innerHTML = dateStart;
+
+                dd = rangeEnd.getDate();
+                mm = rangeEnd.getMonth()+1;
+                yyyy = rangeEnd.getFullYear();
+                if(dd<10){
+                    dd='0'+dd;
+                }
+                if(mm<10){
+                    mm='0'+mm;
+                }
+                var dateEnd = dd+'.'+mm+'.'+yyyy;
+//                document.getElementById('rangeEnd').value = dateEnd;
+                document.getElementById('rangeEnd').innerHTML = dateEnd;
                 table.setDataTable(view);
+                stringFilter.setDataTable(view);
                 table.draw();
             });
 
-
-
-
-
-            var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard_div'));
+            var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard1_div'));
             dashboard.bind(control, chart);
             dashboard.draw(data);
+
+            var dashboard2 = new google.visualization.Dashboard(document.getElementById('dashboard2_div'));
+            dashboard2.bind(stringFilter, table);
+
+            dashboard2.draw(dataOther);
             table.draw();
 
             //event for btn this week
@@ -195,13 +258,34 @@
                     var state = control.getState();
                     var view = new google.visualization.DataView(dataOther);
                     view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
-                    rangeStart = state.range.start;
-                    rangeStart = rangeStart.toLocaleDateString('sk-SK');
-                    rangeEnd = state.range.end;
-                    rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+                    rangeStart = new Date(state.range.start);
+                    rangeEnd = new Date(state.range.end);
 
-                    document.getElementById('rangeStart').innerHTML = rangeStart;
-                    document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                    var dd = rangeStart.getDate();
+                    var mm = rangeStart.getMonth()+1;
+                    var yyyy = rangeStart.getFullYear();
+                    if(dd<10){
+                        dd='0'+dd;
+                    }
+                    if(mm<10){
+                        mm='0'+mm;
+                    }
+                    var dateStart = dd+'.'+mm+'.'+yyyy;
+//                    document.getElementById('rangeStart').value = dateStart;
+                    document.getElementById('rangeStart').innerHTML = dateStart;
+
+                    dd = rangeEnd.getDate();
+                    mm = rangeEnd.getMonth()+1;
+                    yyyy = rangeEnd.getFullYear();
+                    if(dd<10){
+                        dd='0'+dd;
+                    }
+                    if(mm<10){
+                        mm='0'+mm;
+                    }
+                    var dateEnd = dd+'.'+mm+'.'+yyyy;
+//                    document.getElementById('rangeEnd').value = dateEnd;
+                    document.getElementById('rangeEnd').innerHTML = dateEnd;
                     table.setDataTable(view);
                     table.draw();
                 }
@@ -225,13 +309,34 @@
                     var state = control.getState();
                     var view = new google.visualization.DataView(dataOther);
                     view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
-                    rangeStart = state.range.start;
-                    rangeStart = rangeStart.toLocaleDateString('sk-SK');
-                    rangeEnd = state.range.end;
-                    rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
+                    rangeStart = new Date(state.range.start);
+                    rangeEnd = new Date(state.range.end);
 
-                    document.getElementById('rangeStart').innerHTML = rangeStart;
-                    document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                    var dd = rangeStart.getDate();
+                    var mm = rangeStart.getMonth()+1;
+                    var yyyy = rangeStart.getFullYear();
+                    if(dd<10){
+                        dd='0'+dd;
+                    }
+                    if(mm<10){
+                        mm='0'+mm;
+                    }
+                    var dateStart = dd+'.'+mm+'.'+yyyy;
+//                    document.getElementById('rangeStart').value = dateStart;
+                    document.getElementById('rangeStart').innerHTML = dateStart;
+
+                    dd = rangeEnd.getDate();
+                    mm = rangeEnd.getMonth()+1;
+                    yyyy = rangeEnd.getFullYear();
+                    if(dd<10){
+                        dd='0'+dd;
+                    }
+                    if(mm<10){
+                        mm='0'+mm;
+                    }
+                    var dateEnd = dd+'.'+mm+'.'+yyyy;
+//                    document.getElementById('rangeEnd').value = dateEnd;
+                    document.getElementById('rangeEnd').innerHTML = dateEnd;
                     table.setDataTable(view);
                     table.draw();
                 }
@@ -265,32 +370,56 @@
                     state = control.getState();
                     view = new google.visualization.DataView(dataOther);
                     view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
-                    rangeStart = state.range.start;
-                    rangeStart = rangeStart.toLocaleDateString('sk-SK');
-                    rangeEnd = state.range.end;
-                    rangeEnd = rangeEnd.toLocaleDateString('sk-SK');
 
-                    document.getElementById('rangeStart').innerHTML = rangeStart;
-                    document.getElementById('rangeEnd').innerHTML = rangeEnd;
+                    rangeStart = new Date(state.range.start);
+                    rangeEnd = new Date(state.range.end);
+
+                    var dd = rangeStart.getDate();
+                    var mm = rangeStart.getMonth()+1;
+                    var yyyy = rangeStart.getFullYear();
+                    if(dd<10){
+                        dd='0'+dd;
+                    }
+                    if(mm<10){
+                        mm='0'+mm;
+                    }
+                    var dateStart = dd+'.'+mm+'.'+yyyy;
+//                    document.getElementById('rangeStart').value = dateStart;
+                    document.getElementById('rangeStart').innerHTML = dateStart;
+
+                    dd = rangeEnd.getDate();
+                    mm = rangeEnd.getMonth()+1;
+                    yyyy = rangeEnd.getFullYear();
+                    if(dd<10){
+                        dd='0'+dd;
+                    }
+                    if(mm<10){
+                        mm='0'+mm;
+                    }
+                    var dateEnd = dd+'.'+mm+'.'+yyyy;
+//                    document.getElementById('rangeEnd').value = dateEnd;
+                    document.getElementById('rangeEnd').innerHTML = dateEnd;
                     table.setDataTable(view);
                     table.draw();
                 }
 
-
-//                var state = control.getState();
-//                alert(chart);
-//                var view = new google.visualization.DataView(dataOther);
-//                view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
-//                table.setDataTable(view);
-//                table.draw();
             });
-
         }
     </script>
 @endsection
 
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm
+
+
+//        $( "#rangeStart" ).datepicker({
+//            dateFormat: 'dd.mm.yy'
+//        });
+//
+//        $( "#rangeEnd" ).datepicker({
+//            dateFormat: 'dd.mm.yy'
+//        });
+
 
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Model\Certs;
 use App\Model\Companies;
+use App\Model\Notes;
 use App\Model\Sales;
 use App\User;
 
@@ -54,21 +55,57 @@ class SalesController extends AdminController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Companies $companies, Certs $certs)
+    public function index(Companies $companies, Certs $certs, Notes $notes)
     {
         if (session('isAdmin') || session('isManager')){
 //            $sales = $this->sales->getAll()->get();
-            $sales = $this->sales->getAll(session('selectedCompany'))->get();
+//            $sales = $this->sales->getAll(session('selectedCompany'))->get();
+            $sales = $this->sales->getAllForChart(session('selectedCompany'))->get();
+            $sales_all = $this->sales->getAll(session('selectedCompany'))->get();
         }elseif (session('isCashier') && session('haveStorno')){
             $sales = $this->sales->getAll(session('selectedCompany'))->take(10)->get();
         }else{
             $sales = $this->sales->getAll(session('selectedCompany'))->where('user_id', Auth::user()->id)->take(5)->get();
+            foreach ($sales as $sale){
+                if ($sale->products != ''){
+                    $product = explode(";", $sale->products);
+
+                    $products = '';
+                    foreach ($product as $key => $p){
+                        $temp = explode("||", $p);
+
+                        $products .= $temp[0] . ';';
+
+                    }
+                    $sale->products = $products;
+                }
+
+            }
         }
+
+        $all_notes = $notes->getAllFromCompany(session('selectedCompany'))->get();
+        $note = [];
+
+        foreach ($all_notes as $n){
+            if ($n->sale_id){
+                if (isset($note[$n->sale_id]) && strlen($note[$n->sale_id])< 50){
+                    $note[$n->sale_id] = $note[$n->sale_id] .';'. $n->note;
+                }else{
+                    $note[$n->sale_id] = $n->note;
+                }
+                if (strlen($note[$n->sale_id]) > 50)
+                    $note[$n->sale_id] = substr($note[$n->sale_id], 0, 47) . '...';
+            }
+        }
+
+//        dd($note);
+
+
 
         $companies = $companies->findOrFail(session('selectedCompany'));
         $cert = $certs->find($companies->cert_id);
 
-        return view('admin.sales.index', compact('sales', 'cert'));
+        return view('admin.sales.index', compact('sales', 'cert', 'sales_all', 'note'));
     }
 
     /**
@@ -134,7 +171,7 @@ class SalesController extends AdminController
 
         $lastid = $this->sales->getAll(session('selectedCompany'))->first()->id;
 
-        $receiptNumber = session('selectedCompany').'C/'.$userid.'U/'.($lastid+1).'/'. date('dmy');
+        $receiptNumber = ($lastid+1);
         $premiseId = '1';
         $cashregister = 'pokl-'. $userid;
 
@@ -166,7 +203,7 @@ class SalesController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function detail($id, User $user)
+    public function detail($id, User $user, Notes $notes)
     {
         $sales = $this->sales->findOrFail($id);
         $user = $user->findOrFail($sales->user_id);
@@ -184,7 +221,11 @@ class SalesController extends AdminController
             }
         }
 
-        return view('admin.sales.detail', compact('sales', 'user', 'products'));
+        $notes = $notes->getAllBySaleId($id)->get();
+
+
+
+        return view('admin.sales.detail', compact('sales', 'user', 'products', 'notes'));
     }
 
 

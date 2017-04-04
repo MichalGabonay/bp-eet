@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Model\Certs;
 use App\Model\Companies;
+use App\Model\Sales;
 use App\Model\UsersCompany;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -49,7 +50,7 @@ class DashboardController extends AdminController
         }
     }
 
-    public function index(Companies $companies, UsersCompany $usersCompany, Certs $certs) {
+    public function index(Companies $companies, UsersCompany $usersCompany, Certs $certs, Sales $sales, User $user) {
 
 //        dd(session()->all());
 //        dd(session('selectedCompany'));
@@ -67,13 +68,50 @@ class DashboardController extends AdminController
             $selected_company = null;
         }
 
+        $all_sales = $sales->getAllForChart(session('selectedCompany'))->get();
+
         $usersCompany = $usersCompany->getCompaniesUserIn(Auth::user()->id);
 
-//        dd($selected_company);
+        $sales_by_day_week = [];
+        for ($i=0;$i<=6;$i++){
+            $sales_by_day_week[$i] = 0;
+        }
 
-//        dd(count($usersCompany));
+        foreach ($all_sales as $as){
+            $day_of_week = date("w", strtotime($as->date));
+            switch ($day_of_week){
+                case 0:
+                    $sales_by_day_week[0] += $as->total_price;
+                    break;
+                case 1:
+                    $sales_by_day_week[1] += $as->total_price;
+                    break;
+                case 2:
+                    $sales_by_day_week[2] += $as->total_price;
+                    break;
+                case 3:
+                    $sales_by_day_week[3] += $as->total_price;
+                    break;
+                case 4:
+                    $sales_by_day_week[4] += $as->total_price;
+                    break;
+                case 5:
+                    $sales_by_day_week[5] += $as->total_price;
+                    break;
+                case 6:
+                    $sales_by_day_week[6] += $as->total_price;
+                    break;
+            }
+        }
 
-        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert'));
+
+        $last_sales = $sales->getAll(session('selectedCompany'))->get()->take(5);
+
+        $users_sales = $user->getCashiersBySales(session('selectedCompany'));
+
+//        dd(count($last_sales));
+
+        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert', 'all_sales', 'sales_by_day_week', 'last_sales', 'users_sales'));
 
     }
 }

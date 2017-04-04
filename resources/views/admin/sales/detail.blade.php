@@ -48,6 +48,38 @@
                     </table>
                 </div>
             </div>
+
+            <div class="panel panel-flat">
+                <div class="panel-body">
+                    <h4 class="pull-left">Poznámky</h4>
+                    {{--<a class="btn new-note-btn pull-right">Nová</a>--}}
+                    <div class="clearfix"></div>
+                    <div class="new-note-form">
+                        {!! Form::open( ['route' => ['admin.notes.store', $sales->id], 'class' => 'form-inline', 'id' => 'form_add_note'] ) !!}
+                        {!! Form::text('note', null, ['class' => 'form-control new-note-input', 'required']) !!}
+                        {!! Form::button( 'Zapíš novú', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-edit new-note-btn'] ) !!}
+                        {!! Form::close() !!}
+                    </div>
+                    <table class="table datatable-sorting2">
+                        <thead>
+                        <tr>
+                            <th>Poznámka</th>
+                            <th>Pridaná</th>
+                            <th width="30" class="text-center">Akcie</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($notes as $n)
+                            <tr >
+                                <td>{{$n->note or '-'}}</td>
+                                <td>{{date('d.m.Y H:i', strtotime($n->created_at))}}</td>
+                                <td class="text-center"><a class="sweet_delete" href="{{ route('admin.sales.delete', $n->id) }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         @if(!empty($products))
@@ -94,23 +126,17 @@
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm
 
-        $('.datatable-sorting').DataTable({
-            order: [3, "asc"]
+        $(".new-note-btn").click(function(){
+//            $(".new-note-btn").hide(1000);
+            $(".new-note-form").show(300);
         });
 
-        $(".js-example-placeholder-single").select2({
-            placeholder: "Vyberte užívatela",
-            allowClear: true
+        $('.datatable-sorting2').DataTable({
+            order: [1, "asc"],
+            bPaginate: false,
+            "bInfo" : false,
+            "searching": false
         });
 
-        $(".change-logo-btn").click(function(){
-            $(".change-logo-btn").hide(1000);
-            $(".change-logo-form").show(1000);
-        });
-
-        $(".change-cert-btn").click(function(){
-            $(".change-cert-btn").hide(1000);
-            $(".change-cert-form").show(1000);
-        });
 
 @endsection

@@ -54,17 +54,16 @@ class Sales extends Model
             ->orderBy("receipt_time")
             ->groupBy('date');
     }
-//    public function getAllForChart($company_id)
-//    {
-//        return $this->select('receipt_time as date', 'total_price')
-//            ->where($this->table . '.company_id', $company_id)
-//            ->where($this->table . '.deleted_at', NULL)
-//            ->where($this->table . '.storno', 0)
-//            ->orderBy("receipt_time")
-////            ->groupBy('date')
-//            ;
-//
-//    }
+
+
+    public function getAllForSmallChart($company_id)
+    {
+        return $this->select('receipt_time as date', 'total_price')
+            ->where($this->table . '.company_id', $company_id)
+            ->where($this->table . '.deleted_at', NULL)
+            ->where($this->table . '.storno', 0)
+            ->orderBy("receipt_time");
+    }
 
     /**
      * Get all for export

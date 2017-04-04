@@ -9,7 +9,7 @@
             <div class="panel panel-flat">
                 <div class="panel-heading text-center">
                     <h2>Nemáte pridelenú žiadnu spoločnosť!</h2>
-                    <h4>Kontaktuje správcu spoločnosti ku ktorej by ste mali byť priradený, alebo pridajte do systému novú spoločnosť.</h4>
+                    <h4>Kontaktuje správcu spoločnosti ku ktorej by ste mali byť priradený, alebo <a href="{{route('admin.companies.create')}}">pridajte do systému novú spoločnosť.</a></h4>
                 </div>
                 <div class="panel-body">
 
@@ -66,51 +66,117 @@
     </div>
 
 
-    @if(session('isAdmin') || session('isManager'))
-    <div class="panel panel-flat">
-        <table class="table datatable-sorting table-hover table-hover-hand">
-            <thead>
-            <tr>
-                <th width="140">nieco 1</th>
-                <th>nieco 2</th>
-                <th>noeco 3</th>
-                {{--<th>Uvedeno do provozu / rok výroby</th>--}}
-                <th>nieco 4</th>
-                <th width="120" class="text-center">Akce</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{--@foreach($products as $p)--}}
-                <tr >
-                    <td width="140">dsagsg</td>
-                    <td>asdg</td>
-                    <td>sadg</td>
-                    {{--<th>Uvedeno do provozu / rok výroby</th>--}}
-                    <td>sadgsdag</td>
-                    <td width="120" class="text-center">E/D</td>
-                </tr>
-            <tr >
-                <td width="140">dsagsg</td>
-                <td>asdg</td>
-                <td>sadg</td>
-                {{--<th>Uvedeno do provozu / rok výroby</th>--}}
-                <td>sadgsdag</td>
-                <td width="120" class="text-center">E/D</td>
-            </tr>
-            {{--@endforeach--}}
-            </tbody>
-        </table>
-    </div>
-    @endif
+    @if((session('isAdmin') || session('isManager')) && count($last_sales) > 0)
+        <div class="panel panel-flat">
+            <div class="row">
+                <div class="col-md-5">
+                    <div id="piechart" style="width: 100%; height: 350px;"></div>
+                </div>
+                <div class="col-md-7">
+                    <div id="linechart" style="width: 100%; height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <h4>Posledné pridané tržby</h4>
+                        <table class="table datatable-sorting">
+                            <thead>
+                            <tr>
+                                <th>Tržba</th>
+                                {{--<th>Produkty</th>--}}
+                                <th>Celková cena</th>
+                                <th>Užívatel</th>
+                                <th>Pridaná</th>
+                                <th>Poznámka</th>
 
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h4>Nadpis</h4>
+                                <th width="80" class="text-center">Akcie</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($last_sales as $s)
+                                <tr >
+                                    <td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>
+                                    {{--<td>{{$s->products or '-'}}</td>--}}
+                                    <td>{{$s->total_price or '-'}}Kč</td>
+                                    @if(session('isAdmin'))
+                                        <td><a href="{{route('admin.users.detail',$s->user_id )}}">{{$s->user_name or '-'}}</a></td>
+                                    @else
+                                        <td>{{$s->user_name or '-'}}</td>
+                                    @endif
+
+                                    @if(!is_null($s->receipt_time))
+                                        <td>{{date('d.m.Y H:i', strtotime($s->receipt_time))}}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
+
+                                    <td>{{$s->note or ''}}</td>
+
+                                    <td class="text-center">
+                                        <ul class="icons-list">
+                                            <li class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                                </a>
+
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                    <li><a href="{{ route('admin.sales.detail', $s->id) }}"><i class="fa fa-th-large" aria-hidden="true"></i>&nbsp;&nbsp; Detail</a></li>
+                                                    @if($s->storno == 0)
+                                                        <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
+                                                    @endif
+                                                    <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}" target="_blank"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Generovať účtenku</a></li>
+                                                    <li><a href="{{ route('admin.sales.detail', $s->id) }}"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>&nbsp;&nbsp; Pridať poznámku</a></li>
+                                                    @if(session('isAdmin'))
+                                                        <li><a class="sweet_delete" href="{{ route('admin.sales.delete', $s->id) }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;&nbsp; Smazat</a></li>
+                                                    @endif
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="panel-body">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec aliquam finibus cursus. Vestibulum hendrerit tincidunt felis nec mollis. Morbi tincidunt eget turpis vitae fermentum. Praesent quam massa, venenatis a eleifend tincidunt, maximus sit amet neque. Aenean vestibulum tincidunt magna, eget maximus tortor facilisis bibendum. Aenean sagittis laoreet gravida. Fusce at dignissim nibh. Nunc non nibh tellus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas rutrum quam sed ullamcorper laoreet. Pellentesque luctus in est nec egestas. Aenean at magna orci. In hac habitasse platea dictumst. Curabitur lobortis ut lorem at aliquam. Aenean at augue sit amet dolor convallis condimentum id at mi. Integer vulputate quam vel purus consequat posuere.
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <h4>Predaje zamestnancov</h4>
+                        <table class="table datatable-sorting2">
+                            <thead>
+                            <tr>
+                                <th>Meno</th>
+                                <th>Predaj</th>
+
+                                {{--<th>Užívatel</th>--}}
+                                {{--<th>Pridaná</th>--}}
+                                {{--<th>Poznámka</th>--}}
+
+                                {{--<th width="80" class="text-center">Akcie</th>--}}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($users_sales as $us)
+                                <tr >
+                                    <td>{{$us->name or '-'}}</td>
+                                    <td>{{$us->sales or ''}}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    @endif
     @endif
 
     {{--<a href="{{ route('admin.products.create') }}" class="btn bg-teal-400 btn-labeled"><b><i class="icon-pencil7"></i></b> Vložit zařízení</a>--}}
@@ -127,6 +193,52 @@
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart2);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Deň', 'Tržba'],
+                ['Pondelok',    {{$sales_by_day_week[1]}}],
+                ['Utorok',      {{$sales_by_day_week[2]}}],
+                ['Streda',      {{$sales_by_day_week[3]}}],
+                ['Štvrtok',     {{$sales_by_day_week[4]}}],
+                ['Piatok',      {{$sales_by_day_week[5]}}],
+                ['Sobota',      {{$sales_by_day_week[6]}}],
+                ['Nedela',      {{$sales_by_day_week[0]}}]
+            ]);
+
+            var options = {
+                title: 'Tržby podľa dní v týždni'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
+
+        function drawChart2() {
+            var data = google.visualization.arrayToDataTable([
+                [{label: 'Deň', type: 'date'}, 'Tržba'],
+                @foreach($all_sales as $s)
+                    [new Date('{{$s->date}}'), {{$s->total_price}}],
+                @endforeach
+            ]);
+
+            var options = {
+                title: 'Celkový priebeh tržieb',
+                legend: { position: "none" }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+            chart.draw(data, options);
+        }
+
+
+    </script>
+
 @endsection
 
 
@@ -134,7 +246,16 @@
     //<script> onlyForSyntaxPHPstorm
 
         $('.datatable-sorting').DataTable({
-            order: [0, "asc"]
+            order: [3, "desc"],
+            bPaginate: false,
+            "bInfo" : false
+        });
+
+        $('.datatable-sorting2').DataTable({
+            order: [1, "desc"],
+            bPaginate: false,
+            "bInfo" : false,
+            "searching": false
         });
 
 
