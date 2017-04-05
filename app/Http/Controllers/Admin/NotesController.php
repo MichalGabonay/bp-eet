@@ -97,7 +97,10 @@ class NotesController extends AdminController
 
         Flash::success('Poznámka bola úspešne zapísaná!');
 
-        if ($id == null){
+        if (isset($request['backto']) && $request['backto'] == 1){
+            return redirect(route('admin.sales.index'));
+        }
+        elseif ($id == null){
             return redirect(route('admin.notes.index'));
         }else{
             return redirect(route('admin.sales.detail', $id));
@@ -126,9 +129,11 @@ class NotesController extends AdminController
     {
         $this->page_description = 'upraviť';
 
-        $note = $this->notes->findOrFail($id);
+        $notes = $this->notes->findOrFail($id);
 
-        return view('admin.notes.edit', compact('note'));
+        $edit = 1;
+
+        return view('admin.notes.edit', compact('notes', 'edit'));
     }
 
     /**
@@ -140,7 +145,18 @@ class NotesController extends AdminController
      */
     public function update(Request $request, $id)
     {
-        //
+        $validate = [
+            'note' => 'required',
+        ];
+
+        $this->validate($request, $validate);
+        $notes = $this->notes->findOrFail($id);
+
+        $notes->update($request->all());
+
+
+        Flash::success('Poznámka bola úspešne upravená!');
+        return redirect(route('admin.notes.index'));
     }
 
     /**

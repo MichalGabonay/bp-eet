@@ -44,7 +44,8 @@ class Companies extends Model
      */
     public function getAll()
     {
-        return $this->select($this->table . '.*');
+        return $this->select($this->table . '.*')
+            ->where($this->table . '.deleted_at', NULL);
     }
 
     /**
@@ -55,6 +56,7 @@ class Companies extends Model
     public function getAllWhereAdmin($user_id)
     {
         return $this->select($this->table . '.*', 'certs.valid as cert_valid', 'expiration_date')
+            ->where($this->table . '.deleted_at', NULL)
             ->leftJoin('user_company', 'company_id', '=', $this->table . '.id')
             ->where('user_company.user_id', $user_id)
             ->leftJoin('user_company_role', 'user_company_id', '=', 'user_company.id')
@@ -71,6 +73,7 @@ class Companies extends Model
     public function getAllWithUserInfo()
     {
         return $this->select($this->table . '.*', 'user_company.user_id')
+            ->where($this->table . '.deleted_at', NULL)
             ->leftJoin('user_company', 'company_id', '=', $this->table . '.id');
     }
 

@@ -1,11 +1,6 @@
 @extends('admin.templates.master')
 
-
 @section('content')
-
-    {{--<a href="{{ route('admin.sales.test')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> test </a>--}}
-
-
     @if((session('isAdmin') || session('isManager')))
 
         <div class="row">
@@ -21,10 +16,10 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3 text-center">
                 <div>
-                    <input type="button" id="ChangeRangeThisWeek" value="Týždeň" />
-                    <input type="button" id="ChangeRangeThisMonth" value="Mesiac" /><br><br>
+                    <input type="button" class="btn bg-teal-400" id="ChangeRangeThisWeek" value="Týždeň" />
+                    <input type="button" class="btn bg-teal-400" id="ChangeRangeThisMonth" value="Mesiac" /><br><br>
                     {!! Form::open( ['route' => 'admin.notes.store', 'id' => 'form_add_period_note'] ) !!}
                     <div class="row" >
                         <div class="col-md-6">
@@ -38,100 +33,89 @@
                             <span id="rangeEnd"></span>
                         </div>
                     </div>
-                    <a class="btn bg-teal-400 add_period_note_btn">Pridať poznámku k obdobiu </a>
+                    <a class="btn add_period_note_btn">Pridať poznámku k obdobiu </a>
 
                     <div class="add_period_note_form" style="display: none">
                         {!! Form::hidden('from', null, ['id' => 'date_from']) !!}
                         {!! Form::hidden('to', null, ['id' => 'date_to']) !!}
+                        {!! Form::hidden('backto', 1, ['id' => 'backto']) !!}
                         {!! Form::textarea('note', null, ['class' => 'form-control note-for-period']) !!}
-                        {!! Form::button( 'Zapíš', ['type' => 'submit', 'class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}
+                        {!! Form::button( 'Zapíš', ['type' => 'submit', 'class' => 'btn bg-teal-400', 'id' => 'btn-add-period-note'] ) !!}
                     </div>
 
 
                     {!! Form::close() !!}
                 </div>
+                <br>
                 <div class="period-notes-table">
+                    <h4 class="text-center">Poznámky k obdobiam</h4>
+                    @foreach($period_notes as $n)
+                        <div class="period-note-period">
+                            <span><strong>{{date('d.m.Y', strtotime($n->from))}} - {{date('d.m.Y', strtotime($n->to))}}</strong></span>
+                        </div>
 
+                        <div class="period-note-note">
+                            <span>{{$n->note}}</span>
+                        </div>
+
+                    @endforeach
+
+                    <div class="text-center">
+                        <a href="{{ route('admin.notes.index')}}" class="btn bg-teal-400"></b> Zobraziť všetky </a>
+                    </div>
                 </div>
             </div>
         </div>
-
-        {{--<div class="row">--}}
-            {{--<div class="col-md-12">--}}
-                {{--<div class="panel panel-flat">--}}
-                    {{--<div class="panel-body">--}}
-                        {{--<table class="table datatable-sorting">--}}
-                            {{--<thead>--}}
-                            {{--<tr>--}}
-                                {{--<th>Tržba</th>--}}
-                                {{--<th>Produkty</th>--}}
-                                {{--<th>Celková cena</th>--}}
-                                {{--<th>Užívatel</th>--}}
-                                {{--<th>Pridaná</th>--}}
-                                {{--<th>Poznámka</th>--}}
-
-                                {{--<th width="80" class="text-center">Akcie</th>--}}
-                            {{--</tr>--}}
-                            {{--</thead>--}}
-                            {{--<tbody>--}}
-                            {{--@foreach($sales as $s)--}}
-                                {{--<tr >--}}
-                                    {{--<td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>--}}
-                                    {{--<td>{{$s->products or '-'}}</td>--}}
-                                    {{--<td>{{$s->total_price or '-'}}Kč</td>--}}
-                                    {{--@if(session('isAdmin'))--}}
-                                        {{--<td><a href="{{route('admin.users.detail',$s->user_id )}}">{{$s->user_name or '-'}}</a></td>--}}
-                                    {{--@else--}}
-                                        {{--<td>{{$s->user_name or '-'}}</td>--}}
-                                    {{--@endif--}}
-
-                                    {{--@if(!is_null($s->receipt_time))--}}
-                                    {{--<td>{{date('d.m.Y H:i', strtotime($s->receipt_time))}}</td>--}}
-                                    {{--@else--}}
-                                        {{--<td>-</td>--}}
-                                    {{--@endif--}}
-
-                                    {{--<td>{{$s->note or ''}}</td>--}}
-
-                                    {{--<td class="text-center">--}}
-                                        {{--<ul class="icons-list">--}}
-                                            {{--<li class="dropdown">--}}
-                                                {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">--}}
-                                                    {{--<i class="fa fa-bars" aria-hidden="true"></i>--}}
-                                                {{--</a>--}}
-
-                                                {{--<ul class="dropdown-menu dropdown-menu-right">--}}
-                                                    {{--<li><a href="{{ route('admin.sales.detail', $s->id) }}"><i class="fa fa-th-large" aria-hidden="true"></i>&nbsp;&nbsp; Detail</a></li>--}}
-                                                    {{--@if($s->storno == 0)--}}
-                                                    {{--<li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>--}}
-                                                    {{--@endif--}}
-                                                    {{--<li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}" target="_blank"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Generovať účtenku</a></li>--}}
-                                                    {{--@if($s->note_id == NULL)--}}
-                                                        {{--<li><a href="{{ route('admin.notes.create', $s->id) }}"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>&nbsp;&nbsp; Pridať poznámku</a></li>--}}
-                                                    {{--@else--}}
-                                                        {{--<li><a href="{{ route('admin.notes.edit', $s->id) }}"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>&nbsp;&nbsp; Upraviť poznámku</a></li>--}}
-                                                    {{--@endif--}}
-                                                    {{--@if(session('isAdmin'))--}}
-                                                        {{--<li><a class="sweet_delete" href="{{ route('admin.sales.delete', $s->id) }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;&nbsp; Smazat</a></li>--}}
-                                                    {{--@endif--}}
-                                                {{--</ul>--}}
-                                            {{--</li>--}}
-                                        {{--</ul>--}}
-                                    {{--</td>--}}
-                                {{--</tr>--}}
-                            {{--@endforeach--}}
-                            {{--</tbody>--}}
-                        {{--</table>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
     @endif
-
 
     <div id="create-new">
         @if(!is_null($cert) && $cert->valid == 1)
-        @include('admin.sales._form')
+            <div class='row'>
+                {!! Form::open( ['route' => 'admin.sales.store', 'id' => 'form_add_sales', 'files' => true] ) !!}
+                {{ Form::hidden('products', null, ['id' => 'products_id']) }}
+                {{ Form::hidden('total_price', null, ['id' => 'total_price_id']) }}
+                <div class='col-md-5'>
+                    <div class="box-body">
+                        <div class="tab-pane has-padding active" id="tab_details">
+                            <div class="form-group">
+                                {!! Form::label('product', 'Produkt') !!}
+                                {!! Form::text('product', null, ['class' => 'form-control', 'id' => 'product_name_id']) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('price', 'Cena') !!}
+                                {!! Form::text('price', null, ['class' => 'form-control', 'id' => 'price_id']) !!}
+                            </div>
+                        </div><!-- /.tab-pane -->
+
+                        <div class="form-group mt15">
+                            {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}
+                        </div>
+
+                    </div><!-- /.box-body -->
+                </div><!-- /.col -->
+                <div class='col-md-5'>
+                    <table class="table">
+                        <thead id="products-list">
+                        <tr>
+                            <td width="350"><strong>Produkt</strong></td>
+                            <td><strong>Cena</strong></td>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td></td>
+                            <td ><label id="total_price_label">0 Kč</label></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group submit-btn">
+                        {{--{!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}--}}
+                    </div>
+                </div><!-- /.col -->
+                {!! Form::close() !!}
+            </div><!-- /.row -->
+
         @else
             <h2 class="text-center"> Bohužiaľ nie je možné zadávať nové tržby, obráťte sa na andministrátora systému k tejto firme. </h2>
         @endif
@@ -206,13 +190,8 @@
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
 
     @if((session('isAdmin') || session('isManager')))
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -257,15 +236,15 @@
                     "<ul class='icons-list'><li class='dropdown'>" +
                     "<a href='#' class='dropdown-toggle' data-toggle='dropdown'><i class='fa fa-bars' aria-hidden='true'></i></a>" +
                     "<ul class='dropdown-menu dropdown-menu-right'>" +
-                    "<li><a href='{{ route('admin.sales.detail', $s->id) }}'><i class='fa fa-th-large' aria-hidden='true'></i> Detail</a></li>" +
+                    "<li><a href='{{ route('admin.sales.detail', $s->id) }}'><i class='fa fa-th-large' aria-hidden='true'></i>&nbsp;&nbsp; Detail</a></li>" +
                     @if($s->storno == 0)
                         "<li><a href='{{ route('admin.sales.storno', $s->id) }}'><i class='fa fa-ban' aria-hidden='true'></i>&nbsp;&nbsp; Storno</a></li>" +
                     @endif
-                        "<li><a href='{{ route('admin.sales.generate_receipt', $s->id) }}' target='_blank'><i class='fa fa-list-alt' aria-hidden='true'></i> Generovať účtenku</a></li>" +
-                    "<li><a href='{{ route('admin.sales.detail', $s->id) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i> Pridať poznámku</a></li>" +
+                        "<li><a href='{{ route('admin.sales.generate_receipt', $s->id) }}' target='_blank'><i class='fa fa-list-alt' aria-hidden='true'></i>&nbsp;&nbsp; Generovať účtenku</a></li>" +
+                    "<li><a href='{{ route('admin.sales.detail', $s->id) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i>&nbsp;&nbsp; Pridať poznámku</a></li>" +
 
                             @if(session('isAdmin'))
-                        "<li><a class='sweet_delete' href='{{ route('admin.sales.delete', $s->id) }}'><i class='fa fa-trash-o' aria-hidden='true'></i> Smazat</a></li>" +
+                        "<li><a class='sweet_delete' href='{{ route('admin.sales.delete', $s->id) }}'><i class='fa fa-trash-o' aria-hidden='true'></i>&nbsp;&nbsp; Smazat</a></li>" +
                     @endif
                         "</ul></li></ul>"],
                 @endforeach
@@ -592,6 +571,68 @@
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm
 
+        $(document).ready(function() {
+            jQuery('#products_id').val('');
+            jQuery('#total_price_id').val('');
 
+            $("#btn-add-product").click(function() {
+
+                var product = jQuery('#product_name_id').val();
+                var price = jQuery('#price_id').val();
+                var products = jQuery('#products_id').val();
+                var total_price = jQuery('#total_price_id').val();
+
+                price = price.replace(',', '.');
+                price = parseFloat(price);
+                if (total_price == ''){
+                    new_total_price = price;
+                }else {
+                    new_total_price = parseFloat(total_price)+price;
+                }
+
+//                alert(isNaN(new_total_price));
+//                alert(new_total_price);
+
+                if (product != '' && price != '' && !(isNaN(new_total_price)) ){
+                    if (products == ''){
+                        $('#products_id').val(product+'||'+price);
+                        $( ".submit-btn" ).append( "<button class='btn' type='submit'>Potvrdiť</button>" );
+                        $('#total_price_id').val(price)
+                    }else {
+                        $('#products_id').val(products+';'+product+'||'+price);
+                        $('#total_price_id').val(new_total_price)
+
+
+                    }
+                    //                products = jQuery('#products_id').val();
+
+                    $( "#products-list" ).append( "<tr><td>"+product+"</td><td>"+price+"</td></tr>" );
+
+                    total_price = $('#total_price_id').val();
+                    $('#total_price_label').text(total_price+' Kč');
+                    $('#product_name_id').val('');
+                    $('#price_id').val('');
+                }
+
+//                alert(products);
+            });
+        });
+
+                @if(!session('isAdmin') && !session('isManager') && count($sales) > 0)
+        var table = $('.datatable-sorting').DataTable({
+                //"bSort": false
+                order: [3, "desc"],
+                columnDefs: [
+                    { "type": "de_date", targets: 3 }],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+                }
+            });
+        @endif
+
+    $(".add_period_note_btn").click(function(){
+            $(".add_period_note_btn").hide(800);
+            $(".add_period_note_form").show(800);
+        });
 
 @endsection

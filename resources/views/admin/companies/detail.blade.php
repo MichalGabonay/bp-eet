@@ -1,22 +1,19 @@
 @extends('admin.templates.master')
-{{--@section('breadcrumb-right')--}}
-    {{--<li><a href="{{ route('admin.companies.create') }}"><i class="fa fa-plus-square-o position-left"></i> Vložit spolocnost</a></li>--}}
-{{--@endsection--}}
 
 @section('top-buttons')
-    <a href="{{ route('admin.companies.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Zpět </a>
-    <a href="{{ route('admin.companies.edit', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Upraviť </a>
-    <a href="{{ route('admin.companies.delete', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Odstrániť </a>
+    <a href="{{ route('admin.companies.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></b> Zpět </a>
+    <a href="{{ route('admin.companies.edit', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></b> Upraviť </a>
+    <a href="{{ route('admin.companies.delete', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin sweet_delete"><b><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b> Odstrániť </a>
 @endsection
 
 @section('content')
+    <br>
     <div class="row">
-
         <div class="col-md-4">
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Základné informácie</h4>
-                    <table>
+                    <table class="table">
                         <tbody>
                             <tr>
                                 <td><strong>Název: </strong></td>
@@ -61,7 +58,7 @@
                     @endif
                         {!! Form::open( ['route' => ['admin.companies.change_logo', $company->id ], 'id' => 'form_change_logo', 'files' => true] ) !!}
                         <div class="form-level">
-                            {!! Form::file('logo', ['class' => 'file-styled fileinput']) !!}
+                            {!! Form::file('logo', ['class' => 'form-control file-styled fileinput']) !!}
                         </div>
                         {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-cert'] ) !!}
                         {!! Form::close() !!}
@@ -90,9 +87,6 @@
                     @endif
 
                             {!! Form::open( ['route' => ['admin.companies.add_cert', $company->id ], 'id' => 'form_add_cert', 'files' => true] ) !!}
-                            {{--<p class="mb-15">Uploadujte své soubory. Povolené formáty jsou <kbd>JPEG</kbd>, <kbd>PNG</kbd> a <kbd>GIF</kbd>.</p>--}}
-                            {{--<div class="form-level">--}}
-                            {{--</div>--}}
                             <div class="form-group">
                                 {!! Form::label('name', 'Vložte certifikát vo formáte pkcs12 získanom z webovej aplikácie EET (.p12)') !!}
                                 {!! Form::file('cert', ['class' => 'file-styled fileinput']) !!}
@@ -100,15 +94,10 @@
                             <div class="form-group">
                                 {!! Form::label('name', 'Heslo k certifikátu') !!}
                                 {!! Form::password('password', ['class' => 'form-control maxlength']) !!}
-                                {{--{!! Form::text('name', null, ['class' => 'form-control maxlength', 'maxlength' => '100', 'required']) !!}--}}
                             </div>
 
-                            {{--<div class="form-group mt15">--}}
                                 {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-cert'] ) !!}
-                                {{--<a href="{!! route('admin.companies.index') !!}" title="Zrušit" class='btn btn-default'>Zrušit</a>--}}
-                            {{--</div>--}}
                             {!! Form::close() !!}
-
                         </div>
                 </div>
             </div>
@@ -123,8 +112,6 @@
                     </div>
                     <div class="pull-right">
                         {!! Form::open( ['route' => array('admin.users.add_to_company', $company->id), 'id' => 'form_add_store_to_course', 'files' => true] ) !!}
-
-                                {{--{!! Form::select('user', $all_users, null, ['class' => 'form-control js-example-placeholder-multiple']) !!}--}}
                             <select name="user" class="js-example-placeholder-single">
                                 <option></option>
                                 @foreach($all_users as $au)
@@ -210,6 +197,30 @@
 
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        // PopUP for question confirm delete
+        $('.sweet_delete').on('click', function() {
+            swal({
+                    title: "Odstránenie spoločnosti",
+                    text: "Naozaj chcete odstrániť spoločnosť?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#EF5350",
+                    confirmButtonText: "Áno, odstrániť",
+                    cancelButtonText: "Nie",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                },
+
+                function(isConfirm){
+                    if (isConfirm) {
+                        window.location.href = globalVar;
+                    }
+                });
+
+            window.globalVar = $(this).attr('href');
+            return false;
         });
 
 @endsection

@@ -41,6 +41,7 @@ class UsersCompany extends Model
             ->where($this->table .'.user_id', $user_id)
             ->where($this->table .'.enabled', 1)
             ->leftJoin('companies', 'companies.id', '=', $this->table . '.company_id')
+            ->where('companies.deleted_at', NULL)
             ->get();
     }
 

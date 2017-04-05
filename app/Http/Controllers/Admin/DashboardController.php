@@ -46,7 +46,7 @@ class DashboardController extends AdminController
         }
         else
         {
-            return view('welcome');
+            return redirect(route('login'));
         }
     }
 

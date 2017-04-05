@@ -21,43 +21,45 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-flat">
-                <div class="panel-heading">
+                <div class="panel-body">
                     <h3><u>Vybraná firma</u></h3>
                     <h4>{{$selected_company->name}}</h4>
                     @if(session('isAdmin'))
-                    {{--TODO: len ak admin alebo manazer--}}
-                    <div class="cert_stats">
-                        @if($cert != null)
-                            <b>Platnosť certifikátu:</b> {{($cert->valid == 1 ? 'certifikát je platný': 'neplatný')}} <br>
-                            <b>Vyprší dňa:</b> {{date('d.m.Y', strtotime($cert->expiration_date))}}
-                        @else
-                            Prosím vložte validný certifikát k <a href="{{route('admin.companies.detail', $selected_company)}}">spoločnosti</a> .
-                        @endif
-                    </div>
+                        {{--TODO: len ak admin alebo manazer--}}
+                        <div class="cert_stats">
+                            @if($cert != null)
+                                <b>Platnosť certifikátu:</b> {{($cert->valid == 1 ? 'certifikát je platný': 'neplatný')}} <br>
+                                <b>Vyprší dňa:</b> {{date('d.m.Y', strtotime($cert->expiration_date))}}
+                            @else
+                                Prosím vložte validný certifikát k <a href="{{route('admin.companies.detail', $selected_company)}}">spoločnosti</a> .
+                            @endif
+                        </div>
                     @endif
-
-                </div>
-                <div class="panel-body">
-
                 </div>
             </div>
         </div>
         @if(count($usersCompany) != 1)
         <div class="col-md-6">
             <div class="panel panel-flat">
-                <div class="panel-heading">
-                    <h3>Vám priradené firmy</h3>
-                </div>
                 <div class="panel-body">
-                    @foreach($usersCompany as $c)
-                        <b>{{$c->name}}</b>
-                        @if($c->company_id == $selected_company->id)
-                            vybraná
-                        @else
-                            <a href="{{route('admin.select_company', $c->company_id)}}">vybrať</a>
-                        @endif
-                        <br>
-                    @endforeach
+                    <h3><u>Vám priradené firmy</u></h3>
+                    <table class="table">
+                        <tbody>
+                        @foreach($usersCompany as $c)
+                            <tr>
+                                <td><b>{{$c->name}}</b></td>
+                                <td>
+                            @if($c->company_id == $selected_company->id)
+                                vybraná
+                            @else
+                                <a href="{{route('admin.select_company', $c->company_id)}}">vybrať</a>
+                            @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+
                     {{--TODO: zoznam firiem, logo-nazov-switch-btn--}}
                 </div>
             </div>
@@ -248,14 +250,20 @@
         $('.datatable-sorting').DataTable({
             order: [3, "desc"],
             bPaginate: false,
-            "bInfo" : false
+            "bInfo" : false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+            }
         });
 
         $('.datatable-sorting2').DataTable({
             order: [1, "desc"],
             bPaginate: false,
             "bInfo" : false,
-            "searching": false
+            "searching": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+            }
         });
 
 

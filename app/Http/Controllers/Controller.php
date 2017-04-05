@@ -20,7 +20,7 @@ class Controller extends BaseController
         }
         else
         {
-            return view('welcome');
+            return redirect(route('login'));
         }
     }
 }

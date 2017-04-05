@@ -5,31 +5,32 @@
 
 @section('content')
     <div class="panel panel-flat">
-        <table class="table datatable-sorting table-hover table-hover-hand">
-            <thead>
-            <tr>
-                <th>Meno</th>
-                <th>E-mail</th>
-                <th>Užívatelské meno</th>
-                {{--<th>Priradených spoločností</th>--}}
-                <th width="120" class="text-center">Akcie</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($users as $u)
-                <tr id="{{$u->id}}">
-                    <td>{{$u->name or '-'}}</td>
-                    <td>{{$u->email or '-'}}</td>
-                    <td>{{$u->username or '-'}}</td>
-                    {{--<td><a href="{{ route('admin.users.edit', $u->id) }}">{{$u->companies_count or '-'}}</a></td> --}}{{--TODO: edit - #tab_companies--}}
-                    <td class="text-center">
-                        <a href="{{ route('admin.users.edit', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
-                        <a class="sweet_delete" href="{{ route('admin.users.delete', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Smazat"><i class="fa fa-trash"></i></a>
-                    </td>
+        <div class="panel-body">
+            <table class="table datatable-sorting table-hover table-hover-hand">
+                <thead>
+                <tr>
+                    <th>Meno</th>
+                    <th>E-mail</th>
+                    <th>Užívatelské meno</th>
+                    <th width="120" class="text-center">Akcie</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @foreach($users as $u)
+                    <tr id="{{$u->id}}">
+                        <td>{{$u->name or '-'}}</td>
+                        <td>{{$u->email or '-'}}</td>
+                        <td>{{$u->username or '-'}}</td>
+                        {{--<td><a href="{{ route('admin.users.edit', $u->id) }}">{{$u->companies_count or '-'}}</a></td> --}}{{--TODO: edit - #tab_companies--}}
+                        <td class="text-center">
+                            <a href="{{ route('admin.users.edit', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
+                            {{--<a class="sweet_delete" href="{{ route('admin.users.delete', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Smazat"><i class="fa fa-trash"></i></a>--}}
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 
@@ -45,7 +46,10 @@
     //<script> onlyForSyntaxPHPstorm
 
         $('.datatable-sorting').DataTable({
-            order: [0, "asc"]
+            order: [0, "asc"],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+            }
         });
 
         $(document).ready(function(){
@@ -54,6 +58,4 @@
                 window.location.href = '{{ url('') }}/users/' + id + '/detail';
             });
         });
-
-
 @endsection

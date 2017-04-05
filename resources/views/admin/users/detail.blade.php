@@ -1,22 +1,19 @@
 @extends('admin.templates.master')
-{{--@section('breadcrumb-right')--}}
-    {{--<li><a href="{{ route('admin.companies.create') }}"><i class="fa fa-plus-square-o position-left"></i> Vložit spolocnost</a></li>--}}
-{{--@endsection--}}
 
 @section('top-buttons')
-    <a href="{{ route('admin.users.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Zpět </a>
-    <a href="{{ route('admin.users.edit', $users->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Upraviť </a>
-    <a href="{{ route('admin.users.delete', $users->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Odstrániť </a>
+    <a href="{{ route('admin.users.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></b> Zpět </a>
+    <a href="{{ route('admin.users.edit', $users->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></b> Upraviť </a>
+    {{--<a href="{{ route('admin.users.delete', $users->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b> Odstrániť </a>--}}
 @endsection
 
 @section('content')
+    <br>
     <div class="row">
-
         <div class="col-md-4">
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Základné informácie</h4>
-                    <table>
+                    <table class="table">
                         <tbody>
                             <tr>
                                 <td><strong>Meno:</strong></td>
@@ -72,65 +69,4 @@
                 </div>
             </div>
         </div>
-    {{--<div class="row">--}}
-        {{--<div class="col-md-12">--}}
-            {{--<div class="panel panel-flat">--}}
-                {{--<div class="panel-body">--}}
-                    {{--<h4>Užívatel</h4>--}}
-
-                    {{--<table class="table datatable-sorting">--}}
-                        {{--<thead>--}}
-                        {{--<tr>--}}
-                            {{--<th>Meno</th>--}}
-                            {{--<th>E-mail</th>--}}
-                            {{--<th>Užívatelské meno</th>--}}
-                            {{--@foreach($roles as $r)--}}
-                                {{--<th width="80" class="text-center">{{$r->name}}</th>--}}
-                            {{--@endforeach--}}
-                            {{--<th width="80" class="text-center">Akcie</th>--}}
-                        {{--</tr>--}}
-                        {{--</thead>--}}
-                        {{--<tbody>--}}
-                        {{--@foreach($users_in as $u)--}}
-                            {{--<tr >--}}
-                                {{--<td>{{$u->name or '-'}}</td>--}}
-                                {{--<td>{{$u->email or '-'}}</td>--}}
-                                {{--<td>{{$u->username or '-'}}</td>--}}
-                                {{--@foreach($roles as $r)--}}
-                                    {{--<td width="80" class="text-center">--}}
-                                        {{--@if ( $users_role[$u->id][$r->id] )--}}
-                                            {{--<a href="{!! route('admin.roles.switch-role', [$u->id, $r->id, 'companies']) !!}" title="deaktivuj"><i class="fa fa-check enabled" style="color: green"></i></a>--}}
-                                        {{--@else--}}
-                                            {{--<a href="{!! route('admin.roles.switch-role', [$u->id, $r->id, 'companies']) !!}" title="aktivuj"><i class="fa fa-times disabled" style="color: red"></i></a>--}}
-                                        {{--@endif--}}
-                                    {{--</td>--}}
-                                {{--@endforeach--}}
-                                {{--<td width="80" class="text-center">--}}
-                                    {{--<a href="{{ route('admin.users.edit', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;--}}
-                                    {{--<a class="sweet_delete" href="{{ route('admin.users.delete', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Smazat"><i class="fa fa-trash"></i></a>--}}
-                                {{--</td>--}}
-                            {{--</tr>--}}
-                        {{--@endforeach--}}
-                        {{--</tbody>--}}
-                    {{--</table>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-@endsection
-
-@section('head_js')
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
-@endsection
-
-
-@section('jquery_ready')
-    //<script> onlyForSyntaxPHPstorm
-
-        $('.datatable-sorting').DataTable({
-            order: [0, "asc"]
-        });
-
 @endsection

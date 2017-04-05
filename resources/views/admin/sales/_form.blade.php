@@ -19,8 +19,6 @@
                 {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}
             </div>
 
-
-
         </div><!-- /.box-body -->
     </div><!-- /.col -->
     <div class='col-md-5'>
@@ -50,68 +48,3 @@
 </div><!-- /.row -->
 
 
-@section('jquery_ready')
-    //<script> onlyForSyntaxPHPstorm
-
-        $(document).ready(function() {
-
-            jQuery('#products_id').val('');
-            jQuery('#total_price_id').val('');
-
-            $("#btn-add-product").click(function() {
-                var product = jQuery('#product_name_id').val();
-                var price = jQuery('#price_id').val();
-                var products = jQuery('#products_id').val();
-                var total_price = jQuery('#total_price_id').val();
-
-                price = price.replace(',', '.');
-                price = parseFloat(price);
-                if (total_price == ''){
-                    new_total_price = price;
-                }else {
-                    new_total_price = parseFloat(total_price)+price;
-                }
-
-//                alert(isNaN(new_total_price));
-//                alert(new_total_price);
-
-                if (product != '' && price != '' && !(isNaN(new_total_price)) ){
-                    if (products == ''){
-                        $('#products_id').val(product+'||'+price);
-                        $( ".submit-btn" ).append( "<button class='btn' type='submit'>Potvrdiť</button>" );
-                        $('#total_price_id').val(price)
-                    }else {
-                        $('#products_id').val(products+';'+product+'||'+price);
-                        $('#total_price_id').val(new_total_price)
-
-
-                    }
-                    //                products = jQuery('#products_id').val();
-
-                    $( "#products-list" ).append( "<tr><td>"+product+"</td><td>"+price+"</td></tr>" );
-
-                    total_price = $('#total_price_id').val();
-                    $('#total_price_label').text(total_price+' Kč');
-                    $('#product_name_id').val('');
-                    $('#price_id').val('');
-                }
-
-//                alert(products);
-            });
-        });
-
-        @if(!session('isAdmin') && !session('isManager') && count($sales) > 0)
-        var table = $('.datatable-sorting').DataTable({
-            //"bSort": false
-            order: [3, "desc"],
-            columnDefs: [
-                { "type": "de_date", targets: 3 }]
-        });
-    @endif
-
-    $(".add_period_note_btn").click(function(){
-        $(".add_period_note_btn").hide(800);
-        $(".add_period_note_form").show(800);
-    });
-
-@endsection

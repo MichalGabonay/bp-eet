@@ -53,6 +53,7 @@ class Notes extends Model
         return $this->select($this->table . '.*')
             ->where('company_id', $company_id)
             ->where('type', 1)
+            ->orderBy('created_at', 'desc')
 //            ->leftJoin('companies', 'companies.id', $this->table . '.company_id')
             ;
     }

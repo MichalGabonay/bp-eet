@@ -1,3 +1,7 @@
+
+@if(isset($edit) && $notes->type != 1)
+
+@else
 <div class="row">
     <div class="form-group col-md-6">
         {!! Form::label('from', 'Obdobie od') !!}
@@ -8,6 +12,7 @@
         {!! Form::text('to', null, ['class' => 'form-control date-picker', 'id' => 'date_to']) !!}
     </div>
 </div>
+@endif
 
 <div class="form-group">
     {!! Form::label('note', 'Poznámka') !!}

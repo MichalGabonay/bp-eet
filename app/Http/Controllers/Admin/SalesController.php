@@ -66,21 +66,23 @@ class SalesController extends AdminController
             $sales = $this->sales->getAll(session('selectedCompany'))->take(10)->get();
         }else{
             $sales = $this->sales->getAll(session('selectedCompany'))->where('user_id', Auth::user()->id)->take(5)->get();
-            foreach ($sales as $sale){
-                if ($sale->products != ''){
-                    $product = explode(";", $sale->products);
+        }
 
-                    $products = '';
-                    foreach ($product as $key => $p){
-                        $temp = explode("||", $p);
+        foreach ($sales as $sale){
+            if ($sale->products != ''){
+                $product = explode(";", $sale->products);
 
-                        $products .= $temp[0] . ';';
+                $products = '';
+                foreach ($product as $key => $p){
+                    $temp = explode("||", $p);
 
-                    }
-                    $sale->products = $products;
+                    $products .= $temp[0] . '; ';
+
                 }
-
+                $products = substr($products, 0, -2);
+                $sale->products = $products;
             }
+
         }
 
         $all_notes = $notes->getAllFromCompany(session('selectedCompany'))->get();
@@ -98,14 +100,14 @@ class SalesController extends AdminController
             }
         }
 
-//        dd($note);
+        $period_notes = $notes->getAllPeriod(session('selectedCompany'))->get()->take(5);
 
 
 
         $companies = $companies->findOrFail(session('selectedCompany'));
         $cert = $certs->find($companies->cert_id);
 
-        return view('admin.sales.index', compact('sales', 'cert', 'sales_all', 'note'));
+        return view('admin.sales.index', compact('sales', 'cert', 'sales_all', 'note', 'period_notes'));
     }
 
     /**
@@ -127,6 +129,8 @@ class SalesController extends AdminController
 
         $sale->storno = 1;
         $sale->save();
+
+        Flash::success('Tržba bola stornovaná!');
 
         return redirect(route('admin.sales.index'));
     }
@@ -169,7 +173,14 @@ class SalesController extends AdminController
         $total_price = $request['total_price'];
         $userid = Auth::user()->id;
 
-        $lastid = $this->sales->getAll(session('selectedCompany'))->first()->id;
+
+        $lastid = $this->sales->getAll(session('selectedCompany'))->first();
+
+        if ($lastid != null){
+            $lastid = $lastid->receiptNumber;
+        }else{
+            $lastid = 0;
+        }
 
         $receiptNumber = ($lastid+1);
         $premiseId = '1';
@@ -192,7 +203,7 @@ class SalesController extends AdminController
 
 //        dd($response->getFik());
 
-
+        Flash::success('Tržba bola úspešne vytvorná a zaevidovaná!');
 
         return redirect(route('admin.sales.create_new'));
     }

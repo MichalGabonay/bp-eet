@@ -222,3 +222,59 @@ input:checked + .slider:before {
     margin-bottom: 10px;
     max-height: 100px;
 }
+
+.period-note-period{
+    border: 1px solid #969494;
+    padding: 8px;
+    background-color: #c5e2f3;
+    font-size: 110%;
+}
+.period-note-note{
+    border: 1px solid #969494;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-top: none;
+}
+
+.bg-teal-400 {
+    background-color: #3097D1;
+    border-color: #3097D1;
+    color: #fff;
+}
+
+.btn-labeled {
+    padding-left: 48px;
+}
+
+.btn-labeled>b {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background-color: rgba(0,0,0,0.15);
+    display: block;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 1.5384616;
+    border-radius: 0;
+}
+.btn {
+    position: relative;
+    border-radius: 2px;
+}
+
+.btn[class*=bg-]:hover, .btn[class*=bg-]:focus, .btn[class*=bg-].focus {
+    color: #fff;
+}
+
+.btn:hover, .btn:focus, .btn.focus {
+    -webkit-box-shadow: 0 0 0 100px rgba(0,0,0,0.05) inset;
+    box-shadow: 0 0 0 100px rgba(0,0,0,0.05) inset;
+}
+
+.fileinput{
+    margin-bottom: 5px;
+}
+
+.table > tbody > tr > td {
+    padding: 5px 23px !important;
+}

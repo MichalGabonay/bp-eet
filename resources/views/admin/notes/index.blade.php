@@ -5,24 +5,25 @@
 @endsection
 
 @section('content')
-    <label class="switch">
-        <input type="checkbox" checked>
-        <div class="slider round"></div>
+    {{--<label class="switch">--}}
+        {{--<input type="checkbox" checked>--}}
+        {{--<div class="slider round"></div>--}}
 
-    </label><label class="switcher-label">Poznámky k obdobiam</label><br>
+    {{--</label><label class="switcher-label">Poznámky k obdobiam</label><br>--}}
 
-    <label class="switch">
-        <input type="checkbox" checked>
-        <div class="slider round"></div>
+    {{--<label class="switch">--}}
+        {{--<input type="checkbox" checked>--}}
+        {{--<div class="slider round"></div>--}}
 
-    </label><label class="switcher-label">Poznámky k tržbám</label><br>
+    {{--</label><label class="switcher-label">Poznámky k tržbám</label><br>--}}
 
     <div id="period_notes">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-flat">
                     <div class="panel-body">
-                        <table class="table datatable-sorting table-hover table-hover-hand">
+                        <h4>Poznámky k obdobiam</h4>
+                        <table class="table datatable-sorting">
                             <thead>
                             <tr>
                                 <th>Obdobie</th>
@@ -56,7 +57,8 @@
             <div class="col-md-12">
                 <div class="panel panel-flat">
                     <div class="panel-body">
-                        <table class="table datatable-sorting table-hover table-hover-hand">
+                        <h4>Poznámky k tržbám</h4>
+                        <table class="table datatable-sorting">
                             <thead>
                             <tr>
                                 <th>Tržba</th>
@@ -98,6 +100,11 @@
     //<script> onlyForSyntaxPHPstorm
 
         $('.datatable-sorting').DataTable({
-            order: [2, "asc"]
+            order: [2, "desc"],
+            columnDefs: [
+                { "type": "de_date", targets: 2 }],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+            }
         });
 @endsection

@@ -1,25 +1,22 @@
 @extends('admin.templates.master')
-{{--@section('breadcrumb-right')--}}
-    {{--<li><a href="{{ route('admin.companies.create') }}"><i class="fa fa-plus-square-o position-left"></i> Vložit spolocnost</a></li>--}}
-{{--@endsection--}}
 
 @section('top-buttons')
-    <a href="{{ route('admin.sales.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Spät </a>
+    <a href="{{ route('admin.sales.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></b> Spät </a>
     @if($sales->storno == 0)
-    <a href="{{ route('admin.sales.storno', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="icon-arrow-left16"></i></b> Storno </a>
+    <a href="{{ route('admin.sales.storno', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class='fa fa-ban fa-lg' aria-hidden='true'></i></b> Storno </a>
     @endif
-    <a href="{{ route('admin.sales.generate_receipt', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin" target="_blank"><b><i class="icon-arrow-left16"></i></b> Generovať účtenku </a>
+    <a href="{{ route('admin.sales.generate_receipt', $sales->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin" target="_blank"><b><i class='fa fa-list-alt fa-lg' aria-hidden='true'></i></b> Generovať účtenku </a>
 @endsection
 
 @section('content')
+    <br>
     <div class="row">
-
         <div class="col-md-7">
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Informácie o zadanej tržbe</h4>
-                    <table>
-                        <tbody>
+                    <table class="table">
+                        <tbody >
                             <tr>
                                 <td><strong>Číslo účtenky: </strong></td>
                                 <td> {{ $sales->receiptNumber or '-' }}</td>
@@ -135,7 +132,10 @@
             order: [1, "asc"],
             bPaginate: false,
             "bInfo" : false,
-            "searching": false
+            "searching": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+            }
         });
 
 

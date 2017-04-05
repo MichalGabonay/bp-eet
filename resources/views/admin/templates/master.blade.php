@@ -18,6 +18,7 @@
     {!! HTML::style( asset("/assets/admin/css/app.css") ) !!}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     {!! HTML::style( asset("/assets/admin/css/style.css") ) !!}
+    {!! HTML::style( asset("/assets/admin/css/sweetalert.css") ) !!}
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css"/>
 
 
@@ -26,6 +27,7 @@
     <!-- Scripts -->
     {!! HTML::script( asset("/assets/admin/js/jquery.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/select2/select2.js") ) !!}
+    {!! HTML::script( asset("/assets/admin/js/sweetalert.min.js") ) !!}
     @yield('head_js')
     <script>
         window.Laravel = <?php echo json_encode([
@@ -83,7 +85,7 @@
                                     <a href="{{ url('/logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        Logout
+                                        Odhlásiť sa
                                     </a>
 
                                     <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
@@ -119,7 +121,6 @@
             <div class="col-md-12">
                 @yield('top-buttons')
             </div>
-
         </div>
 
         {{--</div>--}}
