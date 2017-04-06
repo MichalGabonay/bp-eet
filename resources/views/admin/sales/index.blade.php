@@ -163,9 +163,6 @@
                                                     @endif
                                                     <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Generovať účtenku</a></li>
 
-                                                    @if(session('isAdmin'))
-                                                        <li><a class="sweet_delete" href="{{ route('admin.sales.delete', $s->id) }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;&nbsp; Smazat</a></li>
-                                                    @endif
                                                 </ul>
                                             </li>
                                         </ul>
@@ -596,7 +593,8 @@
                 if (product != '' && price != '' && !(isNaN(new_total_price)) ){
                     if (products == ''){
                         $('#products_id').val(product+'||'+price);
-                        $( ".submit-btn" ).append( "<button class='btn' type='submit'>Potvrdiť</button>" );
+                        $( ".submit-btn" ).append( "<button class='btn' type='submit'>Potvrdiť</button>&nbsp&nbsp" );
+                        $( ".submit-btn" ).append( "<button class='btn' name='with_receipt' type='submit'>Potvrdiť s účtenkou</button>" );
                         $('#total_price_id').val(price)
                     }else {
                         $('#products_id').val(products+';'+product+'||'+price);

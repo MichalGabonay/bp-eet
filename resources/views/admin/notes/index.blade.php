@@ -93,7 +93,7 @@
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
+    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables_sorting.js") ) !!}
 @endsection
 
 @section('jquery_ready')

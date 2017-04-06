@@ -205,7 +205,11 @@ class SalesController extends AdminController
 
         Flash::success('Tržba bola úspešne vytvorná a zaevidovaná!');
 
-        return redirect(route('admin.sales.create_new'));
+        if (isset($request['with_receipt'])){
+            return redirect(route('admin.sales.generate_receipt', $store->id));
+        }else{
+            return redirect(route('admin.sales.create_new'));
+        }
     }
 
     /**

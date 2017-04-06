@@ -144,6 +144,9 @@ class AdminController extends Controller
             }
         }
 
+        if (session('isAdmin') == false && session('isManager') == false && session('isCashier')){
+            return redirect(route('admin.sales.index'));
+        }
 
         return redirect(route('admin.dashboard'));
     }

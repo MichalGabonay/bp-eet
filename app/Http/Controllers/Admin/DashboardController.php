@@ -26,8 +26,12 @@ class DashboardController extends AdminController
 
         $this->middleware(function ($request, $next) {
 
+
+
             return $next($request);
         });
+
+
 
         $this->page_title = 'Dashboard';
         $this->page_icon = 'fa-home';
