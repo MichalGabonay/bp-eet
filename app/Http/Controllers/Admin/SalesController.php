@@ -18,7 +18,7 @@ use SlevomatEET\Configuration;
 use SlevomatEET\EvidenceEnvironment;
 use SlevomatEET\Client;
 use SlevomatEET\Receipt;
-
+use App\Helpers\ApiXml30;
 
 
 class SalesController extends AdminController
@@ -102,12 +102,12 @@ class SalesController extends AdminController
 
         $period_notes = $notes->getAllPeriod(session('selectedCompany'))->get()->take(5);
 
-
+        $not_sent = $this->sales->getNotSent(session('selectedCompany'))->toArray();
 
         $companies = $companies->findOrFail(session('selectedCompany'));
         $cert = $certs->find($companies->cert_id);
 
-        return view('admin.sales.index', compact('sales', 'cert', 'sales_all', 'note', 'period_notes'));
+        return view('admin.sales.index', compact('sales', 'cert', 'sales_all', 'note', 'period_notes', 'not_sent'));
     }
 
     /**
@@ -125,14 +125,18 @@ class SalesController extends AdminController
         $receiptNumber = $sale->receiptNumber . '-storno';
         $premiseId = '1';
         $cashregister = 'pokl-user-'. $userid;
-        $response = $this->eetSend($total_price, $receiptNumber, $premiseId, $cashregister);
+        if ($sale->not_sent == 0){
+            $response = $this->eetSend($total_price, $receiptNumber, $premiseId, $cashregister);
+        }else{
+            $sale->not_sent = 2;
+        }
 
         $sale->storno = 1;
         $sale->save();
 
         Flash::success('Tržba bola stornovaná!');
 
-        return redirect(route('admin.sales.index'));
+        return redirect()->back();
     }
 
     /**
@@ -188,22 +192,41 @@ class SalesController extends AdminController
 
         $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
 
-        $store = $this->sales->create([
-            'user_id' => $userid,
-            'company_id' => session('selectedCompany'),
-            'products' => $request['products'],
-            'total_price' => $total_price,
-            'fik' => $response->getFik(),
-            'bkp' => $response->getBkp(),
-            'receiptNumber' => $receiptNumber,
-            'premiseId' => $premiseId,
-            'cash_register' => $cashregister,
-            'receipt_time' => date("Y-m-d H:i:s"),
-        ]);
+//        dd($response);
 
-//        dd($response->getFik());
+        if ( $response['fik'] == 'error' ){
+            $store = $this->sales->create([
+                'user_id' => $userid,
+                'company_id' => session('selectedCompany'),
+                'products' => $request['products'],
+                'total_price' => $total_price,
+                'fik' => '',
+                'bkp' => $response['bkp'],
+                'receiptNumber' => $receiptNumber,
+                'premiseId' => $premiseId,
+                'cash_register' => $cashregister,
+                'receipt_time' => date("Y-m-d H:i:s"),
+                'not_sent' => 1
+            ]);
 
-        Flash::success('Tržba bola úspešne vytvorná a zaevidovaná!');
+            Flash::success('Tržba bola úspešne vytvorná a zaevidovaná!');
+        }else{
+            $store = $this->sales->create([
+                'user_id' => $userid,
+                'company_id' => session('selectedCompany'),
+                'products' => $request['products'],
+                'total_price' => $total_price,
+                'fik' => $response['fik'],
+                'bkp' => $response['bkp'],
+                'receiptNumber' => $receiptNumber,
+                'premiseId' => $premiseId,
+                'cash_register' => $cashregister,
+                'receipt_time' => date("Y-m-d H:i:s"),
+                'not_sent' => 0
+            ]);
+
+            Flash::success('Tržba bola úspešne vytvorná a zaevidovaná!');
+        }
 
         if (isset($request['with_receipt'])){
             return redirect(route('admin.sales.generate_receipt', $store->id));
@@ -253,7 +276,7 @@ class SalesController extends AdminController
     private function eetSend($price, $receiptNumber, $premiseId, $cashregister){
         $companies = new Companies();
         $company = $companies->findOrFail(session('selectedCompany'));
-        $crypto = new CryptographyService(DIR_CERT . 'private.key', DIR_CERT . 'public.pub');
+        $crypto = new CryptographyService(DIR_CERT . session('selectedCompany').'/private.key', DIR_CERT . session('selectedCompany').'/public.pub');
         $configuration = new Configuration(
             $company->dic,
             $premiseId,
@@ -278,12 +301,16 @@ class SalesController extends AdminController
         //TODO: platba sa nepodarila
         try {
             $response = $client->send($receipt);
-            return $response;
+            return ['fik' => $response->getFik(), 'bkp' => $response->getBkp()];
         }
         catch (\SlevomatEET\FailedRequestException $e) {
             echo $e->getRequest()->getPkpCode(); // if request fails you need to print the PKP and BKP codes to receipt
+            return ['fik' => 'error', 'bkp' => $e->getRequest()->getBkpCode()];
         } catch (\SlevomatEET\InvalidResponseReceivedException $e) {
-            echo $e->getResponse()->getRequest()->getPkpCode(); // on invalid response you need to print the PKP and BKP too
+            echo $e->getResponse()->getRequest()->getBkpCode(); // on invalid response you need to print the PKP and BKP too
+//            $response->error = $e->getResponse()->getRequest()->getBkpCode();
+            return ['fik' => 'error', 'bkp' => $e->getResponse()->getRequest()->getBkpCode()];
+//            return $e->getResponse()->getRequest()->getBkpCode();
         }
     }
 
@@ -301,12 +328,70 @@ class SalesController extends AdminController
         return redirect()->back();
     }
 
+    public function showNotSent(){
+        $this->page_description = "neodoslané na EET";
+
+        $sales = $this->sales->getNotSent(session('selectedCompany'));
+
+        foreach ($sales as $s){
+            $diff = date_diff(date_create(date('Y-m-d H:i:s')), date_create($s->receipt_time));
+            $s->hours = ($diff->y * 365.25 + $diff->m * 30 + $diff->d) * 24 + $diff->h;
+        }
+
+        $not_sent = $sales->toArray();
+
+        return view('admin.sales.not_sent', compact('sales', 'not_sent'));
+    }
+
+    public function TrySentAgain(){
+        $sales = $this->sales->getNotSent(session('selectedCompany'));
+
+        foreach ($sales as $s){
+            $total_price = $s->total_price;
+            $receiptNumber = $s->receiptNumber;
+            $premiseId = $s->premiseId;
+            $cashregister = $s->cash_register;
+
+            $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
+
+            if ($response['fik'] != 'error'){
+                $s->not_sent = 0;
+                $s->fik = $response['fik'];
+                $s->bkp = $response['bkp'];
+                $s->save();
+            }
+        }
+
+        return redirect()->back();
+    }
+
     public function test(){
+//        define('LOGIN','xgabon00');
+//        define('PASSWORD','Poklop12');
 
-        $sales = $this->sales->getAllForChart(session('selectedCompany'))->get();
-        $sales_all = $this->sales->getAll(session('selectedCompany'))->get();
+        $apixml = new ApiXml30('xgabon00', 'Poklop12');
 
-        return view('admin.sales.test', compact('sales', 'sales_all'));
+        dd($apixml);
+
+        $res = $apixml->send_message("730998602","Text nejake zpravy ktery se bude odesilat", null,20);
+        echo $res;
+        echo "\n\n";
+
+
+        $what=array("query_incoming"=>1,"query_outgoing"=>1,"query_delivery_report"=>1, "count"=>30 );
+
+        $res = $apixml->get_incoming_messages($what);
+        echo $res;
+        echo "\n\n";
+
+
+        $what=array("type"=>"outgoing_message","id"=>"420730998602-20170407180934637");
+
+        $res = $apixml->confirm_message($what);
+        echo $res;
+        echo "\n\n";
 
     }
+
+
 }

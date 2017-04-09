@@ -19,7 +19,7 @@ class Notes extends Model
      *
      * @var array
      */
-    protected $fillable = ['note', 'type', 'sale_id', 'company_id', 'from', 'to'];
+    protected $fillable = ['note', 'type', 'sale_id', 'company_id', 'user_id', 'from', 'to'];
 
 
     /**
@@ -40,7 +40,7 @@ class Notes extends Model
     public function getAllFromCompany($company_id)
     {
         return $this->select($this->table . '.*')
-            ->where('company_id', $company_id);
+            ->where($this->table . '.company_id', $company_id);
     }
 
     /**
@@ -50,11 +50,11 @@ class Notes extends Model
      */
     public function getAllPeriod($company_id)
     {
-        return $this->select($this->table . '.*')
+        return $this->select($this->table . '.*', 'users.name as user_name')
             ->where('company_id', $company_id)
             ->where('type', 1)
             ->orderBy('created_at', 'desc')
-//            ->leftJoin('companies', 'companies.id', $this->table . '.company_id')
+            ->leftJoin('users', 'users.id', $this->table . '.user_id')
             ;
     }
 
@@ -65,10 +65,10 @@ class Notes extends Model
      */
     public function getAllSale($company_id)
     {
-        return $this->select($this->table . '.*', 'sales.id as sale_id', 'receiptNumber')
+        return $this->select($this->table . '.*', 'sales.id as sale_id', 'receiptNumber', 'users.name as user_name')
             ->where($this->table . '.company_id', $company_id)
             ->where('type', 0)
-//            ->leftJoin('companies', 'companies.id', $this->table . '.company_id')
+            ->leftJoin('users', 'users.id', $this->table . '.user_id')
             ->leftJoin('sales', 'sales.id', $this->table . '.sale_id')
             ;
     }

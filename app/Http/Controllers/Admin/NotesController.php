@@ -89,6 +89,7 @@ class NotesController extends AdminController
         $store = $this->notes->create([
             'sale_id' => $id,
             'company_id' => session('selectedCompany'),
+            'user_id' => Auth::user()->id,
             'note' => $request['note'],
             'from' => $from,
             'to' => $to,

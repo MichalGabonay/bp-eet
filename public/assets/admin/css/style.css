@@ -278,3 +278,13 @@ input:checked + .slider:before {
 .table > tbody > tr > td {
     padding: 5px 23px !important;
 }
+
+.tooltip-okay, .tooltip-okay:hover{
+    color: green;
+}
+.tooltip-not-sent, .tooltip-not-sent:hover{
+    color: red;
+}
+.tooltip-storno, .tooltip-storno:hover{
+    color: orange;
+}

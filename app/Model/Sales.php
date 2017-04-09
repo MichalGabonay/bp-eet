@@ -20,7 +20,7 @@ class Sales extends Model
      * @var array
      */
     protected $fillable = ['user_id', 'company_id', 'products', 'total_price', 'fik', 'bkp',
-                            'receiptNumber', 'premiseId', 'cash_register', 'storno', 'receipt_time'];
+                            'receiptNumber', 'premiseId', 'cash_register', 'storno', 'receipt_time', 'not_sent'];
 
 
     /**
@@ -51,6 +51,7 @@ class Sales extends Model
             ->where($this->table . '.company_id', $company_id)
             ->where($this->table . '.deleted_at', NULL)
             ->where($this->table . '.storno', 0)
+            ->where($this->table . '.not_sent', 0)
             ->orderBy("receipt_time")
             ->groupBy('date');
     }
@@ -77,6 +78,22 @@ class Sales extends Model
             ->where($this->table . '.storno', 0)
             ->where($this->table . '.company_id', $company_id)
             ->leftJoin('users', 'users.id', $this->table . '.user_id')
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get all not sent sales
+     *
+     * @return Companies
+     */
+    public function getNotSent($company_id)
+    {
+        return $this->select($this->table . '.*')
+            ->where($this->table . '.deleted_at', NULL)
+            ->where($this->table . '.storno', 0)
+            ->where($this->table . '.not_sent', 1)
+            ->where($this->table . '.company_id', $company_id)
             ->orderBy('id', 'desc')
             ->get();
     }

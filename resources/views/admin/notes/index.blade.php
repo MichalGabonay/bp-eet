@@ -28,6 +28,7 @@
                             <tr>
                                 <th>Obdobie</th>
                                 <th>Poznámka</th>
+                                <th>Užívatel</th>
                                 <th>Vytvorená</th>
                                 <th width="120" class="text-center">Akcie</th>
                             </tr>
@@ -37,6 +38,11 @@
                                 <tr id="{{$n->id}}">
                                     <td>{{date('d.m.Y', strtotime($n->from))}} - {{date('d.m.Y', strtotime($n->to))}}</td>
                                     <td>{{$n->note}}</td>
+                                    @if(session('isAdmin'))
+                                        <td> <a href="{{route('admin.users.detail', $n->user_id)}}">{{ $n->user_name }}</a></td>
+                                    @else
+                                        <td> {{ $n->user_name or '-' }}</td>
+                                    @endif
                                     <td>{{date('d.m.Y', strtotime($n->created_at))}}</td>
                                     <td class="text-center">
                                         <a href="{{ route('admin.notes.edit', $n->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
@@ -63,6 +69,7 @@
                             <tr>
                                 <th>Tržba</th>
                                 <th>Poznámka</th>
+                                <th>Užívatel</th>
                                 <th>Vytvorená</th>
                                 <th width="120" class="text-center">Akcie</th>
                             </tr>
@@ -72,6 +79,11 @@
                                 <tr id="{{$n->id}}">
                                     <td><a href="{{route('admin.sales.detail', $n->sale_id)}}">{{$n->receiptNumber}}</a></td>
                                     <td>{{$n->note or '-'}}</td>
+                                    @if(session('isAdmin'))
+                                        <td> <a href="{{route('admin.users.detail', $n->user_id)}}">{{ $n->user_name }}</a></td>
+                                    @else
+                                        <td> {{ $n->user_name or '-' }}</td>
+                                    @endif
                                     <td>{{date('d.m.Y', strtotime($n->created_at))}}</td>
                                     <td class="text-center">
                                         <a href="{{ route('admin.notes.edit', $n->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;

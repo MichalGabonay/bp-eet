@@ -79,6 +79,15 @@
                 </div>
             </div>
         </div>
+
+        @if(count($not_sent) > 0)
+        <div class="panel panel-flat">
+            <div class="panel-body">
+                <span style="color: red;">Niektoré tržby sa nepodarilo správne odoslať do EET (počet: {{count($not_sent)}})</span><a href="{{route('admin.sales.not_sent')}}" class="btn">Zobraziť</a><a href="{{route('admin.sales.try_sent_again')}}" class="btn">Skúsiť znovu odoslať</a>
+            </div>
+        </div>
+        @endif
+
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-flat">
@@ -87,6 +96,7 @@
                         <table class="table datatable-sorting">
                             <thead>
                             <tr>
+                                <th width="20" class="text-center">Stav</th>
                                 <th>Tržba</th>
                                 {{--<th>Produkty</th>--}}
                                 <th>Celková cena</th>
@@ -100,6 +110,15 @@
                             <tbody>
                             @foreach($last_sales as $s)
                                 <tr >
+                                    <td width="20">
+                                        @if($s->storno == 1)
+                                            <a href="#" data-toggle="tooltip" data-placement="top" title="stornovaná" class="tooltip-storno"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                        @elseif($s->not_sent == 1 || $s->not_sent == 2)
+                                            <a href="#" data-toggle="tooltip" data-placement="top" title="neodoslaná na EET" class="tooltip-not-sent"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></i></a>
+                                        @else
+                                            <a href="#" data-toggle="tooltip" data-placement="top" title="úspešne odoslaná na EET" class="tooltip-okay"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                                        @endif
+                                    </td>
                                     <td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>
                                     {{--<td>{{$s->products or '-'}}</td>--}}
                                     <td>{{$s->total_price or '-'}}Kč</td>
@@ -129,7 +148,7 @@
                                                     @if($s->storno == 0)
                                                         <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
                                                     @endif
-                                                    <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}" target="_blank"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Generovať účtenku</a></li>
+                                                    <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}" target="_blank"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Zobraziť účtenku</a></li>
                                                     <li><a href="{{ route('admin.sales.detail', $s->id) }}"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>&nbsp;&nbsp; Pridať poznámku</a></li>
                                                     @if(session('isAdmin'))
                                                         <li><a class="sweet_delete" href="{{ route('admin.sales.delete', $s->id) }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;&nbsp; Smazat</a></li>
@@ -193,7 +212,6 @@
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -248,7 +266,9 @@
     //<script> onlyForSyntaxPHPstorm
 
         $('.datatable-sorting').DataTable({
-            order: [3, "desc"],
+            order: [4, "desc"],
+            columnDefs: [
+                { "type": "de_date", targets: 4 }],
             bPaginate: false,
             "bInfo" : false,
             "language": {
@@ -264,6 +284,10 @@
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
             }
+        });
+
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
 

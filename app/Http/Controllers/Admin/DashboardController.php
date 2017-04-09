@@ -66,7 +66,6 @@ class DashboardController extends AdminController
             if ($company->cert_id != null){
                 $cert = $certs->findOrFail($company->cert_id);
             }
-
         }
         else{
             $selected_company = null;
@@ -108,14 +107,13 @@ class DashboardController extends AdminController
             }
         }
 
+        $not_sent = $sales->getNotSent(session('selectedCompany'))->toArray();
 
         $last_sales = $sales->getAll(session('selectedCompany'))->get()->take(5);
 
         $users_sales = $user->getCashiersBySales(session('selectedCompany'));
 
-//        dd(count($last_sales));
-
-        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert', 'all_sales', 'sales_by_day_week', 'last_sales', 'users_sales'));
+        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert', 'all_sales', 'sales_by_day_week', 'last_sales', 'users_sales', 'not_sent'));
 
     }
 }

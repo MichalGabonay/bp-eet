@@ -61,7 +61,8 @@ Route::group(['prefix' => 'sales'], function () {
     Route::get('{id}/generate-receipt', ['as' => 'admin.sales.generate_receipt', 'uses' => 'Admin\SalesController@generateReceipt']);
     Route::get('{id}/delete', ['as' => 'admin.sales.delete', 'uses' => 'Admin\SalesController@delete']);
     Route::get('test', ['as' => 'admin.sales.test', 'uses' => 'Admin\SalesController@test']);
-
+    Route::get('not-sent', ['as' => 'admin.sales.not_sent', 'uses' => 'Admin\SalesController@showNotSent']);
+    Route::get('sent-again', ['as' => 'admin.sales.try_sent_again', 'uses' => 'Admin\SalesController@TrySentAgain']);
 });
 
 //Notes

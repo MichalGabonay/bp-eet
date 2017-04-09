@@ -2,6 +2,13 @@
 
 @section('content')
     @if((session('isAdmin') || session('isManager')))
+        @if(count($not_sent) > 0)
+            <div class="panel panel-flat">
+                <div class="panel-body">
+                    <span style="color: red;">Niektoré tržby sa nepodarilo správne odoslať do EET (počet: {{count($not_sent)}})</span><a href="{{route('admin.sales.not_sent')}}" class="btn">Zobraziť</a><a href="{{route('admin.sales.try_sent_again')}}" class="btn">Skúsiť znovu odoslať</a>
+                </div>
+            </div>
+        @endif
 
         <div class="row">
             <div class="col-md-9">
@@ -161,7 +168,7 @@
                                                     @if($s->storno == 0 && session('haveStorno'))
                                                         <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
                                                     @endif
-                                                    <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Generovať účtenku</a></li>
+                                                    <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Zobraziť účtenku</a></li>
 
                                                 </ul>
                                             </li>
@@ -215,9 +222,16 @@
             ]);
 
             var dataOther = google.visualization.arrayToDataTable([
-                [{label: 'Dátum pridania', type: 'datetime'},{label: 'ID Tržby', id: 'sales', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
+                [{label: 'Stav'},{label: 'Dátum pridania', type: 'datetime'},{label: 'ID Tržby', id: 'sales', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
                     @foreach($sales_all as $s)
-                [new Date('{{$s->receipt_time}}'),
+                [@if($s->storno == 1)
+                "<a href='#' data-toggle='tooltip' data-placement='top' title='stornovaná' class='tooltip-storno'><i class='fa fa-times-circle' aria-hidden='true'></i></a>",
+                        @elseif($s->not_sent == 1 || $s->not_sent == 2)
+                            "<a href='#' data-toggle='tooltip' data-placement='top' title='neodoslaná na EET' class='tooltip-not-sent'><i class='fa fa-exclamation-circle' aria-hidden='true'></i></i></a>",
+                        @else
+                            "<a href='#' data-toggle='tooltip' data-placement='top' title='úspešne odoslaná na EET' class='tooltip-okay'><i class='fa fa-check-circle' aria-hidden='true'></i></a>",
+                        @endif
+                    new Date('{{$s->receipt_time}}'),
                     '{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}',
                     @if(session('isAdmin'))
                         "<a href='{{route('admin.users.detail',$s->user_id )}}'>{{$s->user_name or '-'}}</a>",
@@ -237,7 +251,7 @@
                     @if($s->storno == 0)
                         "<li><a href='{{ route('admin.sales.storno', $s->id) }}'><i class='fa fa-ban' aria-hidden='true'></i>&nbsp;&nbsp; Storno</a></li>" +
                     @endif
-                        "<li><a href='{{ route('admin.sales.generate_receipt', $s->id) }}' target='_blank'><i class='fa fa-list-alt' aria-hidden='true'></i>&nbsp;&nbsp; Generovať účtenku</a></li>" +
+                        "<li><a href='{{ route('admin.sales.generate_receipt', $s->id) }}' target='_blank'><i class='fa fa-list-alt' aria-hidden='true'></i>&nbsp;&nbsp; Zobraziť účtenku</a></li>" +
                     "<li><a href='{{ route('admin.sales.detail', $s->id) }}'><i class='fa fa-sticky-note-o' aria-hidden='true'></i>&nbsp;&nbsp; Pridať poznámku</a></li>" +
 
                             @if(session('isAdmin'))
@@ -273,7 +287,7 @@
                 containerId: 'table_div',
                 dataTable: dataOther,
                 options: {
-                    sortColumn: 0,
+                    sortColumn: 1,
                     'sortAscending': false,
                     page: 'enable',
                     allowHtml: true,
@@ -336,7 +350,9 @@
                 var rangeEnd;
                 var state = control.getState();
                 var view = new google.visualization.DataView(dataOther);
-                view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                state.range.start.setHours(0, 0, 1);
+                state.range.end.setHours(23, 59, 59);
+                view.setRows(view.getFilteredRows([{column: 1, minValue: state.range.start, maxValue: state.range.end}]));
                 rangeStart = new Date(state.range.start);
                 rangeEnd = new Date(state.range.end);
 
@@ -401,7 +417,9 @@
                     control.draw();
                     var state = control.getState();
                     var view = new google.visualization.DataView(dataOther);
-                    view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                    state.range.start.setHours(0, 0, 1);
+                    state.range.end.setHours(23, 59, 59);
+                    view.setRows(view.getFilteredRows([{column: 1, minValue: state.range.start, maxValue: state.range.end}]));
                     rangeStart = new Date(state.range.start);
                     rangeEnd = new Date(state.range.end);
 
@@ -446,6 +464,7 @@
                     var rangeEnd;
                     var today = Date.now();
                     today = new Date(today);
+
                     var weekBefore = new Date(today.getTime() - 31*24*60*60*1000);
                     control.setState({
                         range: {
@@ -455,8 +474,12 @@
                     });
                     control.draw();
                     var state = control.getState();
+                    state.range.start.setHours(0, 0, 1);
+                    state.range.end.setHours(23, 59, 59);
                     var view = new google.visualization.DataView(dataOther);
-                    view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                    state.range.start.setHours(0, 0, 1);
+                    state.range.end.setHours(23, 59, 59);
+                    view.setRows(view.getFilteredRows([{column: 1, minValue: state.range.start, maxValue: state.range.end}]));
                     rangeStart = new Date(state.range.start);
                     rangeEnd = new Date(state.range.end);
 
@@ -505,6 +528,8 @@
             google.visualization.events.addListener(chart, 'select', function() {
                 var state = control.getState();
                 var view = new google.visualization.DataView(data);
+                state.range.start.setHours(0, 0, 1);
+                state.range.end.setHours(23, 59, 59);
                 view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
                 var selection = chart.getChart().getSelection();
                 if (selection.length) {
@@ -513,7 +538,9 @@
                     startDate = date.setHours(0, 0, 0);
                     endDate = date.setHours(23, 59, 59);
                     view = new google.visualization.DataView(dataOther);
-                    view.setRows(view.getFilteredRows([{column: 0, minValue: startDate, maxValue: endDate}]));
+                    state.range.start.setHours(0, 0, 1);
+                    state.range.end.setHours(23, 59, 59);
+                    view.setRows(view.getFilteredRows([{column: 1, minValue: startDate, maxValue: endDate}]));
                     table.setDataTable(view);
                     table.draw();
                 }else {
@@ -521,7 +548,9 @@
                     var rangeEnd;
                     state = control.getState();
                     view = new google.visualization.DataView(dataOther);
-                    view.setRows(view.getFilteredRows([{column: 0, minValue: state.range.start, maxValue: state.range.end}]));
+                    state.range.start.setHours(0, 0, 1);
+                    state.range.end.setHours(23, 59, 59);
+                    view.setRows(view.getFilteredRows([{column: 1, minValue: state.range.start, maxValue: state.range.end}]));
 
                     rangeStart = new Date(state.range.start);
                     rangeEnd = new Date(state.range.end);
@@ -569,6 +598,9 @@
     //<script> onlyForSyntaxPHPstorm
 
         $(document).ready(function() {
+
+//            $("[data-toggle='tooltip']").tooltip();
+
             jQuery('#products_id').val('');
             jQuery('#total_price_id').val('');
 

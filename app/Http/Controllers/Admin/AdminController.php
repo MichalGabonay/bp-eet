@@ -12,7 +12,7 @@ use Menu;
 use View;
 use App\User;
 
-define('DIR_CERT', public_path() . "/uploads/certs/2/");
+define('DIR_CERT', public_path() . "/uploads/certs/");
 
 class AdminController extends Controller
 {
