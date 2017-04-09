@@ -182,6 +182,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Andrewlamers\PhpGoogleCloudPrint\ServiceProvider::class
 
     ],
 
@@ -235,6 +236,8 @@ return [
         'HTML' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
         'Image' => Intervention\Image\Facades\Image::class,
+
+        'CloudPrint' => Andrewlamers\PhpGoogleCloudPrint\Facades\CloudPrint::class,
         'ApiXml30'   => App\Helpers\ApiXml30::class,
     ],
 ];

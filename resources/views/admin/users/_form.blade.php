@@ -7,6 +7,10 @@
     {!! Form::text('email', null, ['class' => 'form-control']) !!}
 </div>
 <div class="form-group">
+    {!! Form::label('phone_number', 'Tel. číslo') !!}
+    {!! Form::text('phone_number', null, ['class' => 'form-control']) !!}
+</div>
+<div class="form-group">
     {!! Form::label('username', 'Užívatelské meno') !!}
     {!! Form::text('username', null, ['class' => 'form-control']) !!}
 </div>

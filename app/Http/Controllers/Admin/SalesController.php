@@ -19,6 +19,7 @@ use SlevomatEET\EvidenceEnvironment;
 use SlevomatEET\Client;
 use SlevomatEET\Receipt;
 use App\Helpers\ApiXml30;
+use CloudPrint;
 
 
 class SalesController extends AdminController
@@ -366,30 +367,6 @@ class SalesController extends AdminController
     }
 
     public function test(){
-//        define('LOGIN','xgabon00');
-//        define('PASSWORD','Poklop12');
-
-        $apixml = new ApiXml30('xgabon00', 'Poklop12');
-
-        dd($apixml);
-
-        $res = $apixml->send_message("730998602","Text nejake zpravy ktery se bude odesilat", null,20);
-        echo $res;
-        echo "\n\n";
-
-
-        $what=array("query_incoming"=>1,"query_outgoing"=>1,"query_delivery_report"=>1, "count"=>30 );
-
-        $res = $apixml->get_incoming_messages($what);
-        echo $res;
-        echo "\n\n";
-
-
-        $what=array("type"=>"outgoing_message","id"=>"420730998602-20170407180934637");
-
-        $res = $apixml->confirm_message($what);
-        echo $res;
-        echo "\n\n";
 
     }
 

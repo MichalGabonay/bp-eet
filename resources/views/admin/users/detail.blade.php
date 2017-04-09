@@ -24,6 +24,10 @@
                                 <td>{{ $users->email or '-' }}</td>
                             </tr>
                             <tr>
+                                <td><strong>Tel. číslo:</strong></td>
+                                <td>{{ $users->phone_number or '-' }}</td>
+                            </tr>
+                            <tr>
                                 <td><strong>Užívatelské meno:</strong></td>
                                 <td>{{ $users->username or '-' }}</td>
                             </tr>

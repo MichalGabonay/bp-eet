@@ -11,6 +11,7 @@
                 <tr>
                     <th>Meno</th>
                     <th>E-mail</th>
+                    <th>Tel. číslo</th>
                     <th>Užívatelské meno</th>
                     <th width="120" class="text-center">Akcie</th>
                 </tr>
@@ -20,6 +21,7 @@
                     <tr id="{{$u->id}}">
                         <td>{{$u->name or '-'}}</td>
                         <td>{{$u->email or '-'}}</td>
+                        <td>{{$u->phone_number or '-'}}</td>
                         <td>{{$u->username or '-'}}</td>
                         {{--<td><a href="{{ route('admin.users.edit', $u->id) }}">{{$u->companies_count or '-'}}</a></td> --}}{{--TODO: edit - #tab_companies--}}
                         <td class="text-center">
