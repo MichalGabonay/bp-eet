@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\CompanyPhones;
 use SlevomatEET\Cryptography\CryptographyService;
 use SlevomatEET\Driver\GuzzleSoapClientDriver;
 use SlevomatEET\Configuration;
@@ -394,5 +395,65 @@ class CompaniesController extends AdminController
                 return 0;
             }
         }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function phones($company_id, CompanyPhones $companyPhones)
+    {
+        $this->page_description = "telefóny";
+
+        $phones = $companyPhones->getAllFromCompany($company_id);
+
+        return view('admin.companies.phones', compact('phones', 'company_id'));
+    }
+
+    /**
+     * Store phone number
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function phoneStore($company_id, Request $request, CompanyPhones $companyPhones)
+    {
+        try{
+            $phone = $companyPhones->create([
+                'company_id' => $company_id,
+                'phone' => $request['phone']
+            ]);
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            if ($e) {
+                return redirect()
+                    ->back()
+                    ->withInput($request->all())
+                    ->withErrors([
+                        'Nepodarilo sa pridať telefón, toto číslo sa už niekde používa.',
+                    ]);
+            }
+        }
+
+        Flash::success('Telefón bol pridaný do spoločnosti!');
+
+        return redirect(route('admin.companies.phones', $company_id));
+    }
+
+    /**
+     * Delete phoe number form company
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function phoneDelete($phone_id, CompanyPhones $companyPhones)
+    {
+        $phone = $companyPhones->findOrFail($phone_id);
+        $company_id = $phone->company_id;
+
+        $phone->delete();
+
+        Flash::success('Telefón bol odstránený zo spoločnosti!');
+
+        return redirect(route('admin.companies.phones', $company_id));
     }
 }

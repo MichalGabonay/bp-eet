@@ -17,6 +17,7 @@ if (App::environment() == 'development') {
 
 Route::get('/', ['as' => 'home', 'uses' => 'Controller@redirect' ]);
 
+Route::get('receive-sms', ['as' => 'receive_sms ', 'uses' => 'Controller@receiveSms ' ]);
 
 Auth::routes();
 
@@ -49,6 +50,9 @@ Route::group(['prefix' => 'companies'], function () {
     Route::get('{id}/delete', ['as' => 'admin.companies.delete', 'uses' => 'Admin\CompaniesController@delete']);
     Route::post('{id}/change-logo', ['as' => 'admin.companies.change_logo', 'uses' => 'Admin\CompaniesController@changeLogo']);
     Route::get('{id}/delete-logo', ['as' => 'admin.companies.delete_logo', 'uses' => 'Admin\CompaniesController@deleteLogo']);
+    Route::get('{id}/phones', ['as' => 'admin.companies.phones', 'uses' => 'Admin\CompaniesController@phones']);
+    Route::post('{id}/phones/store', ['as' => 'admin.companies.phones_store', 'uses' => 'Admin\CompaniesController@phoneStore']);
+    Route::get('{id}/phones/delete', ['as' => 'admin.companies.phones_delete', 'uses' => 'Admin\CompaniesController@phoneDelete']);
 });
 
 //Sales

@@ -18,8 +18,6 @@ use SlevomatEET\Configuration;
 use SlevomatEET\EvidenceEnvironment;
 use SlevomatEET\Client;
 use SlevomatEET\Receipt;
-use App\Helpers\ApiXml30;
-use CloudPrint;
 
 
 class SalesController extends AdminController
@@ -296,10 +294,7 @@ class SalesController extends AdminController
             new \DateTimeImmutable('now'),
             $price
         );
-//        dd($receipt);
 
-
-        //TODO: platba sa nepodarila
         try {
             $response = $client->send($receipt);
             return ['fik' => $response->getFik(), 'bkp' => $response->getBkp()];
@@ -309,9 +304,7 @@ class SalesController extends AdminController
             return ['fik' => 'error', 'bkp' => $e->getRequest()->getBkpCode()];
         } catch (\SlevomatEET\InvalidResponseReceivedException $e) {
             echo $e->getResponse()->getRequest()->getBkpCode(); // on invalid response you need to print the PKP and BKP too
-//            $response->error = $e->getResponse()->getRequest()->getBkpCode();
             return ['fik' => 'error', 'bkp' => $e->getResponse()->getRequest()->getBkpCode()];
-//            return $e->getResponse()->getRequest()->getBkpCode();
         }
     }
 

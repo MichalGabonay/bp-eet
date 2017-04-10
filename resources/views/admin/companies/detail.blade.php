@@ -4,6 +4,7 @@
     <a href="{{ route('admin.companies.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></b> Zpět </a>
     <a href="{{ route('admin.companies.edit', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></b> Upraviť </a>
     <a href="{{ route('admin.companies.delete', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin sweet_delete"><b><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b> Odstrániť </a>
+    <a href="{{ route('admin.companies.phones', $company->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-phone fa-lg" aria-hidden="true"></i></b> Telefóny </a>
 @endsection
 
 @section('content')
