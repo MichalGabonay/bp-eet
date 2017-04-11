@@ -9,7 +9,7 @@ use Auth;
 class ImportController extends AdminController
 {
     /**
-     * Create a new dashboard controller instance.
+     * Create a new import controller instance.
      *
      * @return void
      */
@@ -52,16 +52,13 @@ class ImportController extends AdminController
         $this->importSales();
     }
 
+    /**
+     * Read a csv file, parse him and import into database
+     */
     private function importSales()
     {
-        $file = file_get_contents($_FILES['import_file']['tmp_name']);
-
-
         $sales = new Sales();
         $userid = Auth::user()->id;
-
-        //TODO: zmena na uploadnuty subor
-//        $file = database_path('seeds/import/products-update-21-03-2017.csv');
 
         if (($handle = fopen($_FILES['import_file']['tmp_name'], "r")) !== FALSE) {
             $i = 0;
@@ -77,8 +74,6 @@ class ImportController extends AdminController
                         echo "<span style='color: red'>Záznam nemá správny formát</span><br>";
                         continue;
                     }
-
-//                    echo 'SAP ID ' . $row[0] . ' nebyl nalezen!<br />';
 
                     $products = '';
                     if (isset($row[7])){
@@ -101,7 +96,6 @@ class ImportController extends AdminController
                         echo "<span style='color: green'>Záznam " . implode(";",$row) . " sa úspešne naimportoval.</span><br>";
                     }
                     catch (\Illuminate\Database\QueryException $e){
-//                        dd($e);
                         echo "<span style='color: red'>Záznam " . implode(";",$row) . " sa nepodarilo importovať.</span><br>";
                     }
                 }
@@ -109,6 +103,6 @@ class ImportController extends AdminController
             fclose($handle);
         }
 
-        echo 'done';
+        echo 'hotovo';
     }
 }

@@ -11,10 +11,8 @@
     <title>{{ config('app.name', 'EET') }} {{ $page_title or '' }}</title>
 
     <!-- Styles -->
-
     {!! HTML::style( asset("/assets/admin/css/bootstrap/bootstrap.min.css") ) !!}
     {!! HTML::style( asset("/assets/admin/css/select2.min.css") ) !!}
-    {{--{!! HTML::style( asset("/assets/admin/css/font-awesome.min.css") ) !!}--}}
     {!! HTML::style( asset("/assets/admin/css/app.css") ) !!}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     {!! HTML::style( asset("/assets/admin/css/style.css") ) !!}
@@ -38,27 +36,17 @@
 
 <body>
 
-
 @yield('content')
 
 <!-- Scripts -->
 
-{{--{!! HTML::script( asset("/assets/admin/js/jquery-3.1.1.min.js") ) !!}--}}
 {!! HTML::script( asset("/assets/admin/js/bootstrap.min.js") ) !!}
-{{--{!! HTML::script( asset("/assets/admin/js/app.js") ) !!}--}}
 
 <script>
     jQuery(document).ready(function() {
-//        $(window).scroll(function(){
-//            var sticky = $('.sticky'),
-//                    scroll = $(window).scrollTop();
-//
-//            if (scroll >= 100) sticky.addClass('fixed');
-//            else sticky.removeClass('fixed');
-//        });
-
 
         @yield('jquery_ready')
+
     });
 </script>
 

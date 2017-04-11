@@ -24,15 +24,6 @@ class DashboardController extends AdminController
     {
         parent::__construct($request);
 
-        $this->middleware(function ($request, $next) {
-
-
-
-            return $next($request);
-        });
-
-
-
         $this->page_title = 'Dashboard';
         $this->page_icon = 'fa-home';
     }
@@ -40,10 +31,8 @@ class DashboardController extends AdminController
     /**
      * Default page / redirects to dashboard or login page
      *
-     * @return Redirect
      */
     public function redirect() {
-//        return redirect()->away('http://servis.holab.cz');
         if (Auth::check())
         {
             return redirect(route('admin.dashboard'));
@@ -54,10 +43,11 @@ class DashboardController extends AdminController
         }
     }
 
+    /**
+     * Show dashboard
+     */
     public function index(Companies $companies, UsersCompany $usersCompany, Certs $certs, Sales $sales, User $user) {
 
-//        dd(session()->all());
-//        dd(session('selectedCompany'));
         $cert = null;
         if (session('selectedCompany') != null){
             $selected_company = $companies->findOrFail(session('selectedCompany'));

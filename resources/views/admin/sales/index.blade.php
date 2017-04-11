@@ -31,12 +31,10 @@
                     <div class="row" >
                         <div class="col-md-6">
                             <strong>Obdobie od:</strong><br>
-                            {{--<input type="text" class="date-picker" id="rangeStart">--}}
                             <span id="rangeStart"></span>
                         </div>
                         <div class="col-md-6">
                             <strong>Obdobie do:</strong><br>
-                            {{--<input type="text" class="date-picker" id="rangeEnd">--}}
                             <span id="rangeEnd"></span>
                         </div>
                     </div>
@@ -49,7 +47,6 @@
                         {!! Form::textarea('note', null, ['class' => 'form-control note-for-period']) !!}
                         {!! Form::button( 'Zapíš', ['type' => 'submit', 'class' => 'btn bg-teal-400', 'id' => 'btn-add-period-note'] ) !!}
                     </div>
-
 
                     {!! Form::close() !!}
                 </div>
@@ -64,7 +61,6 @@
                         <div class="period-note-note">
                             <span>{{$n->note}}</span>
                         </div>
-
                     @endforeach
 
                     <div class="text-center">
@@ -103,26 +99,23 @@
                 <div class='col-md-5'>
                     <table class="table">
                         <thead id="products-list">
-                        <tr>
-                            <td width="350"><strong>Produkt</strong></td>
-                            <td><strong>Cena</strong></td>
-                        </tr>
-
+                            <tr>
+                                <td width="350"><strong>Produkt</strong></td>
+                                <td><strong>Cena</strong></td>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td></td>
-                            <td ><label id="total_price_label">0 Kč</label></td>
-                        </tr>
+                            <tr>
+                                <td></td>
+                                <td ><label id="total_price_label">0 Kč</label></td>
+                            </tr>
                         </tbody>
                     </table>
                     <div class="form-group submit-btn">
-                        {{--{!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}--}}
                     </div>
                 </div><!-- /.col -->
                 {!! Form::close() !!}
             </div><!-- /.row -->
-
         @else
             <h2 class="text-center"> Bohužiaľ nie je možné zadávať nové tržby, obráťte sa na andministrátora systému k tejto firme. </h2>
         @endif
@@ -135,14 +128,13 @@
                     <div class="panel-body">
                         <table class="table datatable-sorting">
                             <thead>
-                            <tr>
-                                <th>Tržba</th>
-                                <th>Produkty</th>
-                                <th>Celková cena</th>
-                                <th>Pridaná</th>
-
-                                <th width="80" class="text-center">Akcie</th>
-                            </tr>
+                                <tr>
+                                    <th>Tržba</th>
+                                    <th>Produkty</th>
+                                    <th>Celková cena</th>
+                                    <th>Pridaná</th>
+                                    <th width="80" class="text-center">Akcie</th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($sales as $s)
@@ -169,7 +161,6 @@
                                                         <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
                                                     @endif
                                                     <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Zobraziť účtenku</a></li>
-
                                                 </ul>
                                             </li>
                                         </ul>
@@ -184,12 +175,7 @@
         </div>
     @endif
 
-
 @endsection
-
-
-
-
 
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
@@ -210,6 +196,7 @@
         // draws it.
         function drawChart() {
 
+            //data for chart
             var data = google.visualization.arrayToDataTable([
                 [
                     {label: 'Datum', id: 'date', type: 'date'},
@@ -221,6 +208,7 @@
                 @endforeach
             ]);
 
+            //data for table
             var dataOther = google.visualization.arrayToDataTable([
                 [{label: 'Stav'},{label: 'Dátum pridania', type: 'datetime'},{label: 'ID Tržby', id: 'sales', type: 'string'},{label: 'Užívatel'},{label: 'Poznámka', type: 'string'},{label: 'Celková cena', type: 'number'},{label: 'Akcie', type: 'string'}],
                     @foreach($sales_all as $s)
@@ -324,7 +312,6 @@
                 }
                 var dateStart = dd+'.'+mm+'.'+yyyy;
                 var dateStart2 = yyyy+'-'+mm+'-'+dd;
-//                document.getElementById('rangeStart').value = dateStart;
                 document.getElementById('date_from').value = dateStart2;
                 document.getElementById('rangeStart').innerHTML = dateStart;
 
@@ -339,12 +326,11 @@
                 }
                 var dateEnd = dd+'.'+mm+'.'+yyyy;
                 var dateEnd2 = yyyy+'-'+mm+'-'+dd;
-//                    document.getElementById('rangeEnd').value = dateEnd;
                 document.getElementById('date_to').value = dateEnd2;
                 document.getElementById('rangeEnd').innerHTML = dateEnd;
             });
 
-
+            //event for control date from-to
             google.visualization.events.addListener(control, 'statechange', function () {
                 var rangeStart;
                 var rangeEnd;
@@ -367,7 +353,6 @@
                 }
                 var dateStart = dd+'.'+mm+'.'+yyyy;
                 var dateStart2 = yyyy+'-'+mm+'-'+dd;
-//                document.getElementById('rangeStart').value = dateStart;
                 document.getElementById('date_from').value = dateStart2;
                 document.getElementById('rangeStart').innerHTML = dateStart;
 
@@ -382,7 +367,6 @@
                 }
                 var dateEnd = dd+'.'+mm+'.'+yyyy;
                 var dateEnd2 = yyyy+'-'+mm+'-'+dd;
-//                    document.getElementById('rangeEnd').value = dateEnd;
                 document.getElementById('date_to').value = dateEnd2;
                 document.getElementById('rangeEnd').innerHTML = dateEnd;
                 table.setDataTable(view);
@@ -434,7 +418,6 @@
                     }
                     var dateStart = dd+'.'+mm+'.'+yyyy;
                     var dateStart2 = yyyy+'-'+mm+'-'+dd;
-//                document.getElementById('rangeStart').value = dateStart;
                     document.getElementById('date_from').value = dateStart2;
                     document.getElementById('rangeStart').innerHTML = dateStart;
 
@@ -449,7 +432,6 @@
                     }
                     var dateEnd = dd+'.'+mm+'.'+yyyy;
                     var dateEnd2 = yyyy+'-'+mm+'-'+dd;
-//                    document.getElementById('rangeEnd').value = dateEnd;
                     document.getElementById('date_to').value = dateEnd2;
                     document.getElementById('rangeEnd').innerHTML = dateEnd;
                     table.setDataTable(view);
@@ -494,7 +476,6 @@
                     }
                     var dateStart = dd+'.'+mm+'.'+yyyy;
                     var dateStart2 = yyyy+'-'+mm+'-'+dd;
-//                document.getElementById('rangeStart').value = dateStart;
                     document.getElementById('date_from').value = dateStart2;
                     document.getElementById('rangeStart').innerHTML = dateStart;
 
@@ -509,7 +490,6 @@
                     }
                     var dateEnd = dd+'.'+mm+'.'+yyyy;
                   var dateEnd2 = yyyy+'-'+mm+'-'+dd;
-//                    document.getElementById('rangeEnd').value = dateEnd;
                     document.getElementById('date_to').value = dateEnd2;
                     document.getElementById('rangeEnd').innerHTML = dateEnd;
                     table.setDataTable(view);
@@ -519,11 +499,6 @@
 
             dashboard.draw(data);
 
-//            // When the table is selected, update the orgchart.
-//            google.visualization.events.addListener(table, 'select', function() {
-//                chart.setSelection(table.getSelection());
-//            });
-//
             // When the orgchart is selected, update the table chart.
             google.visualization.events.addListener(chart, 'select', function() {
                 var state = control.getState();
@@ -587,9 +562,8 @@
                     table.setDataTable(view);
                     table.draw();
                 }
-
             });
-        }
+        }//end drawChart()
     </script>
     @endif
 @endsection
@@ -599,7 +573,7 @@
 
         $(document).ready(function() {
 
-//            $("[data-toggle='tooltip']").tooltip();
+            $("[data-toggle='tooltip']").tooltip();
 
             jQuery('#products_id').val('');
             jQuery('#total_price_id').val('');
@@ -619,9 +593,6 @@
                     new_total_price = parseFloat(total_price)+price;
                 }
 
-//                alert(isNaN(new_total_price));
-//                alert(new_total_price);
-
                 if (product != '' && price != '' && !(isNaN(new_total_price)) ){
                     if (products == ''){
                         $('#products_id').val(product+'||'+price);
@@ -631,10 +602,7 @@
                     }else {
                         $('#products_id').val(products+';'+product+'||'+price);
                         $('#total_price_id').val(new_total_price)
-
-
                     }
-                    //                products = jQuery('#products_id').val();
 
                     $( "#products-list" ).append( "<tr><td>"+product+"</td><td>"+price+"</td></tr>" );
 
@@ -643,14 +611,11 @@
                     $('#product_name_id').val('');
                     $('#price_id').val('');
                 }
-
-//                alert(products);
             });
         });
 
-                @if(!session('isAdmin') && !session('isManager') && count($sales) > 0)
-        var table = $('.datatable-sorting').DataTable({
-                //"bSort": false
+        @if(!session('isAdmin') && !session('isManager') && count($sales) > 0)
+            var table = $('.datatable-sorting').DataTable({
                 order: [3, "desc"],
                 columnDefs: [
                     { "type": "de_date", targets: 3 }],

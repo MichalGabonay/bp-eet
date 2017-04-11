@@ -75,10 +75,10 @@
                     @if(isset($cert))
                         @if($cert->valid == 1)
                             <strong>Stav:</strong> certifikát je platný <a href="#" data-toggle="tooltip" data-placement="top" title="je možné zadávať nové tržby"><i class="fa fa-info-circle" aria-hidden="true"></i></a><br>
+                            <strong>Datum Expirácie:</strong> {{date('d.m.Y', strtotime($cert->expiration_date))}}<br><br>
                         @else
                             <strong>Stav:</strong> neplatný <a href="#" data-toggle="tooltip" data-placement="top" title="Nie je možné zadávať nové tržby, skúste vložiť ešte raz súbor ktorý ste dostali od finančného úradu so správnym heslo, ak heslo nemáte, nechajte prázdne pole."><i class="fa fa-info-circle" aria-hidden="true"></i></a><br>
                         @endif
-                        <strong>Datum Expirácie:</strong> {{date('d.m.Y', strtotime($cert->expiration_date))}}<br><br>
 
                         <a class="btn change-cert-btn">Zmeniť</a>
                         <div class="change-cert-form" style="display: none">
@@ -86,7 +86,6 @@
                         {{--TODO: varovna hlaska o pridani certifikatu--}}
                         <div class="change-cert-form">
                     @endif
-
                             {!! Form::open( ['route' => ['admin.companies.add_cert', $company->id ], 'id' => 'form_add_cert', 'files' => true] ) !!}
                             <div class="form-group">
                                 {!! Form::label('name', 'Vložte certifikát vo formáte pkcs12 získanom z webovej aplikácie EET (.p12)') !!}
@@ -96,7 +95,6 @@
                                 {!! Form::label('name', 'Heslo k certifikátu') !!}
                                 {!! Form::password('password', ['class' => 'form-control maxlength']) !!}
                             </div>
-
                                 {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-cert'] ) !!}
                             {!! Form::close() !!}
                         </div>
@@ -123,21 +121,20 @@
                                 @endforeach
                             </select>
                             {!! Form::button( 'Přidat užívatela', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-add'] ) !!}
-
                         {!! Form::close() !!}
                     </div>
 
                     <table class="table datatable-sorting">
                         <thead>
-                        <tr>
-                            <th>Meno</th>
-                            <th>E-mail</th>
-                            <th>Užívatelské meno</th>
-                            @foreach($roles as $r)
-                                <th class="text-center">{{$r->name}} <a href="#" data-toggle="tooltip" data-placement="top" title="{{$r->description}}"><i class="fa fa-info-circle" aria-hidden="true"></i></a></th>
-                            @endforeach
-                            <th width="30" class="text-center">Akcie</th>
-                        </tr>
+                            <tr>
+                                <th>Meno</th>
+                                <th>E-mail</th>
+                                <th>Užívatelské meno</th>
+                                @foreach($roles as $r)
+                                    <th class="text-center">{{$r->name}} <a href="#" data-toggle="tooltip" data-placement="top" title="{{$r->description}}"><i class="fa fa-info-circle" aria-hidden="true"></i></a></th>
+                                @endforeach
+                                <th width="30" class="text-center">Akcie</th>
+                            </tr>
                         </thead>
                         <tbody>
                         @foreach($users_in as $u)
@@ -170,9 +167,7 @@
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
 @endsection
-
 
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm

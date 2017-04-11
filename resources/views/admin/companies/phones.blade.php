@@ -33,13 +33,3 @@
         </div>
     </div>
 @endsection
-
-@section('head_js')
-
-@endsection
-
-
-@section('jquery_ready')
-    //<script> onlyForSyntaxPHPstorm
-
-@endsection

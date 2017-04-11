@@ -26,9 +26,7 @@
             </tr>
             </tbody>
         </table>
-
         <hr>
-
         <div class="text-center">
             <p>Čas platby: {{date('d.m.Y H:i:s', strtotime($sale->receipt_time))}}</p><br>
             BKP:<br>
@@ -36,8 +34,5 @@
             FIK:<br>
             <p>{{$sale->fik}}</p><br>
         </div>
-
     </div>
-
-
 @endsection

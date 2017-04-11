@@ -25,7 +25,7 @@ class Notes extends Model
     /**
      * Get all notes
      *
-     * @return Companies
+     * @return Notes
      */
     public function getAll()
     {
@@ -33,9 +33,9 @@ class Notes extends Model
     }
 
     /**
-     * Get all notes
+     * Get all notes from company
      *
-     * @return Companies
+     * @return Notes
      */
     public function getAllFromCompany($company_id)
     {
@@ -44,9 +44,9 @@ class Notes extends Model
     }
 
     /**
-     * Get all notes
+     * Get all period notes
      *
-     * @return Companies
+     * @return Notes
      */
     public function getAllPeriod($company_id)
     {
@@ -59,9 +59,9 @@ class Notes extends Model
     }
 
     /**
-     * Get all notes
+     * Get all notes for sales
      *
-     * @return Companies
+     * @return Notes
      */
     public function getAllSale($company_id)
     {
@@ -74,9 +74,9 @@ class Notes extends Model
     }
 
     /**
-     * Get all notes
+     * Get all notes to sale
      *
-     * @return Companies
+     * @return Notes
      */
     public function getAllBySaleId($sale_id)
     {

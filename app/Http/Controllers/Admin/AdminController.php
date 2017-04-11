@@ -16,7 +16,9 @@ define('DIR_CERT', public_path() . "/uploads/certs/");
 
 class AdminController extends Controller
 {
-
+    /**
+     * @var $page_title
+     */
     protected $page_title = '';
 
     /**
@@ -29,10 +31,19 @@ class AdminController extends Controller
      */
     protected $page_icon = 'fa-archive';
 
+    /**
+     * @var $company_logo
+     */
     protected $company_logo = '';
 
+    /**
+     * @var $selectedCompany
+     */
     protected $selectedCompany;
 
+    /**
+     * @var $userCompanyId
+     */
     protected $userCompanyId;
 
     /**
@@ -44,6 +55,8 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
+
+            //if still not selected company, choose one
             if (session('selectedCompany') == null){
                 $this->changeSelectedCompany();
             }
@@ -53,6 +66,7 @@ class AdminController extends Controller
                 $this->company_logo = $company->logo;
             }
 
+            //create menu
             Menu::make('MyNavBar', function($menu) {
                 $menu->add('Dashboard', ['route' => 'admin.dashboard', 'icon' => 'fa fa-home']);
 
@@ -73,15 +87,7 @@ class AdminController extends Controller
 
                 if(session('isAdmin') || session('haveExport'))
                     $menu->add('Export', ['route' => 'admin.export.index', 'icon' => 'fa fa-upload']);
-    //
-    //            $menu->add('Uživatelé', ['icon' => 'fa fa-user']);
-    //            $menu->item('uzivatele')->add('1', ['route' => ['admin.dashboard']]);
-    //            $menu->item('uzivatele')->add('2', ['route' => ['admin.dashboard']]);
-    //            $menu->item('uzivatele')->add('3', ['route' => ['admin.dashboard']]);
-
             });
-
-
 
             // share page title and description with view
             View::composer('*', function($view){
@@ -95,6 +101,9 @@ class AdminController extends Controller
         });
     }
 
+    /**
+     * Choosing of selected company, for which will be system set up
+     */
     public function changeSelectedCompany($company_id = null ){
 
         $usersCompanyRole = new UsersCompanyRole();
@@ -108,8 +117,6 @@ class AdminController extends Controller
             'isCashier' => false,
         ]);
 
-
-
         $user = new User();
 
         if ($company_id == null){
@@ -117,8 +124,8 @@ class AdminController extends Controller
         }else{
             $user_company = $usersCompany->findUserCompany(Auth::user()->id, $company_id)->first();
         }
-//        dd($user_company);
 
+        //set roles for user in selected company
         if ($user_company != null){
             session(['selectedCompany' => $user_company->company_id]);
             $roles_id = $usersCompanyRole->getAllUserCompanyRoles($user_company->id);
@@ -144,11 +151,12 @@ class AdminController extends Controller
             }
         }
 
+        //if user only cashier, go straight to sales page
         if (session('isAdmin') == false && session('isManager') == false && session('isCashier')){
             return redirect(route('admin.sales.index'));
+        }else{
+            return redirect(route('admin.dashboard'));
         }
-
-        return redirect(route('admin.dashboard'));
     }
 
 }

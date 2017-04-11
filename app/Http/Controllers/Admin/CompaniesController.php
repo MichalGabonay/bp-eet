@@ -24,12 +24,12 @@ use Image;
 class CompaniesController extends AdminController
 {
     /**
-     * @var companies
+     * @var $companies
      */
     protected $companies;
 
     /**
-     * Create a new dashboard controller instance.
+     * Create a new companies controller instance.
      *
      * @return void
      */
@@ -86,23 +86,21 @@ class CompaniesController extends AdminController
         $request['cert_id'] = NULL;
         $request['logo'] = '';
 
-//        try {
+        try {
             $store = $this->companies->create($request->all());
-//        }
-//        catch (\Illuminate\Database\QueryException $e){
-//            if ($e) {
-//                return redirect()
-//                    ->back()
-//                    ->withInput($request->all())
-//                    ->withErrors([
-//                        'Nepodarilo sa pridať novú spoločnosť.',
-//                    ]);
-//            }
-//        }
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            if ($e) {
+                return redirect()
+                    ->back()
+                    ->withInput($request->all())
+                    ->withErrors([
+                        'Nepodarilo sa pridať novú spoločnosť.',
+                    ]);
+            }
+        }
 
         $company = $this->companies->findOrFail($store->id);
-
-
 
         $uc_store = $usersCompany->create([
             'user_id' => Auth::user()->id,
@@ -118,7 +116,6 @@ class CompaniesController extends AdminController
         Flash::success('Společnost bola úspešne vytvorená!');
 
         return redirect(route('admin.companies.detail', $company->id));
-//        return view('admin.companies.cert', compact('company'));
     }
 
     /**
@@ -137,6 +134,7 @@ class CompaniesController extends AdminController
                 'password' => 'required',
             ]);
 
+        //read and save inserted certificate
         $file = $request->file('cert');
         $cert_name = $file->getClientOriginalName();
         $file->move('uploads/certs/' . $company_id . '/', $cert_name);
@@ -147,6 +145,7 @@ class CompaniesController extends AdminController
             exit;
         }
 
+        //split inserted certificate in pkcs12 format to private key and public cert
         if (openssl_pkcs12_read($cert_store, $certificate, $request['password'])) {
             if (isset($certificate['pkey'])) {
                 file_put_contents('uploads/certs/' . $company_id . '/private.key', $certificate['pkey']);
@@ -165,6 +164,7 @@ class CompaniesController extends AdminController
             exit;
         }
 
+        //save in database
         if($company->cert_id != null){
             $cert = $certs->findOrFail($company->cert_id);
             $valid = $this->testOfCert($company_id);
@@ -187,8 +187,7 @@ class CompaniesController extends AdminController
             $company->update();
         }
 
-
-//        Flash::success('Spoločnosť bola úspešne upravená!');
+        Flash::success('Certifikát bol pridaný k spoločnosti!');
         return redirect(route('admin.companies.detail', $company_id));
     }
 
@@ -210,7 +209,6 @@ class CompaniesController extends AdminController
 
         $users_in = $usersCompany->getUsersFromCompany($id);
 
-//        dd($users_in);
         $roles = $roles->getAll();
         $all_users = $users->getAll()->get();
 
@@ -225,13 +223,9 @@ class CompaniesController extends AdminController
             if ($is_in == true){
                 $all_users = $all_users->except($u->id);
             }
-
         }
 
-
         $usersCompanyRole = $usersCompanyRole->getAll()->get();
-
-//        dd($usersCompanyRole);
 
         foreach($users_in as $u){
             foreach($roles as $r){
@@ -243,8 +237,6 @@ class CompaniesController extends AdminController
                 }
             }
         }
-
-
 
         return view('admin.companies.detail', compact('company', 'users_in', 'roles', 'all_users', 'users_role', 'cert'));
     }
@@ -266,8 +258,6 @@ class CompaniesController extends AdminController
 
         $usersCompanyRole = $usersCompanyRole->getAll()->get();
 
-//        dd($usersCompanyRole);
-
         foreach($users_in as $u){
             foreach($roles as $r){
                 $users_role[$u->id][$r->id] = false;
@@ -280,8 +270,6 @@ class CompaniesController extends AdminController
         }
 
         $company_id = $companies->id;
-
-//        $users_role[][];
 
         return view('admin.companies.edit', compact('companies', 'users_in', 'roles', 'all_users', 'users_role', 'company_id'));
     }
@@ -303,7 +291,6 @@ class CompaniesController extends AdminController
         $companies = $this->companies->findOrFail($id);
 
         $companies->update($request->all());
-
 
         Flash::success('Spoločnosť bola úspešne upravená!');
         return redirect(route('admin.companies.index'));
@@ -365,6 +352,10 @@ class CompaniesController extends AdminController
         return redirect(route('admin.companies.detail', $id));
     }
 
+    /**
+     * Test if can be created new EET with inserted certificate
+     *
+     */
     private function testOfCert($company_id){
 
         $company = $this->companies->findOrFail($company_id);
@@ -384,11 +375,9 @@ class CompaniesController extends AdminController
         try {
         $response = $client->send($receipt);
         echo $response->getFik();
-//        die();
         } catch (\SlevomatEET\FailedRequestException $e) {
             echo $e->getRequest()->getPkpCode(); // if request fails you need to print the PKP and BKP codes to receipt
         } catch (\SlevomatEET\InvalidResponseReceivedException $e) {
-//            echo $e->getResponse()->getRequest()->getPkpCode(); // on invalid response you need to print the PKP and BKP too
             if ($e->getResponse()->getRawData()->Chyba->kod == '0'){
                 return 1;
             }else{

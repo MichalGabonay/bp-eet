@@ -1,4 +1,3 @@
-
 @if(isset($edit) && $notes->type != 1)
 
 @else

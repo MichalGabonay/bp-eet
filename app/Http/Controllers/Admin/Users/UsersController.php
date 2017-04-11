@@ -15,9 +15,12 @@ use App\Model\UsersCompany;
 
 class UsersController extends AdminController
 {
+    /**
+     * @var $users
+     */
     protected $users;
     /**
-     * Create a new dashboard controller instance.
+     * Create a new users controller instance.
      *
      * @return void
      */
@@ -125,8 +128,6 @@ class UsersController extends AdminController
 
         $roles = $roles->getAll();
 
-//        dd($user_in_companies);
-
         $users_role = null;
 
         foreach($companies as $c){
@@ -153,7 +154,6 @@ class UsersController extends AdminController
                 $c->user_enabled = false;
             }
         }
-
         return view('admin.users.detail', compact('users', 'companies', 'roles', 'users_role'));
     }
 
@@ -181,11 +181,6 @@ class UsersController extends AdminController
      */
     public function update(Request $request, $id)
     {
-        $validate = [
-//            'name' => 'required',
-        ];
-
-//        $this->validate($request, $validate);
         $users = $this->users->findOrFail($id);
 
         if($request['password'] == ''){
@@ -194,8 +189,6 @@ class UsersController extends AdminController
             $request['password'] = bcrypt($request['password']);
             $users->update($request->all());
         }
-
-
 
         Flash::success('Užívateľ bol úspešne upravený!');
         return redirect(route('admin.users.index'));
@@ -217,11 +210,13 @@ class UsersController extends AdminController
         return redirect(route('admin.users.index'));
     }
 
+    /**
+     * disable/enable user in company
+     *
+     */
     public function switchCompanyState($user_id, $company_id, UsersCompany $usersCompany){
 
         $userInCompany = $usersCompany->findUserCompany($user_id, $company_id)->first();
-
-
 
         if($userInCompany != null){
             if($userInCompany->enabled == 1){
@@ -238,12 +233,13 @@ class UsersController extends AdminController
                 'enabled' => 1
             ]);
         }
-
-//        return redirect(route('admin.users.detail', $user_id));
         return redirect()->back();
-
     }
 
+    /**
+     * add selected user to company
+     *
+     */
     public function addUserToCompany(Request $request, $company_id, UsersCompany $usersCompany){
 
         $user_id = $request->user;
@@ -262,10 +258,6 @@ class UsersController extends AdminController
                 ]);
             }
         }
-
-
         return redirect(route('admin.companies.detail', $company_id));
-
     }
-
 }

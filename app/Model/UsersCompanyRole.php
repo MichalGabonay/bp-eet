@@ -50,5 +50,4 @@ class UsersCompanyRole extends Model
             ->get();
     }
 
-
 }

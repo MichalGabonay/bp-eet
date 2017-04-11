@@ -44,10 +44,8 @@ class AppController extends Controller
         dd($migrations);
     }
 
-    //TODO: pozriet na to
     public function clearCache() {
         Cache::flush();
-        opcache_reset();
         Artisan::call('cache:clear');
         Artisan::call('route:clear');
         Artisan::call('view:clear');
@@ -60,6 +58,6 @@ class AppController extends Controller
             }
         }
 
-        dd('Cleared.');
+        dd('Cleared!');
     }
 }

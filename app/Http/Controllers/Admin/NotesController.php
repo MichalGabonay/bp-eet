@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Model\Notes;
-use App\Model\Sales;
 use Illuminate\Http\Request;
-//use App\Http\Requests;
 use Flash;
 use Auth;
 
@@ -17,7 +15,7 @@ class NotesController extends AdminController
     protected $notes;
 
     /**
-     * Create a new dashboard controller instance.
+     * Create a new notes controller instance.
      *
      * @return void
      */
@@ -61,6 +59,7 @@ class NotesController extends AdminController
     {
         $this->page_description = 'vytvoriť';
 
+        //here can be created only period notes
         $type = 1;
 
         return view('admin.notes.create', compact('type'));
@@ -74,8 +73,7 @@ class NotesController extends AdminController
      */
     public function store(Request $request, $id=null)
     {
-//        dd($request->all());
-
+        //set if sale note or period note
         if (isset($request['from']) && isset($request['to']) && $id==null){
             $from = $request['from'];
             $to = $request['to'];
@@ -107,17 +105,6 @@ class NotesController extends AdminController
             return redirect(route('admin.sales.detail', $id));
         }
 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function detail($id)
-    {
-        //
     }
 
     /**

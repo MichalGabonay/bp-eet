@@ -5,12 +5,12 @@
         <div class='col-md-12'>
             <div class="box-body">
 
-                {!! Form::model( $users, ['route' => ['admin.users.update', $users->id], 'method' => 'PATCH', 'id' => 'form_edit_categories', 'files' => true]) !!}
+                {!! Form::model( $users, ['route' => ['admin.users.update', $users->id], 'method' => 'PATCH']) !!}
 
                 @include('admin.users._form')
 
                 <div class="form-group mt15">
-                    {!! Form::button('Upraviť', ['class' => 'btn bg-teal-400', 'id' => 'btn-submit-edit', 'type' => 'submit'] ) !!}
+                    {!! Form::button('Upraviť', ['class' => 'btn bg-teal-400', 'type' => 'submit'] ) !!}
                     <a href="{{ URL::previous() }}" title="Zrušiť" class='btn btn-default'>Zrušiť</a>
                 </div>
 

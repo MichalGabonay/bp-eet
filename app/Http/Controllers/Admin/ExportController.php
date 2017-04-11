@@ -11,7 +11,7 @@ use Storage;
 class ExportController extends AdminController
 {
     /**
-     * Create a new dashboard controller instance.
+     * Create a new export controller instance.
      *
      * @return void
      */
@@ -58,11 +58,11 @@ class ExportController extends AdminController
         $sales = new Sales();
         $sales = $sales->getAllForExport(session('selectedCompany'));
 
-        if ($request->input('total_price'))         $f .= "\"Celkoá cena\";";
+        if ($request->input('total_price'))         $f .= "\"Celková cena\";";
         if ($request->input('fik'))                 $f .= "\"FIK\";";
         if ($request->input('bkp'))                 $f .= "\"BKP\";";
         if ($request->input('receipt_number'))      $f .= "\"Číslo účtenky\";";
-        if ($request->input('receipt_time'))        $f .= "\"Datum uskutečnění tržby\";";
+        if ($request->input('receipt_time'))        $f .= "\"Datum uskutečnenia tržby\";";
         if ($request->input('premise_id'))          $f .= "\"ID provozovny\";";
         if ($request->input('cash_register'))       $f .= "\"ID pokladny\";";
         if ($request->input('products'))            $f .= "\"Produkty\";";
@@ -79,7 +79,6 @@ class ExportController extends AdminController
             if($request->input('premise_id'))        $f .= "\"" . $s->premiseId . "\";";
             if($request->input('cash_register'))     $f .= "\"" . $s->cash_register . "\";";
             if($request->input('products'))          $f .= "\"" . $s->products . "\";";
-
 
             $f .= "\n";
         }//foreach

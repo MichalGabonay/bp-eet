@@ -16,20 +16,18 @@
                     <div class="panel-body">
                         <table class="table datatable-sorting">
                             <thead>
-                            <tr>
-                                <th>Tržba</th>
-                                {{--<th>Produkty</th>--}}
-                                <th>Celková cena</th>
-                                <th>Pridaná</th>
+                                <tr>
+                                    <th>Tržba</th>
+                                    <th>Celková cena</th>
+                                    <th>Pridaná</th>
 
-                                <th width="80" class="text-center">Akcie</th>
-                            </tr>
+                                    <th width="80" class="text-center">Akcie</th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($sales as $s)
                                 <tr >
                                     <td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>
-                                    {{--<td>{{$s->products or '-'}}</td>--}}
                                     <td>{{$s->total_price or '-'}}Kč</td>
 
                                     @if(!is_null($s->receipt_time))
@@ -69,13 +67,7 @@
             </div>
         </div>
     @endif
-
-
 @endsection
-
-
-
-
 
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
@@ -86,14 +78,10 @@
     //<script> onlyForSyntaxPHPstorm
 
         $(document).ready(function() {
-
             $("[data-toggle='tooltip']").tooltip();
-
-
         });
 
         var table = $('.datatable-sorting').DataTable({
-                //"bSort": false
                 order: [2, "desc"],
                 columnDefs: [
                     { "type": "de_date", targets: 2 }],
@@ -101,5 +89,4 @@
                     "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
                 }
             });
-
 @endsection

@@ -49,7 +49,6 @@
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4 class="pull-left">Poznámky</h4>
-                    {{--<a class="btn new-note-btn pull-right">Nová</a>--}}
                     <div class="clearfix"></div>
                     <div class="new-note-form">
                         {!! Form::open( ['route' => ['admin.notes.store', $sales->id], 'class' => 'form-inline', 'id' => 'form_add_note'] ) !!}
@@ -96,9 +95,6 @@
                         <td>{{$p['price']}}</td>
                     </tr>
                 @endforeach
-
-
-
                 <tr>
                     <td></td>
                     <td ><label id="total_price_label">{{$sales->total_price}} Kč</label></td>
@@ -106,7 +102,6 @@
                 </tbody>
             </table>
             <div class="form-group submit-btn">
-                {{--{!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'id' => 'btn-add-product'] ) !!}--}}
             </div>
         </div><!-- /.col -->
         @endif
@@ -116,17 +111,11 @@
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
 @endsection
 
 
 @section('jquery_ready')
     //<script> onlyForSyntaxPHPstorm
-
-        $(".new-note-btn").click(function(){
-//            $(".new-note-btn").hide(1000);
-            $(".new-note-form").show(300);
-        });
 
         $('.datatable-sorting2').DataTable({
             order: [1, "asc"],
@@ -137,6 +126,5 @@
                 "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
             }
         });
-
 
 @endsection

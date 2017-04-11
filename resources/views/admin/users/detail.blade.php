@@ -3,7 +3,6 @@
 @section('top-buttons')
     <a href="{{ route('admin.users.index')}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></b> Zpět </a>
     <a href="{{ route('admin.users.edit', $users->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></b> Upraviť </a>
-    {{--<a href="{{ route('admin.users.delete', $users->id)}}" class="btn bg-teal-400 btn-labeled labeled-margin"><b><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b> Odstrániť </a>--}}
 @endsection
 
 @section('content')
@@ -40,7 +39,6 @@
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Role a spoločnosti</h4>
-
                     <div class="tab-pane has-padding" id="tab_roles">
                         @foreach($companies as $c)
                             <div class="panel panel-flat">
@@ -68,9 +66,8 @@
                             </div>
                         @endforeach
                     </div>
-
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
 @endsection

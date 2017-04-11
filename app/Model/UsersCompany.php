@@ -26,6 +26,13 @@ class UsersCompany extends Model
             ->get();
     }
 
+    /**
+     * Get all users from company
+     *
+     * @var integer
+     *
+     * @return UsersCompany
+     */
     public function getUsersFromCompany($company_id)
     {
         return $this->select($this->table . '.*', 'users.name', 'users.username', 'users.email')
@@ -35,6 +42,13 @@ class UsersCompany extends Model
             ->get();
     }
 
+    /**
+     * Get all companies where is user enabled
+     *
+     * @var integer
+     *
+     * @return UsersCompany
+     */
     public function getCompaniesUserIn($user_id)
     {
         return $this->select($this->table . '.*', 'companies.name')
@@ -45,6 +59,13 @@ class UsersCompany extends Model
             ->get();
     }
 
+    /**
+     * Get all admins from company
+     *
+     * @var integer
+     *
+     * @return UsersCompany
+     */
     public function getAllAdminsFromCopmany($company_id){
         return $this->select($this->table . '.*')
             ->where($this->table .'.company_id', $company_id)

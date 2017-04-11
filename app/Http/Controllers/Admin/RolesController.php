@@ -4,16 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Model\UsersCompany;
 use Illuminate\Http\Request;
-//use App\Http\Requests;
 use Flash;
 use Auth;
-use App\Model\Roles;
 use App\Model\UsersCompanyRole;
 
 class RolesController extends AdminController
 {
     /**
-     * Create a new dashboard controller instance.
+     * Create a new roles controller instance.
      *
      * @return void
      */
@@ -25,81 +23,9 @@ class RolesController extends AdminController
     }
 
     /**
-     * Display a listing of the resource.
+     * Swich role of user in specific company
      *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return view('admin.roles.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function detail($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function delete($id)
-    {
-        //
-    }
-
     public function switchRoleUC($u_c_id, $role_id, $type, UsersCompanyRole $usersCompanyRole, UsersCompany $usersCompanies){
 
         $usersCompany = $usersCompanies->findOrFail($u_c_id);
@@ -109,7 +35,6 @@ class RolesController extends AdminController
         if ($role_id == 1 && $u_c_r->first() != null){
             $admins = $usersCompanies->getAllAdminsFromCopmany($usersCompany->company_id);
             if (count($admins) == 1){
-//                Flash::danger('Spoločnosť musí mať vždy aspoň jednoho administrátora!');
                 flash('Spoločnosť musí mať vždy aspoň jednoho administrátora!', 'danger');
                 if($type == 'companies')
                     return redirect(route('admin.companies.detail', $usersCompany->company_id));
@@ -126,7 +51,6 @@ class RolesController extends AdminController
 
             Flash::success('Užívatelovi bola pridaná rola!');
         }else{
-//            dd($u_c_r);
             $usersCompanyRole = $usersCompanyRole->findOrFail($u_c_r->first()->id);
             $usersCompanyRole->delete();
 
@@ -138,4 +62,82 @@ class RolesController extends AdminController
         else
             return redirect(route('admin.users.detail', $usersCompany->user_id));
     }
+
+    //
+//    /**
+//     * Display a listing of the resource.
+//     *
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function index()
+//    {
+//        return view('admin.roles.index');
+//    }
+//
+//    /**
+//     * Show the form for creating a new resource.
+//     *
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function create()
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Store a newly created resource in storage.
+//     *
+//     * @param  \Illuminate\Http\Request  $request
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function store(Request $request)
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Display the specified resource.
+//     *
+//     * @param  int  $id
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function detail($id)
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Show the form for editing the specified resource.
+//     *
+//     * @param  int  $id
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function edit($id)
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Update the specified resource in storage.
+//     *
+//     * @param  \Illuminate\Http\Request  $request
+//     * @param  int  $id
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function update(Request $request, $id)
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Remove the specified resource from storage.
+//     *
+//     * @param  int  $id
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function delete($id)
+//    {
+//        //
+//    }
+
 }

@@ -5,18 +5,6 @@
 @endsection
 
 @section('content')
-    {{--<label class="switch">--}}
-        {{--<input type="checkbox" checked>--}}
-        {{--<div class="slider round"></div>--}}
-
-    {{--</label><label class="switcher-label">Poznámky k obdobiam</label><br>--}}
-
-    {{--<label class="switch">--}}
-        {{--<input type="checkbox" checked>--}}
-        {{--<div class="slider round"></div>--}}
-
-    {{--</label><label class="switcher-label">Poznámky k tržbám</label><br>--}}
-
     <div id="period_notes">
         <div class="row">
             <div class="col-md-12">
@@ -100,12 +88,9 @@
     </div>
 @endsection
 
-
-
 @section('head_js')
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables.min.js") ) !!}
     {!! HTML::script( asset("/assets/admin/js/tables/datatables/extensions/date-de.js") ) !!}
-    {!! HTML::script( asset("/assets/admin/js/tables/datatables/datatables_sorting.js") ) !!}
 @endsection
 
 @section('jquery_ready')

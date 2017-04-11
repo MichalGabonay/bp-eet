@@ -24,7 +24,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-
     public function redirect() {
         if (Auth::check())
         {
@@ -36,8 +35,10 @@ class Controller extends BaseController
         }
     }
 
-
     /**
+     * After SMS-gate send something like this:
+     * curl --data "tel-number=730998602&msg-text=150,50"
+     *
      * Recieve SMS and submit sale to EET
      *
      */

@@ -13,6 +13,7 @@
 
 if (App::environment() == 'development') {
     Route::get('migrate',   ['as' => 'migrate', 'uses' => 'AppController@migrate']);
+    Route::get('clear-cache',   ['as' => 'clear-cache', 'uses' => 'AppController@clearCache']);
 }
 
 Route::get('/', ['as' => 'home', 'uses' => 'Controller@redirect' ]);
@@ -21,7 +22,6 @@ Route::get('receive-sms', ['as' => 'receive_sms ', 'uses' => 'Controller@receive
 
 Auth::routes();
 
-Route::get('home', ['as' => 'home', 'uses' => 'HomeController@index']);
 Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
 Route::get('select-company/{company_id?}', ['as' => 'admin.select_company', 'uses' => 'Admin\AdminController@changeSelectedCompany']);
 
@@ -64,7 +64,6 @@ Route::group(['prefix' => 'sales'], function () {
     Route::get('{id}/storno', ['as' => 'admin.sales.storno', 'uses' => 'Admin\SalesController@storno']);
     Route::get('{id}/generate-receipt', ['as' => 'admin.sales.generate_receipt', 'uses' => 'Admin\SalesController@generateReceipt']);
     Route::get('{id}/delete', ['as' => 'admin.sales.delete', 'uses' => 'Admin\SalesController@delete']);
-    Route::get('test', ['as' => 'admin.sales.test', 'uses' => 'Admin\SalesController@test']);
     Route::get('not-sent', ['as' => 'admin.sales.not_sent', 'uses' => 'Admin\SalesController@showNotSent']);
     Route::get('sent-again', ['as' => 'admin.sales.try_sent_again', 'uses' => 'Admin\SalesController@TrySentAgain']);
 });
@@ -76,32 +75,13 @@ Route::group(['prefix' => 'notes'], function () {
     Route::post('store/{sale_id?}', ['as' => 'admin.notes.store', 'uses' => 'Admin\NotesController@store']);
     Route::get('{id}/edit', ['as' => 'admin.notes.edit', 'uses' => 'Admin\NotesController@edit']);
     Route::patch('{id}/update', ['as' => 'admin.notes.update', 'uses' => 'Admin\NotesController@update']);
-    Route::get('{id}/detail', ['as' => 'admin.notes.detail', 'uses' => 'Admin\NotesController@detail']);
     Route::get('{id}/delete', ['as' => 'admin.notes.delete', 'uses' => 'Admin\NotesController@delete']);
-});
-
-//Certs
-Route::group(['prefix' => 'certs'], function () {
-    Route::get('', ['as' => 'admin.certs.index', 'uses' => 'Admin\CertsController@index']);
-    Route::get('create', ['as' => 'admin.certs.create', 'uses' => 'Admin\CertsController@create']);
-    Route::post('store', ['as' => 'admin.certs.store', 'uses' => 'Admin\CertsController@store']);
-    Route::get('{id}/edit', ['as' => 'admin.certs.edit', 'uses' => 'Admin\CertsController@edit']);
-    Route::patch('{id}/update', ['as' => 'admin.certs.update', 'uses' => 'Admin\CertsController@update']);
-    Route::get('{id}/detail', ['as' => 'admin.certs.detail', 'uses' => 'Admin\CertsController@detail']);
-    Route::get('{id}/delete', ['as' => 'admin.certs.delete', 'uses' => 'Admin\CertsController@delete']);
 });
 
 //Roles
 Route::group(['prefix' => 'roles'], function () {
     Route::get('', ['as' => 'admin.roles.index', 'uses' => 'Admin\RolesController@index']);
     Route::get('switch-role/{u_c_id}/{role_id}/{type}', ['as' => 'admin.roles.switch-role', 'uses' => 'Admin\RolesController@switchRoleUC']);
-
-    Route::get('create', ['as' => 'admin.roles.create', 'uses' => 'Admin\CompaniesController@create']);
-    Route::post('store', ['as' => 'admin.roles.store', 'uses' => 'Admin\CompaniesController@store']);
-    Route::get('{id}/edit', ['as' => 'admin.roles.edit', 'uses' => 'Admin\CompaniesController@edit']);
-    Route::patch('{id}/update', ['as' => 'admin.roles.update', 'uses' => 'Admin\CompaniesController@update']);
-    Route::get('{id}/detail', ['as' => 'admin.roles.detail', 'uses' => 'Admin\CompaniesController@detail']);
-    Route::get('{id}/delete', ['as' => 'admin.roles.delete', 'uses' => 'Admin\CompaniesController@delete']);
 });
 
 //Import
@@ -115,7 +95,3 @@ Route::group(['prefix' => 'export'], function () {
     Route::get('', ['as' => 'admin.export.index', 'uses' => 'Admin\ExportController@index']);
     Route::post('submit', ['as' => 'admin.export.submit', 'uses' => 'Admin\ExportController@submit']);
 });
-
-//
-
-//Route::get('/dashboard', 'Admin\DashboardController@index');

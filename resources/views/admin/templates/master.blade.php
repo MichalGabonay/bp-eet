@@ -11,16 +11,13 @@
     <title>{{ config('app.name', 'EET') }} {{ $page_title or '' }}</title>
 
     <!-- Styles -->
-
     {!! HTML::style( asset("/assets/admin/css/bootstrap/bootstrap.min.css") ) !!}
     {!! HTML::style( asset("/assets/admin/css/select2.min.css") ) !!}
-    {{--{!! HTML::style( asset("/assets/admin/css/font-awesome.min.css") ) !!}--}}
     {!! HTML::style( asset("/assets/admin/css/app.css") ) !!}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     {!! HTML::style( asset("/assets/admin/css/style.css") ) !!}
     {!! HTML::style( asset("/assets/admin/css/sweetalert.css") ) !!}
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css"/>
-
 
     @yield('head_css')
 
@@ -49,21 +46,18 @@
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
                     <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
                 </button>
-                @if($company_logo != '')
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ url('/') }}">
 
+                <!-- Branding Image -->
+                @if($company_logo != '')
+                <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="/uploads/logos/{{$company_logo}}" height="50">
-                    {{--@else--}}
-                        {{--{{ config('app.name', 'Laravel') }}--}}
+                </a>
                 @endif
 
-                </a>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
-                {{--{!! $MyNavBar->asUl( array('class' => 'nav navbar-nav') ) !!}--}}
                 <ul class="nav navbar-nav">
                     @include('admin.partials.menu-items', array('items' => $MyNavBar->roots()))
                 </ul>
@@ -105,7 +99,6 @@
             <h3><i class="fa {{ $page_icon or '' }} position-left"></i> <span class="text-semibold">{{ $page_title or '' }}</span> @if(!empty($page_description)) - @endif {{ $page_description or '' }}</h3>
 
         </div>
-        {{--<div class="breadcrumb-line">--}}
             <ul class="breadcrumb">
                 <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-home position-left"></i> Home</a></li>
                 <li class="active">{{ $page_title or "Page Title" }}</li>
@@ -123,35 +116,20 @@
             </div>
         </div>
 
-        {{--</div>--}}
         @include('admin.partials._errors')
         @include('flash::message')
-        {{--<div class="content-box">--}}
-            @yield('content')
-        {{--</div>--}}
 
+        @yield('content')
 
     </div>
-
 </div>
 
 <!-- Scripts -->
 
-{{--{!! HTML::script( asset("/assets/admin/js/jquery-3.1.1.min.js") ) !!}--}}
 {!! HTML::script( asset("/assets/admin/js/bootstrap.min.js") ) !!}
-{{--{!! HTML::script( asset("/assets/admin/js/app.js") ) !!}--}}
 
 <script>
     jQuery(document).ready(function() {
-//        $(window).scroll(function(){
-//            var sticky = $('.sticky'),
-//                    scroll = $(window).scrollTop();
-//
-//            if (scroll >= 100) sticky.addClass('fixed');
-//            else sticky.removeClass('fixed');
-//        });
-
-
         @yield('jquery_ready')
     });
 </script>

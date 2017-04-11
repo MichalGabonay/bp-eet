@@ -9,7 +9,6 @@ use App\Model\Sales;
 use App\User;
 
 use Illuminate\Http\Request;
-//use App\Http\Requests;
 use Flash;
 use Auth;
 use SlevomatEET\Cryptography\CryptographyService;
@@ -22,7 +21,9 @@ use SlevomatEET\Receipt;
 
 class SalesController extends AdminController
 {
-
+    /**
+     * @var $sales
+     */
     private $sales;
 
     /**
@@ -57,8 +58,6 @@ class SalesController extends AdminController
     public function index(Companies $companies, Certs $certs, Notes $notes)
     {
         if (session('isAdmin') || session('isManager')){
-//            $sales = $this->sales->getAll()->get();
-//            $sales = $this->sales->getAll(session('selectedCompany'))->get();
             $sales = $this->sales->getAllForChart(session('selectedCompany'))->get();
             $sales_all = $this->sales->getAll(session('selectedCompany'))->get();
         }elseif (session('isCashier') && session('haveStorno')){
@@ -117,13 +116,15 @@ class SalesController extends AdminController
     public function storno($id){
         $sale = $this->sales->findOrFail($id);
 
-
         $total_price = $sale->total_price*(-100);
         $userid = Auth::user()->id;
 
         $receiptNumber = $sale->receiptNumber . '-storno';
         $premiseId = '1';
         $cashregister = 'pokl-user-'. $userid;
+
+        //if sale wasnt sent before, just set it as storned in db
+        //if was sent, make new one with the negative same price
         if ($sale->not_sent == 0){
             $response = $this->eetSend($total_price, $receiptNumber, $premiseId, $cashregister);
         }else{
@@ -139,7 +140,7 @@ class SalesController extends AdminController
     }
 
     /**
-     * generate receipt
+     * show receipt
      *
      * @param $id
      */
@@ -176,7 +177,6 @@ class SalesController extends AdminController
         $total_price = $request['total_price'];
         $userid = Auth::user()->id;
 
-
         $lastid = $this->sales->getAll(session('selectedCompany'))->first();
 
         if ($lastid != null){
@@ -190,8 +190,6 @@ class SalesController extends AdminController
         $cashregister = 'pokl-'. $userid;
 
         $response = $this->eetSend($total_price*100, $receiptNumber, $premiseId, $cashregister);
-
-//        dd($response);
 
         if ( $response['fik'] == 'error' ){
             $store = $this->sales->create([
@@ -208,7 +206,7 @@ class SalesController extends AdminController
                 'not_sent' => 1
             ]);
 
-            Flash::success('Tržba bola úspešne vytvorná a zaevidovaná!');
+            Flash::success('Tržba bola zapísaná ale nebola úspešne zaevidovaná!');
         }else{
             $store = $this->sales->create([
                 'user_id' => $userid,
@@ -244,9 +242,9 @@ class SalesController extends AdminController
     {
         $sales = $this->sales->findOrFail($id);
         $user = $user->findOrFail($sales->user_id);
+        $notes = $notes->getAllBySaleId($id)->get();
 
         $products = [];
-
         if ($sales->products != ''){
             $product = explode(";", $sales->products);
 
@@ -258,13 +256,8 @@ class SalesController extends AdminController
             }
         }
 
-        $notes = $notes->getAllBySaleId($id)->get();
-
-
-
         return view('admin.sales.detail', compact('sales', 'user', 'products', 'notes'));
     }
-
 
     /**
      * Send eet to finances server
@@ -283,7 +276,6 @@ class SalesController extends AdminController
             new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND),
             false
         );
-
 
         $client = new Client($crypto, $configuration, new GuzzleSoapClientDriver(new \GuzzleHttp\Client()));
 
@@ -322,6 +314,9 @@ class SalesController extends AdminController
         return redirect()->back();
     }
 
+    /**
+     * Show sales, which waren not succesfully sent before
+     */
     public function showNotSent(){
         $this->page_description = "neodoslané na EET";
 
@@ -337,6 +332,9 @@ class SalesController extends AdminController
         return view('admin.sales.not_sent', compact('sales', 'not_sent'));
     }
 
+    /**
+     * Try to send all sales, which warent succesfully sent before
+     */
     public function TrySentAgain(){
         $sales = $this->sales->getNotSent(session('selectedCompany'));
 
@@ -358,10 +356,4 @@ class SalesController extends AdminController
 
         return redirect()->back();
     }
-
-    public function test(){
-
-    }
-
-
 }

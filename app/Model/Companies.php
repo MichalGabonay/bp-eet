@@ -77,5 +77,4 @@ class Companies extends Model
             ->leftJoin('user_company', 'company_id', '=', $this->table . '.id');
     }
 
-
 }
