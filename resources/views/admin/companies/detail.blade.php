@@ -61,7 +61,7 @@
                         <div class="form-level">
                             {!! Form::file('logo', ['class' => 'form-control file-styled fileinput']) !!}
                         </div>
-                        {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-cert'] ) !!}
+                        {!! Form::button( 'Pridať logo', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-logo'] ) !!}
                         {!! Form::close() !!}
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                                 {!! Form::label('name', 'Heslo k certifikátu') !!}
                                 {!! Form::password('password', ['class' => 'form-control maxlength']) !!}
                             </div>
-                                {!! Form::button( 'Pridať', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-cert'] ) !!}
+                                {!! Form::button( 'Pridať', ['name' => 'Pridať', 'class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-cert'] ) !!}
                             {!! Form::close() !!}
                         </div>
                 </div>
