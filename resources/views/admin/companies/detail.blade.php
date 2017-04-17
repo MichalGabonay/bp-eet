@@ -105,26 +105,30 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-flat">
-                <div class="panel-body">
+                <div class="panel-heading">
                     <div class="pull-left">
                         <h4>Užívatelia</h4>
                     </div>
                     <div class="pull-right">
                         {!! Form::open( ['route' => array('admin.users.add_to_company', $company->id), 'id' => 'form_add_store_to_course', 'files' => true] ) !!}
-                            <select name="user" class="js-example-placeholder-single">
-                                <option></option>
-                                @foreach($all_users as $au)
-                                    @foreach($users_in as $u)
+                        <select name="user" class="js-example-placeholder-single">
+                            <option></option>
+                            @foreach($all_users as $au)
+                                @foreach($users_in as $u)
 
-                                    @endforeach
-                                <option value="{{$au->id}}">{{$au->name}} - {{$au->email}}</option>
                                 @endforeach
-                            </select>
-                            {!! Form::button( 'Přidat užívatela', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-add'] ) !!}
+                                <option value="{{$au->id}}">{{$au->name}} - {{$au->email}}</option>
+                            @endforeach
+                        </select>
+                        {!! Form::button( 'Přidat užívatela', ['class' => 'btn bg-teal-400', 'type' => 'submit', 'id' => 'btn-submit-add'] ) !!}
                         {!! Form::close() !!}
                     </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="panel-body">
 
-                    <table class="table datatable-sorting">
+                    <div class="table-responsive">
+                        <table class="table datatable-sorting table-striped table-hover dt-responsive display nowrap" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Meno</th>
@@ -158,6 +162,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
         </div>

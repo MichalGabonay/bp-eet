@@ -126,49 +126,51 @@
             <div class="col-md-12">
                 <div class="panel panel-flat">
                     <div class="panel-body">
-                        <table class="table datatable-sorting">
-                            <thead>
-                                <tr>
-                                    <th>Tržba</th>
-                                    <th>Produkty</th>
-                                    <th>Celková cena</th>
-                                    <th>Pridaná</th>
-                                    <th width="80" class="text-center">Akcie</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($sales as $s)
-                                <tr >
-                                    <td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>
-                                    <td>{{$s->products or '-'}}</td>
-                                    <td>{{$s->total_price or '-'}}Kč</td>
+                        <div class="table-responsive">
+                            <table class="table datatable-sorting table-striped table-hover dt-responsive display nowrap" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Tržba</th>
+                                        <th>Produkty</th>
+                                        <th>Celková cena</th>
+                                        <th>Pridaná</th>
+                                        <th width="80" class="text-center">Akcie</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($sales as $s)
+                                    <tr >
+                                        <td>{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}</td>
+                                        <td>{{$s->products or '-'}}</td>
+                                        <td>{{$s->total_price or '-'}}Kč</td>
 
-                                    @if(!is_null($s->receipt_time))
-                                        <td>{{date('d.m.Y H:i', strtotime($s->receipt_time))}}</td>
-                                    @else
-                                        <td>-</td>
-                                    @endif
+                                        @if(!is_null($s->receipt_time))
+                                            <td>{{date('d.m.Y H:i', strtotime($s->receipt_time))}}</td>
+                                        @else
+                                            <td>-</td>
+                                        @endif
 
-                                    <td class="text-center">
-                                        <ul class="icons-list">
-                                            <li class="dropdown">
-                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                                    <i class="fa fa-bars" aria-hidden="true"></i>
-                                                </a>
+                                        <td class="text-center">
+                                            <ul class="icons-list">
+                                                <li class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                        <i class="fa fa-bars" aria-hidden="true"></i>
+                                                    </a>
 
-                                                <ul class="dropdown-menu dropdown-menu-right">
-                                                    @if($s->storno == 0 && session('haveStorno'))
-                                                        <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
-                                                    @endif
-                                                    <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Zobraziť účtenku</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                                    <ul class="dropdown-menu dropdown-menu-right">
+                                                        @if($s->storno == 0 && session('haveStorno'))
+                                                            <li><a href="{{ route('admin.sales.storno', $s->id) }}"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;&nbsp; Storno</a></li>
+                                                        @endif
+                                                        <li><a href="{{ route('admin.sales.generate_receipt', $s->id) }}"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;&nbsp; Zobraziť účtenku</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -383,6 +385,7 @@
 
             dashboard2.draw(dataOther);
             table.draw();
+//            table.draw(dataOther, {width: '100%', height: '100%'});
 
             //event for btn this week
             google.visualization.events.addListener(dashboard, 'ready', function () {

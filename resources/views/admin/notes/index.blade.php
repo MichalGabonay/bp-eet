@@ -11,6 +11,8 @@
                 <div class="panel panel-flat">
                     <div class="panel-body">
                         <h4>Poznámky k obdobiam</h4>
+                        <div class="table-responsive">
+
                         <table class="table datatable-sorting">
                             <thead>
                             <tr>
@@ -41,6 +43,7 @@
                             </tbody>
                         </table>
                     </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,6 +55,8 @@
                 <div class="panel panel-flat">
                     <div class="panel-body">
                         <h4>Poznámky k tržbám</h4>
+                        <div class="table-responsive">
+
                         <table class="table datatable-sorting">
                             <thead>
                             <tr>
@@ -81,6 +86,7 @@
                             @endforeach
                             </tbody>
                         </table>
+                    </div>
                     </div>
                 </div>
             </div>

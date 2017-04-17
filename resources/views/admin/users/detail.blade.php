@@ -12,6 +12,7 @@
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <h4>Základné informácie</h4>
+
                     <table class="table">
                         <tbody>
                             <tr>
@@ -47,20 +48,36 @@
                                 </div>
                                 @if($c->user_enabled)
                                 <div class="panel-body">
+                                    <table class="table" style="width: 220px">
+                                        <tbody>
                                     @foreach($roles as $r)
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                {{$r->name}}
-                                            </div>
-                                            <div class="col-md-3">
-                                                @if ( $users_role[$users->id][$c->id][$r->id]['enabled'] )
-                                                    <a href="{!! route('admin.roles.switch-role', [$users_role[$users->id][$c->id][$r->id]['user_company_id'], $r->id, 'users']) !!}" title="deaktivuj"><i class="fa fa-check enabled" style="color: green"></i></a>
-                                                @else
-                                                    <a href="{!! route('admin.roles.switch-role', [$users_role[$users->id][$c->id][$r->id]['user_company_id'], $r->id, 'users']) !!}" title="aktivuj"><i class="fa fa-times disabled" style="color: red"></i></a>
-                                                @endif
-                                            </div>
-                                        </div>
+
+                                            <tr>
+                                                <td><strong>{{$r->name}}</strong></td>
+                                                <td>
+                                                    @if ( $users_role[$users->id][$c->id][$r->id]['enabled'] )
+                                                        <a href="{!! route('admin.roles.switch-role', [$users_role[$users->id][$c->id][$r->id]['user_company_id'], $r->id, 'users']) !!}" title="deaktivuj"><i class="fa fa-check enabled" style="color: green"></i></a>
+                                                    @else
+                                                        <a href="{!! route('admin.roles.switch-role', [$users_role[$users->id][$c->id][$r->id]['user_company_id'], $r->id, 'users']) !!}" title="aktivuj"><i class="fa fa-times disabled" style="color: red"></i></a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+
+                                        {{--<div class="row">--}}
+                                            {{--<div class="col-md-2">--}}
+                                                {{--{{$r->name}}--}}
+                                            {{--</div>--}}
+                                            {{--<div class="col-md-3">--}}
+                                                {{--@if ( $users_role[$users->id][$c->id][$r->id]['enabled'] )--}}
+                                                    {{--<a href="{!! route('admin.roles.switch-role', [$users_role[$users->id][$c->id][$r->id]['user_company_id'], $r->id, 'users']) !!}" title="deaktivuj"><i class="fa fa-check enabled" style="color: green"></i></a>--}}
+                                                {{--@else--}}
+                                                    {{--<a href="{!! route('admin.roles.switch-role', [$users_role[$users->id][$c->id][$r->id]['user_company_id'], $r->id, 'users']) !!}" title="aktivuj"><i class="fa fa-times disabled" style="color: red"></i></a>--}}
+                                                {{--@endif--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
                                     @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                                 @endif
                             </div>

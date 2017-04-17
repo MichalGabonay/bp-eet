@@ -7,30 +7,32 @@
 @section('content')
     <div class="panel panel-flat">
         <div class="panel-body">
-            <table class="table datatable-sorting table-hover table-hover-hand">
-                <thead>
-                    <tr>
-                        <th>Meno</th>
-                        <th>E-mail</th>
-                        <th>Tel. číslo</th>
-                        <th>Užívatelské meno</th>
-                        <th width="120" class="text-center">Akcie</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach($users as $u)
-                    <tr id="{{$u->id}}">
-                        <td>{{$u->name or '-'}}</td>
-                        <td>{{$u->email or '-'}}</td>
-                        <td>{{$u->phone_number or '-'}}</td>
-                        <td>{{$u->username or '-'}}</td>
-                        <td class="text-center">
-                            <a href="{{ route('admin.users.edit', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table datatable-sorting table-hover table-hover-hand" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Meno</th>
+                            <th>E-mail</th>
+                            <th>Tel. číslo</th>
+                            <th>Užívatelské meno</th>
+                            <th width="120" class="text-center">Akcie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($users as $u)
+                        <tr id="{{$u->id}}">
+                            <td>{{$u->name or '-'}}</td>
+                            <td>{{$u->email or '-'}}</td>
+                            <td>{{$u->phone_number or '-'}}</td>
+                            <td>{{$u->username or '-'}}</td>
+                            <td class="text-center">
+                                <a href="{{ route('admin.users.edit', $u->id) }}" data-toggle="tooltip" data-placement="top" title="Upravit"><i class="fa fa-pencil"></i></a> &nbsp;
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
