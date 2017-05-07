@@ -1,4 +1,4 @@
-Celkoá cena;FIK;BKP;Číslo účtenky;Datum uskutečnění tržby;ID provozovny;ID pokladny;Produkty (nepovinné)
+Celková cena;FIK;BKP;Číslo účtenky;Datum uskutečnění tržby;ID provozovny;ID pokladny;Produkty (nepovinné)
 20;9707c48c-68a6-4985-91cf-723453aac16d-ff;5B5680A2-D8353CA1-1600F7A7-9E47B7C0-15C00526;120;2017-03-25 09:11:27;2;1;
 110;9d38ab80-58a7-4dc6-bc42-085400f0a51a-ff;E5752DE6-7D6575C5-081FE215-0C664870-62CA7611;121;2017-03-28 09:20:35;2;5;"Produkt 1||10;Produkt 2||20;produkt 3||30"
 95;f943c4da-8305-4cbc-910d-fdaf1bf01302-ff;82D29C00-A48BF897-48D1CC3F-BC4CAB4A-0CE7340F;205;2017-03-28 10:16:29;2;5;Produkt 1||10

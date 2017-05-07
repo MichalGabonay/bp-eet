@@ -92,10 +92,12 @@ class ImportController extends AdminController
                             'premiseId' => $row[5],
                             'cash_register' => $row[6],
                             'receipt_time' => $row[4],
+                            'not_sent' => 0,
                         ]);
                         echo "<span style='color: green'>Záznam " . implode(";",$row) . " sa úspešne naimportoval.</span><br>";
                     }
                     catch (\Illuminate\Database\QueryException $e){
+                        dd($e);
                         echo "<span style='color: red'>Záznam " . implode(";",$row) . " sa nepodarilo importovať.</span><br>";
                     }
                 }
@@ -104,5 +106,15 @@ class ImportController extends AdminController
         }
 
         echo 'hotovo';
+    }
+
+    public function download(){
+        $file = file_get_contents(public_path('media\import.csv'));
+        header('Content-Disposition: attachment; filename="example-import' . '.csv"');
+        header("Cache-control: private");
+        header("Content-type: text/csv");
+        header("Content-transfer-encoding: binary\n");
+        echo "\xEF\xBB\xBF" . $file;
+        exit;
     }
 }

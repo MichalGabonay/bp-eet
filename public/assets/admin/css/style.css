@@ -296,3 +296,11 @@ input:checked + .slider:before {
     }
 }
 
+#control1{
+    display: inline-block;
+}
+
+#control2{
+    display: inline-block;
+    margin-left: 15px;
+}

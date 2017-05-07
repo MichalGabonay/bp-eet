@@ -87,6 +87,7 @@ Route::group(['prefix' => 'roles'], function () {
 //Import
 Route::group(['prefix' => 'import'], function () {
     Route::get('', ['as' => 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
+    Route::get('download', ['as' => 'admin.import.download', 'uses' => 'Admin\ImportController@download']);
     Route::post('submit', ['as' => 'admin.import.submit', 'uses' => 'Admin\ImportController@submit']);
 });
 

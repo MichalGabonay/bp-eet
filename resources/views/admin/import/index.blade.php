@@ -8,7 +8,7 @@
                 <p><strong>Formát súboru:</strong><br>
                 Celkoá cena;FIK;BKP;Číslo účtenky;Datum uskutečnění tržby;ID provozovny;ID pokladny;Produkty (nepovinné)<br>
                 Produkty zadávajte vo forme: "názov produktu||cena;názov druhého produktu||cena" atď</p>
-                <p>Stiahnite si <a href="{{public_path('media\import.csv')}}" download="import.csv">ukážkový súbor</a></p>
+                <p>Stiahnite si <a href="{{route('admin.import.download')}}">ukážkový súbor</a></p>
                  {!! Form::open( ['route' => 'admin.import.submit', 'files' => true, 'target' => 'iframe'] ) !!}
                 <input type="hidden" name="_token" value="{!! csrf_token() !!}">
                 <div class="form-group">

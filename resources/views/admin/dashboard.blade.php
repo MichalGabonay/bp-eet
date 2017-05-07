@@ -29,6 +29,10 @@
                             @endif
                         </div>
                     @endif
+                    @if(!session('isAdmin') && !session('isManager') && !session('haveExport') && !session('isCashier'))
+                        <h3>Vo vybranej spoločnosti nemáte žiadne oprávnenia!</h3>
+                        <h5>Kontaktuje správcu spoločnosti, alebo <a href="{{route('admin.companies.create')}}">pridajte do systému novú spoločnosť.</a></h5>
+                    @endif
                 </div>
             </div>
         </div>
@@ -104,7 +108,7 @@
                                             @if($s->storno == 1)
                                                 <a href="#" data-toggle="tooltip" data-placement="top" title="stornovaná" class="tooltip-storno"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
                                             @elseif($s->not_sent == 1 || $s->not_sent == 2)
-                                                <a href="#" data-toggle="tooltip" data-placement="top" title="neodoslaná na EET" class="tooltip-not-sent"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></i></a>
+                                                <a href="#" data-toggle="tooltip" data-placement="top" title="neodoslaná na EET" class="tooltip-not-sent"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></a>
                                             @else
                                                 <a href="#" data-toggle="tooltip" data-placement="top" title="úspešne odoslaná na EET" class="tooltip-okay"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
                                             @endif

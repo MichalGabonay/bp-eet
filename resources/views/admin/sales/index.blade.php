@@ -19,6 +19,7 @@
                 <br>
                 <div id="dashboard2_div">
                     <div id="control1"></div>
+                    <div id="control2"></div>
                     <div id="table_div" style="width: 100%"></div>
                 </div>
             </div>
@@ -223,11 +224,11 @@
                         @endif
                     new Date('{{$s->receipt_time}}'),
                     '{{$s->receiptNumber }} {{($s->storno == 1 ? ' - stornované' : '')}}',
-                    @if(session('isAdmin'))
-                        "<a href='{{route('admin.users.detail',$s->user_id )}}'>{{$s->user_name or '-'}}</a>",
-                    @else
+                    {{--@if(session('isAdmin'))--}}
+                        {{--"<a href='{{route('admin.users.detail',$s->user_id )}}'>{{$s->user_name or '-'}}</a>",--}}
+                    {{--@else--}}
                         "{{$s->user_name or '-'}}",
-                    @endif
+                    {{--@endif--}}
                     @if(isset($note[$s->id]))
                     "{{$note[$s->id]}}",
                     @else
@@ -291,7 +292,17 @@
                 'containerId': 'control1',
                 dataTable: dataOther,
                 'options': {
-                    'filterColumnIndex': 1
+                    'filterColumnIndex': 2
+                }
+            });
+
+            // Define a StringFilter control for the 'Name' column
+            var stringFilter2 = new google.visualization.ControlWrapper({
+                'controlType': 'StringFilter',
+                'containerId': 'control2',
+                dataTable: dataOther,
+                'options': {
+                    'filterColumnIndex': 3
                 }
             });
 
@@ -373,6 +384,7 @@
                 document.getElementById('rangeEnd').innerHTML = dateEnd;
                 table.setDataTable(view);
                 stringFilter.setDataTable(view);
+                stringFilter2.setDataTable(view);
                 table.draw();
             });
 
@@ -381,7 +393,7 @@
             dashboard.draw(data);
 
             var dashboard2 = new google.visualization.Dashboard(document.getElementById('dashboard2_div'));
-            dashboard2.bind(stringFilter, table);
+            dashboard2.bind([stringFilter, stringFilter2], table);
 
             dashboard2.draw(dataOther);
             table.draw();
@@ -563,6 +575,8 @@
                     document.getElementById('date_to').value = dateEnd2;
                     document.getElementById('rangeEnd').innerHTML = dateEnd;
                     table.setDataTable(view);
+                    stringFilter.setDataTable(view);
+                    stringFilter2.setDataTable(view);
                     table.draw();
                 }
             });

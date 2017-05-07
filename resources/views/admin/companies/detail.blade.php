@@ -178,7 +178,10 @@
     //<script> onlyForSyntaxPHPstorm
 
         $('.datatable-sorting').DataTable({
-            order: [0, "asc"]
+            order: [0, "asc"],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.13/i18n/Slovak.json"
+            }
         });
 
         $(".js-example-placeholder-single").select2({
