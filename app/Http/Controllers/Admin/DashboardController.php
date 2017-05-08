@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Model\Certs;
 use App\Model\Companies;
+use App\Model\Notes;
 use App\Model\Sales;
 use App\Model\UsersCompany;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class DashboardController extends AdminController
     /**
      * Show dashboard
      */
-    public function index(Companies $companies, UsersCompany $usersCompany, Certs $certs, Sales $sales, User $user) {
+    public function index(Companies $companies, UsersCompany $usersCompany, Certs $certs, Sales $sales, User $user, Notes $notes) {
 
         $cert = null;
         if (session('selectedCompany') != null){
@@ -101,9 +102,24 @@ class DashboardController extends AdminController
 
         $last_sales = $sales->getAll(session('selectedCompany'))->get()->take(5);
 
+        $all_notes = $notes->getAllFromCompany(session('selectedCompany'))->get();
+        $note = [];
+
+        foreach ($all_notes as $n){
+            if ($n->sale_id){
+                if (isset($note[$n->sale_id]) && strlen($note[$n->sale_id])< 50){
+                    $note[$n->sale_id] = $note[$n->sale_id] .';'. $n->note;
+                }else{
+                    $note[$n->sale_id] = $n->note;
+                }
+                if (strlen($note[$n->sale_id]) > 50)
+                    $note[$n->sale_id] = substr($note[$n->sale_id], 0, 47) . '...';
+            }
+        }
+
         $users_sales = $user->getCashiersBySales(session('selectedCompany'));
 
-        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert', 'all_sales', 'sales_by_day_week', 'last_sales', 'users_sales', 'not_sent'));
+        return view('admin.dashboard', compact('selected_company', 'usersCompany', 'cert', 'all_sales', 'sales_by_day_week', 'last_sales', 'users_sales', 'not_sent', 'note'));
 
     }
 }

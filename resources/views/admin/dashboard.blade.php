@@ -122,7 +122,7 @@
                                         @endif
 
                                         <td>{{(is_null($s->receipt_time) ? '-' : date('d.m.Y H:i', strtotime($s->receipt_time)))}}</td>
-                                        <td>{{$s->note or ''}}</td>
+                                        <td>{{$note[$s->id] or ''}}</td>
 
                                         <td class="text-center">
                                             <ul class="icons-list">
@@ -247,7 +247,7 @@
         $('.datatable-sorting').DataTable({
             order: [4, "desc"],
             columnDefs: [
-                { "type": "de_date", targets: 4 }],
+                { "type": "de_datetime", targets: 4 }],
             bPaginate: false,
             "bInfo" : false,
             "language": {

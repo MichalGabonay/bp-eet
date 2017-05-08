@@ -34,7 +34,7 @@ class Sales extends Model
             ->where($this->table . '.company_id', $company_id)
             ->where($this->table . '.deleted_at', NULL)
             ->leftJoin('users', 'users.id', $this->table . '.user_id')
-            ->orderBy('id', 'desc');
+            ->orderBy('receipt_time', 'desc');
     }
 
     /**
