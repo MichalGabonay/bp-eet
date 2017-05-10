@@ -131,7 +131,6 @@ class CompaniesController extends AdminController
         $this->validate($request,
             [
                 'cert' => 'required',
-                'password' => 'required',
             ]);
 
         //read and save inserted certificate
@@ -160,8 +159,8 @@ class CompaniesController extends AdminController
             }
 
         } else {
-            echo "Error: Unable to read the cert store.\n";
-            exit;
+            Flash::error('Vložený súbor je nesprávny, alebo je nesprávne heslo!');
+            return redirect(route('admin.companies.detail', $company_id));
         }
 
         //save in database
@@ -361,7 +360,7 @@ class CompaniesController extends AdminController
         $company = $this->companies->findOrFail($company_id);
         $cert_dir = public_path() . '/uploads/certs/' . $company_id;
         $crypto = new CryptographyService($cert_dir . '/private.key', $cert_dir . '/public.pub');
-        $configuration = new Configuration($company->dic, '1', '420', new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND), true);
+        $configuration = new Configuration($company->dic, '1', '420', new EvidenceEnvironment(EvidenceEnvironment::PLAYGROUND), false);
         $client = new Client($crypto, $configuration, new GuzzleSoapClientDriver(new \GuzzleHttp\Client()));
 
         $receipt = new Receipt(
@@ -374,15 +373,11 @@ class CompaniesController extends AdminController
 
         try {
         $response = $client->send($receipt);
-        echo $response->getFik();
+        return 1;
         } catch (\SlevomatEET\FailedRequestException $e) {
-            echo $e->getRequest()->getPkpCode(); // if request fails you need to print the PKP and BKP codes to receipt
+            return 0;
         } catch (\SlevomatEET\InvalidResponseReceivedException $e) {
-            if ($e->getResponse()->getRawData()->Chyba->kod == '0'){
-                return 1;
-            }else{
-                return 0;
-            }
+            return 0;
         }
     }
 

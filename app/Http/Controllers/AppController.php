@@ -33,7 +33,7 @@ class AppController extends Controller
         */
 //        Artisan::call('migrate:reset');
         Artisan::call('migrate');
-//        Artisan::call('db:seed');
+        Artisan::call('db:seed');
 
         $migrations = DB::select('SELECT migration FROM migrations');
         foreach ($migrations as $i => $m)

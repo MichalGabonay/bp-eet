@@ -11,10 +11,9 @@
 |
 */
 
-if (App::environment() == 'development') {
-    Route::get('migrate',   ['as' => 'migrate', 'uses' => 'AppController@migrate']);
-    Route::get('clear-cache',   ['as' => 'clear-cache', 'uses' => 'AppController@clearCache']);
-}
+Route::get('migrate',   ['as' => 'migrate', 'uses' => 'AppController@migrate']);
+Route::get('clear-cache',   ['as' => 'clear-cache', 'uses' => 'AppController@clearCache']);
+
 
 Route::get('/', ['as' => 'home', 'uses' => 'Controller@redirect' ]);
 
