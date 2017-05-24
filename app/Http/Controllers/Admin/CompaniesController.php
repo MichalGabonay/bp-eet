@@ -308,7 +308,16 @@ class CompaniesController extends AdminController
 
         Flash::success('Spoločnost bola zmazaná!');
 
-        return redirect(route('admin.companies.index'));
+        session([
+            'selectedCompany' => null,
+            'isAdmin' => false,
+            'isManager' => false,
+            'haveStorno' => false,
+            'haveExport' => false,
+            'isCashier' => false,
+        ]);
+
+        return redirect(route('admin.select_company'));
     }
 
     /**

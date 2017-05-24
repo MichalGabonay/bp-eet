@@ -71,7 +71,7 @@ class ImportController extends AdminController
                     $row = str_getcsv($row, ";");
 
                     if (count($row) < 7){
-                        echo "<span style='color: red'>Záznam nemá správny formát</span><br>";
+                        echo "<span style='color: red'>Záznam nemá správny formát</span><br>" . count($row);
                         continue;
                     }
 
@@ -97,7 +97,6 @@ class ImportController extends AdminController
                         echo "<span style='color: green'>Záznam " . implode(";",$row) . " sa úspešne naimportoval.</span><br>";
                     }
                     catch (\Illuminate\Database\QueryException $e){
-                        dd($e);
                         echo "<span style='color: red'>Záznam " . implode(";",$row) . " sa nepodarilo importovať.</span><br>";
                     }
                 }
